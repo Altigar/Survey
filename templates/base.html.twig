@@ -13,8 +13,11 @@
     </head>
     <body>
         <div id="app">
+            {% include('partials/header.html.twig') %}
             <main id="content">
-                {% block body %}{% endblock %}
+                <b-container class="w-768">
+                    {% block body %}{% endblock %}
+                </b-container>
             </main>
         </div>
     </body>
