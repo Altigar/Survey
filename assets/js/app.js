@@ -13,9 +13,16 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
 
+import Survey from "../components/Survey";
+import Question from "../components/Question";
+
 Vue.use(BootstrapVue);
 
 new Vue({
 	el: '#app',
 	// template: '<App/>',
+	components: {
+		Survey,
+		Question,
+	}
 });
