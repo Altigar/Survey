@@ -53,7 +53,7 @@ class SurveyController extends AbstractController
 		if ($request->isMethod('post')) {
 			$entityMapper->validate($request->getContent(), Question::class);
 			if ($errors = $entityMapper->getErrors(Question::class)) {
-				return new JsonResponse($errors, 422);
+				return new JsonResponse($errors, 400);
 			}
 			$repository = $this->entityManager->getRepository(Survey::class);
 			$survey = $repository->find($request->attributes->get('id'));
