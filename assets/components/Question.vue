@@ -3,32 +3,17 @@
         <div class="card p-3 border-0">
             <b-form method="post">
                 <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
-                <b-form-group v-if="isSelected('radio')">
-                    <b-form-input class="mb-3" v-model="radioText"></b-form-input>
-                    <div v-for="(option, index) in radioOptions" :key="index">
+                <b-form-group>
+                    <b-form-input class="mb-3" v-model="textOptions[selected].text"></b-form-input>
+                    <p v-if="textOptions[selected].error">{{ textOptions[selected].error }}</p>
+                    <div v-for="(option, index) in formOptions[selected]" :key="index">
                         <b-form-input v-model="option.text" size="sm"></b-form-input>
                         <p v-if="option.error">{{ option.error }}</p>
-                        <b-btn @click="remove(index)">remove</b-btn>
-                    </div>
-                </b-form-group>
-                <b-form-group v-else-if="isSelected('checkbox')">
-                    <b-form-input class="mb-3" v-model="checkboxText"></b-form-input>
-                    <div v-for="(option, index) in checkboxOptions" :key="index">
-                        <b-form-input v-model="option.text" size="sm"></b-form-input>
-                        <p v-if="option.error">{{ option.error }}</p>
-                        <b-btn @click="remove(index)">remove</b-btn>
-                    </div>
-                </b-form-group>
-                <b-form-group v-else-if="isSelected('string')">
-                    <b-form-input class="mb-3" v-model="stringText"></b-form-input>
-                    <div v-for="(option, index) in stringOptions" :key="index">
-                        <b-form-input v-model="option.text" size="sm"></b-form-input>
-                        <p v-if="option.error">{{ option.error }}</p>
-                        <b-btn @click="remove(index)">remove</b-btn>
+                        <b-btn @click="remove(index)" v-if="isSelected(['radio', 'checkbox'])">remove</b-btn>
                     </div>
                 </b-form-group>
                 <div>
-                    <b-btn @click="add">add</b-btn>
+                    <b-btn @click="add" v-if="isSelected(['radio', 'checkbox'])">add</b-btn>
                     <b-btn @click="save">save</b-btn>
                 </div>
             </b-form>
@@ -47,20 +32,24 @@ export default {
     data() {
         return {
             selected: 'radio',
-            radioText: '',
-            radioOptions: [
-                {text: '', error: ''},
-                {text: '', error: ''}
-            ],
-            checkboxText: '',
-            checkboxOptions: [
-                {text: '', error: ''},
-                {text: '', error: ''}
-            ],
-            stringText: '',
-            stringOptions: [
-                {text: '', error: ''},
-            ],
+            textOptions: {
+                radio: {text: '', error: ''},
+                checkbox: {text: '', error: ''},
+                string: {text: '', error: ''},
+            },
+            formOptions: {
+                radio: [
+                    {text: '', error: ''},
+                    {text: '', error: ''}
+                ],
+                checkbox: [
+                    {text: '', error: ''},
+                    {text: '', error: ''}
+                ],
+                string: [
+                    {text: '', error: ''},
+                ],
+            },
             options: [
                 {value: 'radio', text: 'radio'},
                 {value: 'checkbox', text: 'checkbox'},
@@ -70,59 +59,20 @@ export default {
     },
     methods: {
         add() {
-            switch (this.selected) {
-                case 'radio':
-                    this.radioOptions.push({text: '', error: ''});
-                    break;
-                case 'checkbox':
-                    this.checkboxOptions.push({text: '', error: ''});
-                    break;
-            }
+            this.formOptions[this.selected].push({text: '', error: ''});
         },
         remove(number) {
-            switch (this.selected) {
-                case 'radio':
-                    this.radioOptions = this.radioOptions.filter((elem, index) => index !== number);
-                    break;
-                case 'checkbox':
-                    this.checkboxOptions = this.checkboxOptions.filter((elem, index) => index !== number);
-                    break;
-            }
+            this.formOptions[this.selected] = this.formOptions[this.selected].filter((elem, index) => index !== number);
         },
-        isSelected(type) {
-            return this.selected === type;
-        },
-        clearErrors() {
-            let options = [];
-            switch (this.selected) {
-                case 'radio':
-                    options = this.radioOptions;
-                    break;
-                case 'checkbox':
-                    options = this.checkboxOptions;
-                    break;
-                case 'string':
-                    options = this.stringOptions;
-                    break;
-            }
-            for (let option of options) {
-                option.error = '';
-            }
+        isSelected(types) {
+            return types.includes(this.selected);
         },
         async save() {
-            let question = {};
-            switch (this.selected) {
-                case 'radio':
-                    question = {text: this.radioText, options: this.radioOptions, type: this.selected};
-                    break;
-                case 'checkbox':
-                    question = {text: this.checkboxText, options: this.checkboxOptions, type: this.selected};
-                    break;
-                case 'string':
-                    question = {text: this.stringText, options: this.stringOptions, type: this.selected};
-                    break;
+            this.textOptions[this.selected].error = '';
+            for (let option of this.formOptions[this.selected]) {
+                option.error = '';
             }
-            this.clearErrors();
+            let question = {text: this.textOptions[this.selected].text, options: this.formOptions[this.selected], type: this.selected};
             try {
                 await axios.post(`/survey/plan/${this.id}`, question);
             } catch (error) {
@@ -132,13 +82,10 @@ export default {
                         let matches = value.match(/options\[(?<index>\d+)\]/);
                         if (matches && Object.prototype.hasOwnProperty.call(matches.groups, 'index')) {
                             let i = matches.groups.index;
-                            if (this.selected === 'radio') {
-                                this.radioOptions[i].error = data[value];
-                            } else if (this.selected === 'checkbox') {
-                                this.checkboxOptions[i].error = data[value];
-                            } else if (this.selected === 'string') {
-                                this.stringOptions[i].error = data[value];
-                            }
+                            this.formOptions[this.selected][i].error = data[value];
+                        }
+                        if (value === 'text') {
+                            this.textOptions[this.selected].error = data[value];
                         }
                     }
                 }
