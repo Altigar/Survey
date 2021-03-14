@@ -19,6 +19,14 @@
                         <b-btn @click="remove(index)">remove</b-btn>
                     </div>
                 </b-form-group>
+                <b-form-group v-else-if="isSelected('string')">
+                    <b-form-input class="mb-3" v-model="stringText"></b-form-input>
+                    <div v-for="(option, index) in stringOptions" :key="index">
+                        <b-form-input v-model="option.text" size="sm"></b-form-input>
+                        <p v-if="option.error">{{ option.error }}</p>
+                        <b-btn @click="remove(index)">remove</b-btn>
+                    </div>
+                </b-form-group>
                 <div>
                     <b-btn @click="add">add</b-btn>
                     <b-btn @click="save">save</b-btn>
@@ -49,9 +57,14 @@ export default {
                 {text: '', error: ''},
                 {text: '', error: ''}
             ],
+            stringText: '',
+            stringOptions: [
+                {text: '', error: ''},
+            ],
             options: [
                 {value: 'radio', text: 'radio'},
-                {value: 'checkbox', text: 'checkbox'}
+                {value: 'checkbox', text: 'checkbox'},
+                {value: 'string', text: 'string'}
             ],
         };
     },
@@ -88,6 +101,9 @@ export default {
                 case 'checkbox':
                     options = this.checkboxOptions;
                     break;
+                case 'string':
+                    options = this.stringOptions;
+                    break;
             }
             for (let option of options) {
                 option.error = '';
@@ -102,6 +118,9 @@ export default {
                 case 'checkbox':
                     question = {text: this.checkboxText, options: this.checkboxOptions, type: this.selected};
                     break;
+                case 'string':
+                    question = {text: this.stringText, options: this.stringOptions, type: this.selected};
+                    break;
             }
             this.clearErrors();
             try {
@@ -115,8 +134,10 @@ export default {
                             let i = matches.groups.index;
                             if (this.selected === 'radio') {
                                 this.radioOptions[i].error = data[value];
-                            } else  if (this.selected === 'checkbox') {
+                            } else if (this.selected === 'checkbox') {
                                 this.checkboxOptions[i].error = data[value];
+                            } else if (this.selected === 'string') {
+                                this.stringOptions[i].error = data[value];
                             }
                         }
                     }
