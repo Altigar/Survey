@@ -1,6 +1,6 @@
 <template>
     <div>
-        <question v-for="(number, index) in amount" :key="index" :id="number"></question>
+        <question v-for="(number, index) in amount" :key="index" :id="id"></question>
         <b-button @click="add">add</b-button>
         <b-button @click="remove">remove</b-button>
     </div>
@@ -12,6 +12,9 @@ import Question from "./Question";
 export default {
     name: "Survey",
     components: {Question},
+    props: {
+        id: String,
+    },
     data() {
         return {
             amount: 1,

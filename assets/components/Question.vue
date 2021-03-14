@@ -1,7 +1,7 @@
 <template>
     <article class="pr-0 shadow-sm mb-4 bg-white rounded border">
         <div class="card p-3 border-0">
-            <b-form>
+            <b-form method="post">
                 <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
                 <b-form-group v-if="isSelected('radio')">
                     <b-form-input class="mb-3" v-model="radioText"></b-form-input>
@@ -27,9 +27,13 @@
 </template>
 
 <script>
+import axios from "axios";
 
 export default {
     name: "Question",
+    props: {
+        id: String,
+    },
     data() {
         return {
             selected: 'radio',
@@ -84,6 +88,12 @@ export default {
                     break;
             }
             console.log(question);
+            console.log(this.id);
+            try {
+                await axios.post(`/survey/plan/${this.id}`, question);
+            } catch (error) {
+                console.log(error.response);
+            }
         }
     },
 }
