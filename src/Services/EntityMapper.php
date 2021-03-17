@@ -14,6 +14,7 @@ class EntityMapper
 	private CsrfTokenManagerInterface $tokenManager;
 	private array $rawData = [];
 	private array $errors = [];
+	private array $entities = [];
 
 	public function __construct(
 		ValidatorInterface $validator,
@@ -32,13 +33,13 @@ class EntityMapper
 		}
 
 		try {
-			$entity = $this->serializer->deserialize($json, $model, 'json');
+			$this->entities[$model] = $this->serializer->deserialize($json, $model, 'json');
 			$this->rawData[$model] = json_decode($json, true);
 		} catch (\Exception $e) {
 			throw new BadRequestHttpException('Invalid body');
 		}
 
-		$errors = $this->validator->validate($entity);
+		$errors = $this->validator->validate($this->getEntity($model));
 		if ($errors->count()) {
 			foreach ($errors as $error) {
 				$this->errors[$model][$error->getPropertyPath()] = $error->getMessage();
@@ -53,6 +54,11 @@ class EntityMapper
 
 	public function getErrors(string $model): array
 	{
-		return $this->errors[$model];
+		return $this->errors[$model] ?? [];
+	}
+
+	public function getEntity(string $name): object
+	{
+		return $this->entities[$name];
 	}
 }

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class SurveyController extends AbstractController
 {
@@ -48,20 +49,30 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}', name: 'survey_plan')]
-	public function plan(Request $request, EntityMapper $entityMapper): Response|JsonResponse
+	public function plan(Request $request, EntityMapper $entityMapper, SerializerInterface $serializer): Response|JsonResponse
 	{
 		if ($request->isMethod('post')) {
 			$entityMapper->validate($request->getContent(), Question::class);
 			if ($errors = $entityMapper->getErrors(Question::class)) {
 				return new JsonResponse($errors, 400);
 			}
+			$question = $entityMapper->getEntity(Question::class);
 			$repository = $this->entityManager->getRepository(Survey::class);
 			$survey = $repository->find($request->attributes->get('id'));
+			$question->setSurvey($survey);
+			$question->setCreatedAt(new DateTime('now'));
+			$this->entityManager->persist($question);
+			$this->entityManager->flush();
 		}
+
+		$repository = $this->entityManager->getRepository(Question::class);
+		$questions = $repository->findBy(['survey' => $request->attributes->get('id')]);
+		$json = $serializer->serialize($questions, 'json');
 
 		return $this->render('survey/plan.html.twig', [
 			'controller_name' => 'SurveyController',
 			'id' => $request->attributes->get('id'),
+			'json' => $json,
 		]);
 	}
 }

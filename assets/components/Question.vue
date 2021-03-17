@@ -28,6 +28,8 @@ export default {
     name: "Question",
     props: {
         id: String,
+        json: String,
+        data: Object
     },
     data() {
         return {
@@ -92,6 +94,13 @@ export default {
             }
         }
     },
+    created() {
+        if (this.data) {
+            this.selected = this.data.type;
+            this.textOptions[this.selected].text = this.data.text;
+            this.formOptions[this.selected] = this.data.options;
+        }
+    }
 }
 </script>
 
