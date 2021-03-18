@@ -1,7 +1,7 @@
 <template>
     <div>
-        <question v-for="value in data" :key="data.id" :id="id" :json="json" :data="value"></question>
-        <question v-for="(value, index) in amount" :id="id"></question>
+        <question v-for="value in data" :key="data.id" :survey-id="surveyId" :question-id="value.id" :json="json" :data="value"></question>
+        <question v-for="(value, index) in amount" :survey-id="surveyId" :key="index"></question>
         <b-button @click="add">add</b-button>
         <b-button @click="remove" v-if="amount > 0">remove</b-button>
     </div>
@@ -14,7 +14,7 @@ export default {
     name: "Survey",
     components: {Question},
     props: {
-        id: String,
+        surveyId: String,
         json: String,
     },
     data() {

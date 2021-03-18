@@ -20,7 +20,7 @@ class Question
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
 	/**
 	 * @Assert\NotBlank
@@ -30,29 +30,29 @@ class Question
 	 * )
 	 * @ORM\Column(type="text")
 	 */
-    private ?string $text;
+    private ?string $text = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $created_at;
+    private ?DateTimeInterface $created_at = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="questions")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private ?Survey $survey;
+    private ?Survey $survey = null;
 
     /**
      * @Assert\Valid
-     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", cascade={"persist", "remove"}, fetch="EAGER")
      */
-	private ArrayCollection|PersistentCollection|null $options;
+	private ArrayCollection|PersistentCollection|null $options = null;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    private ?string $type = null;
 
     public function __construct()
     {

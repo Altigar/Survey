@@ -47,14 +47,14 @@ class EntityMapper
 		}
 	}
 
-	public function getRawData(string $model): ?array
+	public function getRawData(string $entity): ?array
 	{
-		return $model ? $this->rawData[$model] ?? null : $this->rawData;
+		return $this->rawData[$entity] ?? null;
 	}
 
-	public function getErrors(string $model): array
+	public function getErrors(string $entity): array
 	{
-		return $this->errors[$model] ?? [];
+		return $this->errors[$entity] ?? [];
 	}
 
 	public function getEntity(string $name): object

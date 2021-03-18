@@ -16,7 +16,7 @@ class Option
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
 	/**
 	 * @Assert\NotBlank
@@ -26,13 +26,13 @@ class Option
 	 * )
 	 * @ORM\Column(type="text")
 	 */
-    private ?string $text;
+    private ?string $text = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="options", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private ?Question $question;
+    private ?Question $question = null;
 
     public function getId(): ?int
     {

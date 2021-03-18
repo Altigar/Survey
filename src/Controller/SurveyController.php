@@ -56,11 +56,23 @@ class SurveyController extends AbstractController
 			if ($errors = $entityMapper->getErrors(Question::class)) {
 				return new JsonResponse($errors, 400);
 			}
-			$question = $entityMapper->getEntity(Question::class);
-			$repository = $this->entityManager->getRepository(Survey::class);
-			$survey = $repository->find($request->attributes->get('id'));
-			$question->setSurvey($survey);
-			$question->setCreatedAt(new DateTime('now'));
+			$repository = $this->entityManager->getRepository(Question::class);
+			$rawData = $entityMapper->getRawData(Question::class);
+			if ($id = $rawData['id'] ?? null) {
+				$question = $repository->findById($id);
+				$question->setText($rawData['text'] ?? null);
+				$options = $question->getOptions()->toArray();
+				foreach ($rawData['options'] ?? [] as $rawOption) {
+					$option = $options[$rawOption['id'] ?? null];
+					$option->setText($rawOption['text'] ?? null);
+				}
+			} else {
+				$question = $entityMapper->getEntity(Question::class);
+				$repository = $this->entityManager->getRepository(Survey::class);
+				$survey = $repository->find($request->attributes->get('id'));
+				$question->setSurvey($survey);
+				$question->setCreatedAt(new DateTime('now'));
+			}
 			$this->entityManager->persist($question);
 			$this->entityManager->flush();
 		}

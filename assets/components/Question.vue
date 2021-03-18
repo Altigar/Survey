@@ -27,7 +27,8 @@ import axios from "axios";
 export default {
     name: "Question",
     props: {
-        id: String,
+        surveyId: String,
+        questionId: Number,
         json: String,
         data: Object
     },
@@ -74,9 +75,14 @@ export default {
             for (let option of this.formOptions[this.selected]) {
                 option.error = '';
             }
-            let question = {text: this.textOptions[this.selected].text, options: this.formOptions[this.selected], type: this.selected};
+            let question = {
+                id: this.questionId,
+                type: this.selected,
+                text: this.textOptions[this.selected].text,
+                options: this.formOptions[this.selected],
+            };
             try {
-                await axios.post(`/survey/plan/${this.id}`, question);
+                await axios.post(`/survey/plan/${this.surveyId}`, question);
             } catch (error) {
                 let data = error.response.data;
                 for (let value in data) {
