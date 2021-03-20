@@ -63,8 +63,15 @@ class SurveyController extends AbstractController
 				$question->setText($rawData['text'] ?? null);
 				$options = $question->getOptions()->toArray();
 				foreach ($rawData['options'] ?? [] as $rawOption) {
-					$option = $options[$rawOption['id'] ?? null];
-					$option->setText($rawOption['text'] ?? null);
+					$optionId = $rawOption['id'] ?? null;
+					if ($option = $options[$optionId] ?? null) {
+						$option->setText($rawOption['text'] ?? null);
+					} else {
+						$option = (new Option())
+							->setText($rawOption['text'] ?? null)
+							->setQuestion($question);
+						$question->addOption($option);
+					}
 				}
 			} else {
 				$question = $entityMapper->getEntity(Question::class);
