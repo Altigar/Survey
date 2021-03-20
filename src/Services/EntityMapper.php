@@ -9,22 +9,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class EntityMapper
 {
-	private ValidatorInterface $validator;
-	private SerializerInterface $serializer;
-	private CsrfTokenManagerInterface $tokenManager;
-	private array $rawData = [];
-	private array $errors = [];
-	private array $entities = [];
-
 	public function __construct(
-		ValidatorInterface $validator,
-		SerializerInterface $serializer,
-		CsrfTokenManagerInterface $tokenManager
-	) {
-		$this->validator = $validator;
-		$this->serializer = $serializer;
-		$this->tokenManager = $tokenManager;
-	}
+		private ValidatorInterface $validator,
+		private SerializerInterface $serializer,
+		private CsrfTokenManagerInterface $tokenManager,
+		private array $rawData = [],
+		private array $errors = [],
+		private array $entities = []
+	) {}
 
 	public function validate(string $json, string $model): void
 	{

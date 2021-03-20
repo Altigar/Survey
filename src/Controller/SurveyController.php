@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Services\EntityMapper;
+use App\Services\QuestionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,12 +17,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SurveyController extends AbstractController
 {
-	public EntityManagerInterface $entityManager;
-
-	public function __construct(EntityManagerInterface $entityManager)
-	{
-		$this->entityManager = $entityManager;
-	}
+	public function __construct(
+		private EntityManagerInterface $entityManager,
+		private SerializerInterface $serializer,
+	) {}
 
     #[Route('/survey', name: 'survey')]
     public function index(): Response
@@ -49,45 +47,26 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}', name: 'survey_plan')]
-	public function plan(Request $request, EntityMapper $entityMapper, SerializerInterface $serializer): Response|JsonResponse
+	public function plan(Request $request, EntityMapper $entityMapper, QuestionService $questionService): Response|JsonResponse
 	{
 		if ($request->isMethod('post')) {
 			$entityMapper->validate($request->getContent(), Question::class);
 			if ($errors = $entityMapper->getErrors(Question::class)) {
 				return new JsonResponse($errors, 400);
 			}
-			$repository = $this->entityManager->getRepository(Question::class);
 			$rawData = $entityMapper->getRawData(Question::class);
-			if ($id = $rawData['id'] ?? null) {
-				$question = $repository->findById($id);
-				$question->setType($rawData['type'] ?? null);
-				$question->setText($rawData['text'] ?? null);
-				$options = $question->getOptions()->toArray();
-				foreach ($rawData['options'] ?? [] as $rawOption) {
-					$optionId = $rawOption['id'] ?? null;
-					if ($option = $options[$optionId] ?? null) {
-						$option->setText($rawOption['text'] ?? null);
-					} else {
-						$option = (new Option())
-							->setText($rawOption['text'] ?? null)
-							->setQuestion($question);
-						$question->addOption($option);
-					}
-				}
+			if ($rawData['id'] ?? null) {
+				$questionService->update($rawData);
 			} else {
+				/** @var $question Question */
 				$question = $entityMapper->getEntity(Question::class);
-				$repository = $this->entityManager->getRepository(Survey::class);
-				$survey = $repository->find($request->attributes->get('id'));
-				$question->setSurvey($survey);
-				$question->setCreatedAt(new DateTime('now'));
+				$questionService->create($question, $request->attributes->get('id'));
 			}
-			$this->entityManager->persist($question);
-			$this->entityManager->flush();
 		}
 
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $request->attributes->get('id')]);
-		$json = $serializer->serialize($questions, 'json');
+		$json = $this->serializer->serialize($questions, 'json');
 
 		return $this->render('survey/plan.html.twig', [
 			'controller_name' => 'SurveyController',
