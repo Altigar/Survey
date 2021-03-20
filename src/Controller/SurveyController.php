@@ -60,6 +60,7 @@ class SurveyController extends AbstractController
 			$rawData = $entityMapper->getRawData(Question::class);
 			if ($id = $rawData['id'] ?? null) {
 				$question = $repository->findById($id);
+				$question->setType($rawData['type'] ?? null);
 				$question->setText($rawData['text'] ?? null);
 				$options = $question->getOptions()->toArray();
 				foreach ($rawData['options'] ?? [] as $rawOption) {
