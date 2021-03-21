@@ -71,16 +71,20 @@ export default {
                 await axios.post(`/survey/plan/${this.surveyId}`, question);
             } catch (error) {
                 let data = error.response.data;
-                for (let value in data) {
-                    if (data.hasOwnProperty(value)) {
-                        let matches = value.match(/options\[(?<index>\d+)\]/);
-                        if (matches && Object.prototype.hasOwnProperty.call(matches.groups, 'index')) {
-                            let i = matches.groups.index;
-                            this.options[i].error = data[value];
+                for (let key in data) {
+                    if (!data.hasOwnProperty(key)) {
+                        continue;
+                    }
+                    if (typeof data[key] === 'object') {
+                        let nestedData = data[key];
+                        for (let nestedKey in nestedData) {
+                            if (!nestedData.hasOwnProperty(nestedKey)) {
+                                continue;
+                            }
+                            this.options[nestedKey].error = data[key][nestedKey].text;
                         }
-                        if (value === 'text') {
-                            this.question.error = data[value];
-                        }
+                    } else {
+                        this.question.error = data.text;
                     }
                 }
             }
