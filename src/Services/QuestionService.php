@@ -32,11 +32,13 @@ class QuestionService
 		foreach ($data['options'] ?? [] as $rawOption) {
 			$optionId = $rawOption['id'] ?? null;
 			if ($option = $options[$optionId] ?? null) {
-				$option->setText($rawOption['text'] ?? null);
+				$option->setText($rawOption['text'] ?? null)
+					->setOrdering($rawOption['ordering'] ?? null);
 			} else {
 				$option = (new Option())
 					->setText($rawOption['text'] ?? null)
-					->setQuestion($question);
+					->setQuestion($question)
+					->setOrdering($rawOption['ordering'] ?? null);
 				$question->addOption($option);
 			}
 		}

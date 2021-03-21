@@ -34,6 +34,11 @@ class Option
      */
     private ?Question $question = null;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $ordering = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +64,18 @@ class Option
     public function setQuestion(?Question $question): self
     {
         $this->question = $question;
+
+        return $this;
+    }
+
+    public function getOrdering(): ?int
+    {
+        return $this->ordering;
+    }
+
+    public function setOrdering(?int $ordering): self
+    {
+        $this->ordering = $ordering;
 
         return $this;
     }
