@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -32,10 +33,18 @@ class EntityMapper
 		}
 
 		$errors = $this->validator->validate($this->getEntity($model));
+		$normalizedErrors = [];
 		if ($errors->count()) {
 			foreach ($errors as $error) {
-				$this->errors[$model][$error->getPropertyPath()] = $error->getMessage();
+				$path = new PropertyPath($error->getPropertyPath());
+				$elements = $path->getElements();
+				if ($path->getParent()) {
+					$normalizedErrors[$elements[0]][$elements[1]] = [$elements[2] => $error->getMessage()];
+				} else {
+					$normalizedErrors[$elements[0]] = $error->getMessage();
+				}
 			}
+			$this->errors[$model] = $normalizedErrors;
 		}
 	}
 
