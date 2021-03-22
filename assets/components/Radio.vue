@@ -33,7 +33,7 @@ export default {
     },
     data() {
         return {
-            question: [{text: '', error: ''}],
+            question: {text: '', error: ''},
             options: [
                 {text: '', error: '', ordering: 1},
                 {text: '', error: '', ordering: 2}
@@ -87,6 +87,7 @@ export default {
                         this.question.error = data.text;
                     }
                 }
+                this.$forceUpdate();
             }
         }
     },
