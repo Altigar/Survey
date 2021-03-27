@@ -10,7 +10,7 @@ export default {
 	},
 	data() {
 		return {
-			question: {text: '', error: ''},
+			value: {text: '', error: ''},
 			options: [
 				{text: '', error: '', ordering: 1},
 				{text: '', error: '', ordering: 2}
@@ -19,7 +19,7 @@ export default {
 	},
 	created() {
 		if (this.data) {
-			this.question.text = this.data.text;
+			this.value.text = this.data.text;
 			this.options = this.data.options;
 		}
 	},
@@ -45,14 +45,14 @@ export default {
 			}
 		},
 		async save() {
-			this.question.error = '';
+			this.value.error = '';
 			for (let option of this.options) {
 				option.error = '';
 			}
 			let question = {
 				id: this.id,
 				type: this.type,
-				text: this.question.text,
+				text: this.value.text,
 				options: this.options,
 			};
 			try {
@@ -72,7 +72,7 @@ export default {
 							this.options[nestedKey].error = data[key][nestedKey].text;
 						}
 					} else {
-						this.question.error = data.text;
+						this.value.error = data.text;
 					}
 				}
 				this.$forceUpdate();

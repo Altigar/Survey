@@ -5,7 +5,8 @@
                 <radio
                     :key="'id:' + question.id"
                     v-if="question.type === 'radio'"
-                    :data="question" :type="question.type"
+                    :data="question"
+                    :type="question.type"
                     :survey-id="id"
                     :id="question.id"
                     @purge="purge"
@@ -77,11 +78,11 @@ export default {
                     break;
                 }
             }
-            question.question.error = '';
+            question.value.error = '';
             try {
                 await axios.delete(`/survey/plan/${this.surveyId}/remove`, {data: {id: id}});
             } catch (error) {
-                question.question.error = error.response.data.text;
+                question.value.error = error.response.data.text;
             }
         },
     },

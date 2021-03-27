@@ -3,8 +3,8 @@
         <div class="card p-3 border-0">
             <b-form method="post">
                 <b-form-group>
-                    <b-form-input class="mb-3" v-model="question.text"></b-form-input>
-                    <p v-if="question.error">{{ question.error }}</p>
+                    <b-form-input class="mb-3" v-model="value.text"></b-form-input>
+                    <p v-if="value.error">{{ value.error }}</p>
                     <div v-for="(option, index) in sortedOptions" :key="index">
                         <b-form-input v-model="option.text" size="sm"></b-form-input>
                         <p v-if="option.error">{{ option.error }}</p>
