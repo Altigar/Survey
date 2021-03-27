@@ -28,7 +28,7 @@ export default {
     name: "Question",
     props: {
         surveyId: String,
-        questionId: Number,
+        id: Number,
         json: String,
         data: Object
     },
@@ -76,7 +76,7 @@ export default {
                 option.error = '';
             }
             let question = {
-                id: this.questionId,
+                id: this.id,
                 type: this.selected,
                 text: this.textOptions[this.selected].text,
                 options: this.formOptions[this.selected],

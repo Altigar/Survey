@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
 	props: {
 		surveyId: String,
-		questionId: Number,
+		id: Number,
 		data: Object,
 		type: String,
 		index: Number,
@@ -50,7 +50,7 @@ export default {
 				option.error = '';
 			}
 			let question = {
-				id: this.questionId,
+				id: this.id,
 				type: this.type,
 				text: this.question.text,
 				options: this.options,

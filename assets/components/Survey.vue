@@ -7,7 +7,7 @@
                     v-if="question.type === 'radio'"
                     :data="question" :type="question.type"
                     :survey-id="id"
-                    :question-id="question.id"
+                    :id="question.id"
                     @purge="purge"
                     ref="question"
                 ></radio>
@@ -17,11 +17,11 @@
                     :data="question"
                     :type="question.type"
                     :survey-id="id"
-                    :question-id="question.id"
+                    :id="question.id"
                     @purge="purge"
                     ref="question"
                 ></checkbox>
-                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :question-id="question.id"></string>
+                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
             </template>
         </template>
         <template v-if="selectedOptions">
@@ -72,7 +72,7 @@ export default {
         async purge(id) {
             let question;
             for (let component of this.$refs.question) {
-                if (component.$props.questionId === id) {
+                if (component.$props.id === id) {
                     question = component;
                     break;
                 }
