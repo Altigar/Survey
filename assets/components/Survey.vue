@@ -2,22 +2,20 @@
     <div>
         <template v-if="data">
             <template v-for="question in data">
-                <radio :key="question.id" v-if="question.type === 'radio'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></radio>
-                <checkbox :key="question.id" v-if="question.type === 'checkbox'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></checkbox>
-                <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></string>
+                <radio :key="'id:' + question.id" v-if="question.type === 'radio'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></radio>
+                <checkbox :key="'id:' + question.id" v-if="question.type === 'checkbox'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></checkbox>
+                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></string>
             </template>
         </template>
         <template v-if="selectedOptions">
-            <template v-for="type in selectedOptions">
-                <radio v-if="type === 'radio'" :type="type" :survey-id="surveyId"></radio>
-                <checkbox v-if="type === 'checkbox'" :type="type" :survey-id="surveyId"></checkbox>
-                <string v-if="type === 'string'" :type="type" :survey-id="surveyId"></string>
+            <template v-for="(type, index) in selectedOptions">
+                <radio :key="index" v-if="type === 'radio'" :type="type" :survey-id="surveyId" @purge="purge" :index="index"></radio>
+                <checkbox :key="index" v-if="type === 'checkbox'" :type="type" :survey-id="surveyId"></checkbox>
+                <string :key="index" v-if="type === 'string'" :type="type" :survey-id="surveyId"></string>
             </template>
         </template>
-
         <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
         <b-button @click="add">add</b-button>
-        <b-button @click="remove" v-if="amount > 0">remove</b-button>
     </div>
 </template>
 
@@ -50,10 +48,8 @@ export default {
         add() {
             this.selectedOptions.push(this.selected);
         },
-        remove() {
-            if (this.amount > 0) {
-                this.amount--;
-            }
+        purge(id) {
+            this.selectedOptions.splice(id, id + 1);
         },
     },
     created() {

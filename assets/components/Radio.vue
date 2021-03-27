@@ -14,6 +14,7 @@
                 <div>
                     <b-btn @click="add">add</b-btn>
                     <b-btn @click="save">save</b-btn>
+                    <b-btn @click="$emit('purge', index)">delete</b-btn>
                 </div>
             </b-form>
         </div>

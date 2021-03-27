@@ -6,6 +6,7 @@ export default {
 		questionId: Number,
 		data: Object,
 		type: String,
+		index: Number,
 	},
 	data() {
 		return {
