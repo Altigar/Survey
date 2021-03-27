@@ -2,33 +2,29 @@
     <div>
         <template v-if="data">
             <template v-for="question in data">
-                <radio
+                <choice
                     :key="'id:' + question.id"
-                    v-if="question.type === 'radio'"
+                    v-if="isSelected(question.type, ['radio', 'checkbox'])"
                     :data="question"
                     :type="question.type"
                     :survey-id="id"
                     :id="question.id"
                     @purge="purge"
                     ref="question"
-                ></radio>
-                <checkbox
-                    :key="'id:' + question.id"
-                    v-if="question.type === 'checkbox'"
-                    :data="question"
-                    :type="question.type"
-                    :survey-id="id"
-                    :id="question.id"
-                    @purge="purge"
-                    ref="question"
-                ></checkbox>
+                ></choice>
                 <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
             </template>
         </template>
         <template v-if="selectedOptions">
             <template v-for="(type, index) in selectedOptions">
-                <radio :key="index" v-if="type === 'radio'" :type="type" :survey-id="id" :index="index" @remove="remove"></radio>
-                <checkbox :key="index" v-if="type === 'checkbox'" :type="type" :survey-id="id" :index="index" @remove="remove"></checkbox>
+                <choice
+                    :key="index"
+                    v-if="isSelected(type, ['radio', 'checkbox'])"
+                    :type="type"
+                    :survey-id="id"
+                    :index="index"
+                    @remove="remove"
+                ></choice>
                 <string :key="index" v-if="type === 'string'" :type="type" :survey-id="id"></string>
             </template>
         </template>
@@ -42,10 +38,11 @@ import Radio from "./Radio";
 import String from "./String";
 import Checkbox from "./Checkbox";
 import axios from "axios";
+import Choice from "./Choice";
 
 export default {
     name: "Survey",
-    components: {Checkbox, String, Radio},
+    components: {Choice, String},
     props: {
         id: String,
         json: String,
@@ -84,6 +81,9 @@ export default {
             } catch (error) {
                 question.value.error = error.response.data.text;
             }
+        },
+        isSelected(type, options) {
+            return options.includes(type);
         },
     },
     created() {
