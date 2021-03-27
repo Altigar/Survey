@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -52,7 +53,7 @@ class SurveyController extends AbstractController
 		if ($request->isMethod('post')) {
 			$entityMapper->validate($request->getContent(), Question::class);
 			if ($errors = $entityMapper->getErrors(Question::class)) {
-				return new JsonResponse($errors, 400);
+				return new JsonResponse($errors, JsonResponse::HTTP_BAD_REQUEST);
 			}
 			$rawData = $entityMapper->getRawData(Question::class);
 			if ($rawData['id'] ?? null) {
@@ -73,5 +74,15 @@ class SurveyController extends AbstractController
 			'id' => $request->attributes->get('id'),
 			'json' => $json,
 		]);
+	}
+
+	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
+	public function remove(Request $request, QuestionService $questionService, PropertyAccessorInterface $propertyAccessor): Response|JsonResponse
+	{
+		$data = $this->serializer->decode($request->getContent(), 'json');
+		$id = $propertyAccessor->getValue($data, '[id]');
+		return $questionService->delete($id) ?
+			new JsonResponse([], JsonResponse::HTTP_OK) :
+			new JsonResponse(['text' => 'Question not found'], JsonResponse::HTTP_NOT_FOUND);
 	}
 }

@@ -2,16 +2,33 @@
     <div>
         <template v-if="data">
             <template v-for="question in data">
-                <radio :key="'id:' + question.id" v-if="question.type === 'radio'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></radio>
-                <checkbox :key="'id:' + question.id" v-if="question.type === 'checkbox'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></checkbox>
-                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="surveyId" :question-id="question.id"></string>
+                <radio
+                    :key="'id:' + question.id"
+                    v-if="question.type === 'radio'"
+                    :data="question" :type="question.type"
+                    :survey-id="id"
+                    :question-id="question.id"
+                    @purge="purge"
+                    ref="question"
+                ></radio>
+                <checkbox
+                    :key="'id:' + question.id"
+                    v-if="question.type === 'checkbox'"
+                    :data="question"
+                    :type="question.type"
+                    :survey-id="id"
+                    :question-id="question.id"
+                    @purge="purge"
+                    ref="question"
+                ></checkbox>
+                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :question-id="question.id"></string>
             </template>
         </template>
         <template v-if="selectedOptions">
             <template v-for="(type, index) in selectedOptions">
-                <radio :key="index" v-if="type === 'radio'" :type="type" :survey-id="surveyId" @purge="purge" :index="index"></radio>
-                <checkbox :key="index" v-if="type === 'checkbox'" :type="type" :survey-id="surveyId"></checkbox>
-                <string :key="index" v-if="type === 'string'" :type="type" :survey-id="surveyId"></string>
+                <radio :key="index" v-if="type === 'radio'" :type="type" :survey-id="id" :index="index" @remove="remove"></radio>
+                <checkbox :key="index" v-if="type === 'checkbox'" :type="type" :survey-id="id" :index="index" @remove="remove"></checkbox>
+                <string :key="index" v-if="type === 'string'" :type="type" :survey-id="id"></string>
             </template>
         </template>
         <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
@@ -23,12 +40,13 @@
 import Radio from "./Radio";
 import String from "./String";
 import Checkbox from "./Checkbox";
+import axios from "axios";
 
 export default {
     name: "Survey",
     components: {Checkbox, String, Radio},
     props: {
-        surveyId: String,
+        id: String,
         json: String,
     },
     data() {
@@ -48,8 +66,23 @@ export default {
         add() {
             this.selectedOptions.push(this.selected);
         },
-        purge(id) {
+        remove(id) {
             this.selectedOptions.splice(id, id + 1);
+        },
+        async purge(id) {
+            let question;
+            for (let component of this.$refs.question) {
+                if (component.$props.questionId === id) {
+                    question = component;
+                    break;
+                }
+            }
+            question.question.error = '';
+            try {
+                await axios.delete(`/survey/plan/${this.surveyId}/remove`, {data: {id: id}});
+            } catch (error) {
+                question.question.error = error.response.data.text;
+            }
         },
     },
     created() {

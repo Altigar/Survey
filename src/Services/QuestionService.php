@@ -6,10 +6,14 @@ use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class QuestionService
 {
-	public function __construct(private EntityManagerInterface $entityManager) {}
+	public function __construct(
+		private EntityManagerInterface $entityManager,
+		private PropertyAccessorInterface $propertyAccessor,
+	) {}
 
 	public function create(Question $question, int $surveyId): void
 	{
@@ -44,5 +48,16 @@ class QuestionService
 		}
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
+	}
+
+	public function delete(int $id): bool
+	{
+		$repository = $this->entityManager->getRepository(Question::class);
+		if ($id && $question = $repository->find($id)) {
+			$this->entityManager->remove($question);
+			$this->entityManager->flush();
+			return true;
+		}
+		return false;
 	}
 }
