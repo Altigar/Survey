@@ -82,7 +82,7 @@ export default {
                 options: this.options,
             };
             try {
-                await axios.post(`/survey/plan/${this.surveyId}`, question);
+                await axios.put(`/survey/plan/${this.surveyId}/update`, question);
             } catch (error) {
                 let data = error.response.data;
                 for (let key in data) {

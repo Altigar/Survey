@@ -1,32 +1,17 @@
 <template>
     <div>
-        <template v-if="data">
-            <template v-for="question in data">
-                <choice
-                    :key="'id:' + question.id"
-                    v-if="isSelected(question.type, ['radio', 'checkbox'])"
-                    :data="question"
-                    :type="question.type"
-                    :survey-id="id"
-                    :id="question.id"
-                    @purge="purge"
-                    ref="question"
-                ></choice>
-                <string :key="'id:' + question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
-            </template>
-        </template>
-        <template v-if="selectedOptions">
-            <template v-for="(type, index) in selectedOptions">
-                <choice
-                    :key="index"
-                    v-if="isSelected(type, ['radio', 'checkbox'])"
-                    :type="type"
-                    :survey-id="id"
-                    :index="index"
-                    @remove="remove"
-                ></choice>
-                <string :key="index" v-if="type === 'string'" :type="type" :survey-id="id"></string>
-            </template>
+        <template v-for="question in data">
+            <choice
+                :key="question.id"
+                v-if="isSelected(question.type, ['radio', 'checkbox'])"
+                :data="question"
+                :type="question.type"
+                :survey-id="id"
+                :id="question.id"
+                @purge="purge"
+                ref="question"
+            ></choice>
+            <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
         </template>
         <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
         <b-button @click="add">add</b-button>
@@ -34,10 +19,8 @@
 </template>
 
 <script>
-import Radio from "./Radio";
-import String from "./String";
-import Checkbox from "./Checkbox";
 import axios from "axios";
+import String from "./String";
 import Choice from "./Choice";
 
 export default {
@@ -61,8 +44,14 @@ export default {
         }
     },
     methods: {
-        add() {
+        async add() {
             this.selectedOptions.push(this.selected);
+            try {
+                await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
+            } catch (error) {
+                //TODO:
+                console.log(error.response)
+            }
         },
         remove(id) {
             this.selectedOptions.splice(id, id + 1);

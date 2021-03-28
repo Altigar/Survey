@@ -12,7 +12,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -47,41 +46,42 @@ class SurveyController extends AbstractController
 		]);
 	}
 
-	#[Route('/survey/plan/{id}', name: 'survey_plan')]
-	public function plan(Request $request, EntityMapper $entityMapper, QuestionService $questionService): Response|JsonResponse
+	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
+	public function plan(int $id, Request $request): Response
 	{
-		if ($request->isMethod('post')) {
-			$entityMapper->validate($request->getContent(), Question::class);
-			if ($errors = $entityMapper->getErrors(Question::class)) {
-				return new JsonResponse($errors, JsonResponse::HTTP_BAD_REQUEST);
-			}
-			$rawData = $entityMapper->getRawData(Question::class);
-			if ($rawData['id'] ?? null) {
-				$questionService->update($rawData);
-			} else {
-				/** @var $question Question */
-				$question = $entityMapper->getEntity(Question::class);
-				$questionService->create($question, $request->attributes->get('id'));
-			}
-		}
-
 		$repository = $this->entityManager->getRepository(Question::class);
-		$questions = $repository->findBy(['survey' => $request->attributes->get('id')]);
+		$questions = $repository->findBy(['survey' => $id]);
 		$json = $this->serializer->serialize($questions, 'json');
 
 		return $this->render('survey/plan.html.twig', [
 			'controller_name' => 'SurveyController',
-			'id' => $request->attributes->get('id'),
+			'id' => $id,
 			'json' => $json,
 		]);
 	}
 
-	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
-	public function remove(Request $request, QuestionService $questionService, PropertyAccessorInterface $propertyAccessor): Response|JsonResponse
+	#[Route('/survey/plan/{id}/add', name: 'survey_plan_add', methods: ['POST'])]
+	public function add(int $id, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		$id = $propertyAccessor->getValue($data, '[id]');
-		return $questionService->delete($id) ?
+		return $questionService->create($id, $data) ?
+			new JsonResponse([], JsonResponse::HTTP_OK) :
+			new JsonResponse(['text' => 'Survey not found'], JsonResponse::HTTP_NOT_FOUND);
+	}
+
+	#[Route('/survey/plan/{id}/update', name: 'survey_plan_update', methods: ['PUT'])]
+	public function update(Request $request, QuestionService $questionService): JsonResponse
+	{
+		$data = $this->serializer->decode($request->getContent(), 'json');
+		$questionService->update($data);
+		return new JsonResponse([], JsonResponse::HTTP_OK);
+	}
+
+	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
+	public function remove(Request $request, QuestionService $questionService): JsonResponse
+	{
+		$data = $this->serializer->decode($request->getContent(), 'json');
+		return $questionService->delete($data) ?
 			new JsonResponse([], JsonResponse::HTTP_OK) :
 			new JsonResponse(['text' => 'Question not found'], JsonResponse::HTTP_NOT_FOUND);
 	}

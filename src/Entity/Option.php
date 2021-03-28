@@ -24,7 +24,7 @@ class Option
 	 *     max = 100,
 	 *     maxMessage = "Your option cannot be longer than {{ limit }} characters"
 	 * )
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
     private ?string $text = null;
 

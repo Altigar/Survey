@@ -28,7 +28,7 @@ class Question
 	 *     max = 255,
 	 *     maxMessage = "Your question cannot be longer than {{ limit }} characters"
 	 * )
-	 * @ORM\Column(type="text")
+	 * @ORM\Column(type="text", nullable=true)
 	 */
     private ?string $text = null;
 
