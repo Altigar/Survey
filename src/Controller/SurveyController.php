@@ -60,6 +60,16 @@ class SurveyController extends AbstractController
 		]);
 	}
 
+	#[Route('/survey/plan/{id}/all', name: 'survey_plan_all', methods: ['GET'])]
+	public function all(int $id, Request $request): JsonResponse
+	{
+		$repository = $this->entityManager->getRepository(Question::class);
+		$questions = $repository->findBy(['survey' => $id]);
+		return $questions ?
+			new JsonResponse($this->serializer->serialize($questions, 'json'), JsonResponse::HTTP_OK) :
+			new JsonResponse(['text' => 'Questions not found'], JsonResponse::HTTP_NOT_FOUND);
+	}
+
 	#[Route('/survey/plan/{id}/add', name: 'survey_plan_add', methods: ['POST'])]
 	public function add(int $id, Request $request, QuestionService $questionService): JsonResponse
 	{

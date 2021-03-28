@@ -39,18 +39,26 @@ export default {
                 {value: 'checkbox', text: 'checkbox'},
                 {value: 'string', text: 'string'}
             ],
-            selectedOptions: []
         }
     },
     methods: {
+        async fetchAll() {
+            try {
+                let response = await axios.get(`/survey/plan/${this.id}/all`);
+                this.data = JSON.parse(response.data);
+            } catch(error) {
+                //TODO:
+                console.log(error.response)
+            }
+        },
         async add() {
-            this.selectedOptions.push(this.selected);
             try {
                 await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
             } catch (error) {
                 //TODO:
                 console.log(error.response)
             }
+            await this.fetchAll();
         },
         async remove(id) {
             let question;
@@ -66,6 +74,7 @@ export default {
             } catch (error) {
                 question.value.error = error.response.data.text;
             }
+            await this.fetchAll();
         },
         isSelected(type, options) {
             return options.includes(type);
