@@ -1,6 +1,6 @@
 <template>
     <div>
-        <template v-for="question in data">
+        <template v-for="question in questions">
             <choice
                 :key="question.id"
                 v-if="isSelected(question.type, ['radio', 'checkbox'])"
@@ -22,6 +22,7 @@
 import axios from "axios";
 import String from "./String";
 import Choice from "./Choice";
+import {mapActions} from "vuex";
 
 export default {
     name: "Survey",
@@ -41,16 +42,17 @@ export default {
             ],
         }
     },
-    methods: {
-        async fetchAll() {
-            try {
-                let response = await axios.get(`/survey/plan/${this.id}/all`);
-                this.data = JSON.parse(response.data);
-            } catch(error) {
-                //TODO:
-                console.log(error.response)
+    computed: {
+        questions() {
+            let questions = this.$store.getters["question/getItems"];
+            if (questions.length > 0) {
+                this.data = questions;
             }
-        },
+            return this.data;
+        }
+    },
+    methods: {
+        ...mapActions({request: 'question/request'}),
         async add() {
             try {
                 await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
@@ -58,7 +60,7 @@ export default {
                 //TODO:
                 console.log(error.response)
             }
-            await this.fetchAll();
+            await this.request(this.id);
         },
         async remove(id) {
             let question;
@@ -74,7 +76,7 @@ export default {
             } catch (error) {
                 question.value.error = error.response.data.text;
             }
-            await this.fetchAll();
+            await this.request(this.id);
         },
         isSelected(type, options) {
             return options.includes(type);
