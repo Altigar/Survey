@@ -14,8 +14,7 @@
                 <div>
                     <b-btn @click="add">add</b-btn>
                     <b-btn @click="save">save</b-btn>
-                    <b-btn v-if="id" @click="$emit('purge', id)">purge</b-btn>
-                    <b-btn v-else @click="$emit('remove', index)">remove</b-btn>
+                    <b-btn @click="$emit('remove', id)">remove</b-btn>
                 </div>
             </b-form>
         </div>

@@ -8,7 +8,7 @@
                 :type="question.type"
                 :survey-id="id"
                 :id="question.id"
-                @purge="purge"
+                @remove="remove"
                 ref="question"
             ></choice>
             <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
@@ -33,7 +33,6 @@ export default {
     data() {
         return {
             selected: '',
-            amount: 1,
             data: [],
             options: [
                 {value: 'radio', text: 'radio'},
@@ -53,10 +52,7 @@ export default {
                 console.log(error.response)
             }
         },
-        remove(id) {
-            this.selectedOptions.splice(id, id + 1);
-        },
-        async purge(id) {
+        async remove(id) {
             let question;
             for (let component of this.$refs.question) {
                 if (component.$props.id === id) {
@@ -77,9 +73,6 @@ export default {
     },
     created() {
         this.data = JSON.parse(this.json);
-        if (this.data.length > 0) {
-            this.amount = 0;
-        }
     }
 }
 </script>
