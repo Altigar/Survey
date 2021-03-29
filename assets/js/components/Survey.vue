@@ -22,7 +22,7 @@
 import axios from "axios";
 import String from "./String";
 import Choice from "./Choice";
-import {mapActions} from "vuex";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
     name: "Survey",
@@ -43,16 +43,10 @@ export default {
         }
     },
     computed: {
-        questions() {
-            let questions = this.$store.getters["question/getItems"];
-            if (questions.length > 0) {
-                this.data = questions;
-            }
-            return this.data;
-        }
+        ...mapGetters({questions: 'question/getItems'})
     },
     methods: {
-        ...mapActions({request: 'question/request'}),
+        ...mapActions({request: 'question/request', save: 'question/save'}),
         async add() {
             try {
                 await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
@@ -83,7 +77,7 @@ export default {
         },
     },
     created() {
-        this.data = JSON.parse(this.json);
+        this.save(JSON.parse(this.json));
     }
 }
 </script>

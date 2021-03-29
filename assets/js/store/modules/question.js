@@ -2,7 +2,8 @@ import axios from "axios";
 
 const PROCESSING = 'PROCESSING',
 	SUCCESS = 'SUCCESS',
-	FAILURE = 'FAILURE';
+	FAILURE = 'FAILURE',
+	SAVE = 'SAVE';
 
 export default {
 	namespaced: true,
@@ -29,17 +30,22 @@ export default {
 		[FAILURE](state, error) {
 			state.error = error;
 		},
+		[SAVE](state, payload) {
+			state.items = payload;
+		}
 	},
 	actions: {
 		async request({commit}, id) {
 			commit(PROCESSING);
 			try {
 				let response = await axios.get(`/survey/plan/${id}/all`);
-				console.log(response.data);
 				commit(SUCCESS, JSON.parse(response.data));
 			} catch (error) {
 				commit(FAILURE, error.response.data);
 			}
-		}
+		},
+		save({commit}, payload) {
+			commit(SAVE, payload);
+		},
 	}
 }
