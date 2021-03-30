@@ -9,12 +9,14 @@
                 :survey-id="id"
                 :id="question.id"
                 @remove="remove"
-                ref="question"
             ></choice>
             <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
         </template>
         <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
         <b-button @click="add">add</b-button>
+        <div>
+            <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
+        </div>
     </div>
 </template>
 
@@ -43,10 +45,19 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({questions: 'question/getItems'})
+        ...mapGetters({
+            questions: 'question/getItems',
+            hasErrors: 'question/hasErrors',
+            error: 'question/error'
+        })
     },
     methods: {
-        ...mapActions({request: 'question/request', save: 'question/save'}),
+        ...mapActions({
+            request: 'question/request',
+            save: 'question/save',
+            delete: 'question/delete',
+            clearErrors: 'question/clearErrors',
+        }),
         async add() {
             try {
                 await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
@@ -57,20 +68,11 @@ export default {
             await this.request(this.id);
         },
         async remove(id) {
-            let question;
-            for (let component of this.$refs.question) {
-                if (component.$props.id === id) {
-                    question = component;
-                    break;
-                }
+            this.clearErrors(id);
+            await this.delete(id);
+            if (!this.hasErrors) {
+                await this.request(this.id);
             }
-            question.value.error = '';
-            try {
-                await axios.delete(`/survey/plan/${this.surveyId}/remove`, {data: {id: id}});
-            } catch (error) {
-                question.value.error = error.response.data.text;
-            }
-            await this.request(this.id);
         },
         isSelected(type, options) {
             return options.includes(type);

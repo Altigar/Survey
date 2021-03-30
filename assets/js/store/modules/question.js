@@ -15,6 +15,9 @@ export default {
 		error(state) {
 			return state.error;
 		},
+		hasErrors(state) {
+			return Boolean(state.error);
+		},
 		getItems(state) {
 			return state.items;
 		},
@@ -44,8 +47,20 @@ export default {
 				commit(FAILURE, error.response.data);
 			}
 		},
+		async delete({commit}, id) {
+			commit(PROCESSING);
+			try {
+				await axios.delete(`/survey/plan/${id}/remove`, {data: {id: id}});
+			} catch (error) {
+				commit(FAILURE, error.response.data);
+			}
+		},
 		save({commit}, payload) {
 			commit(SAVE, payload);
 		},
+		clearErrors(context, id) {
+			let question = context.state.items.find(elem => elem.id === id);
+			question.options.forEach(elem => elem.error = null);
+		}
 	}
 }
