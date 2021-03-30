@@ -53,7 +53,7 @@ export default {
     },
     methods: {
         ...mapActions({
-            request: 'question/request',
+            fetchAll: 'question/fetchAll',
             save: 'question/save',
             delete: 'question/delete',
             clearErrors: 'question/clearErrors',
@@ -65,13 +65,13 @@ export default {
                 //TODO:
                 console.log(error.response)
             }
-            await this.request(this.id);
+            await this.fetchAll(this.id);
         },
         async remove(id) {
             this.clearErrors(id);
             await this.delete(id);
             if (!this.hasErrors) {
-                await this.request(this.id);
+                await this.fetchAll(this.id);
             }
         },
         isSelected(type, options) {

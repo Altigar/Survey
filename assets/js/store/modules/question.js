@@ -38,7 +38,7 @@ export default {
 		}
 	},
 	actions: {
-		async request({commit}, id) {
+		async fetchAll({commit}, id) {
 			commit(PROCESSING);
 			try {
 				let response = await axios.get(`/survey/plan/${id}/all`);
