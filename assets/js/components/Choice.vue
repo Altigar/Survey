@@ -3,8 +3,8 @@
         <div class="card p-3 border-0">
             <b-form method="post">
                 <b-form-group>
-                    <b-form-input class="mb-3" v-model="value.text"></b-form-input>
-                    <p v-if="value.error">{{ value.error }}</p>
+                    <b-form-input class="mb-3" v-model="data.text"></b-form-input>
+                    <p v-if="data.error">{{ data.error }}</p>
                     <div v-for="(option, index) in sortedOptions" :key="index">
                         <b-form-input v-model="option.text" size="sm"></b-form-input>
                         <p v-if="option.error">{{ option.error }}</p>
@@ -33,55 +33,39 @@ export default {
         type: String,
         index: Number,
     },
-    data() {
-        return {
-            value: {text: '', error: ''},
-            options: [
-                {text: '', error: '', ordering: 1},
-                {text: '', error: '', ordering: 2}
-            ],
-        };
-    },
-    created() {
-        if (this.data) {
-            this.value.text = this.data.text;
-            this.options = this.data.options;
-        }
-    },
     computed: {
         sortedOptions() {
-            return this.options.sort((a, b) => a.ordering - b.ordering);
+            return this.data.options.sort((a, b) => a.ordering - b.ordering);
         }
     },
     methods: {
         add() {
             let orders = [];
-            for (let option of this.options) {
+            for (let option of this.data.options) {
                 orders.push(option.ordering);
             }
-            this.options.push({text: '', error: '', ordering: Math.max(...orders) + 1});
+            this.data.options.push({text: '', error: '', ordering: Math.max(...orders) + 1});
         },
         remove(number) {
-            this.options = this.options.filter((elem, index) => index !== number);
+            this.data.options = this.data.options.filter((elem, index) => index !== number);
             let order = 1;
-            for (let option of this.options) {
+            for (let option of this.data.options) {
                 option.ordering = order;
                 order++;
             }
         },
         async save() {
-            this.value.error = '';
-            for (let option of this.options) {
+            this.data.error = '';
+            for (let option of this.data.options) {
                 option.error = '';
             }
-            let question = {
-                id: this.id,
-                type: this.type,
-                text: this.value.text,
-                options: this.options,
-            };
             try {
-                await axios.put(`/survey/plan/${this.surveyId}/update`, question);
+                await axios.put(`/survey/plan/${this.surveyId}/update`, {
+                    id: this.id,
+                    type: this.type,
+                    text: this.data.text,
+                    options: this.data.options,
+                });
             } catch (error) {
                 let data = error.response.data;
                 for (let key in data) {
