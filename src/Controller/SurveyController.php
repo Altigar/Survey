@@ -4,9 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Question;
 use App\Entity\Survey;
-use App\Services\EntityMapper;
 use App\Services\QuestionService;
-use DateTime;
+use App\Services\ValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,7 +33,7 @@ class SurveyController extends AbstractController
 	public function create(Request $request): Response
 	{
 		if ($request->isMethod('post')) {
-			$survey = (new Survey())->setCreatedAt(new DateTime('now'));
+			$survey = (new Survey())->setCreatedAt(new \DateTime('now'));
 			$this->entityManager->persist($survey);
 			$this->entityManager->flush();
 
@@ -61,7 +60,7 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}/all', name: 'survey_plan_all', methods: ['GET'])]
-	public function all(int $id, Request $request): JsonResponse
+	public function all(int $id): JsonResponse
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $id]);
@@ -80,8 +79,13 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}/update', name: 'survey_plan_update', methods: ['PUT'])]
-	public function update(Request $request, QuestionService $questionService): JsonResponse
+	public function update(Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
 	{
+		$question = $this->serializer->deserialize($request->getContent(), Question::class, 'json');
+		$validationService->validate($question);
+		if ($errors = $validationService->getErrors(Question::class)) {
+			return new JsonResponse($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+		}
 		$data = $this->serializer->decode($request->getContent(), 'json');
 		$questionService->update($data);
 		return new JsonResponse([], JsonResponse::HTTP_OK);
