@@ -46,7 +46,7 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
-	public function plan(int $id, Request $request): Response
+	public function plan(int $id): Response
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $id]);
