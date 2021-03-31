@@ -24,7 +24,6 @@
 import axios from "axios";
 import String from "./String";
 import Choice from "./Choice";
-import {mapActions, mapGetters} from "vuex";
 
 export default {
     name: "Survey",
