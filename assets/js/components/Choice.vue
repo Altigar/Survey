@@ -78,10 +78,10 @@ export default {
                             if (!nestedData.hasOwnProperty(nestedKey)) {
                                 continue;
                             }
-                            this.options[nestedKey].error = data[key][nestedKey].text;
+                            this.data.options[nestedKey].error = data[key][nestedKey].text;
                         }
                     } else {
-                        this.value.error = data.text;
+                        this.data.error = data.text;
                     }
                 }
                 this.$forceUpdate();

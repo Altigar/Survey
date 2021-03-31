@@ -11,7 +11,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
-import store from "./store/index";
 import BootstrapVue from "bootstrap-vue";
 import Survey from "./components/Survey";
 
@@ -23,5 +22,4 @@ new Vue({
 	components: {
 		Survey,
 	},
-	store
 });

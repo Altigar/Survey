@@ -1,6 +1,6 @@
 <template>
     <div>
-        <template v-for="question in questions">
+        <template v-for="question in data">
             <choice
                 :key="question.id"
                 v-if="isSelected(question.type, ['radio', 'checkbox'])"
@@ -35,7 +35,8 @@ export default {
     },
     data() {
         return {
-            selected: '',
+            selected: null,
+            error: null,
             data: [],
             options: [
                 {value: 'radio', text: 'radio'},
@@ -44,42 +45,47 @@ export default {
             ],
         }
     },
-    computed: {
-        ...mapGetters({
-            questions: 'question/getItems',
-            hasErrors: 'question/hasErrors',
-            error: 'question/error'
-        })
-    },
     methods: {
-        ...mapActions({
-            fetchAll: 'question/fetchAll',
-            save: 'question/save',
-            delete: 'question/delete',
-            clearErrors: 'question/clearErrors',
-        }),
+        async fetchAll() {
+            try {
+                let response = await axios.get(`/survey/plan/${this.id}/all`);
+                this.data = JSON.parse(response.data);
+            } catch (error) {
+                this.error = error.response.data;
+            }
+        },
         async add() {
             try {
                 await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
             } catch (error) {
-                //TODO:
-                console.log(error.response)
+                this.error = error.response.data;
             }
-            await this.fetchAll(this.id);
+            await this.fetchAll();
         },
         async remove(id) {
             this.clearErrors(id);
-            await this.delete(id);
-            if (!this.hasErrors) {
-                await this.fetchAll(this.id);
+            try {
+                await axios.delete(`/survey/plan/${this.id}/remove`, {data: {id: id}});
+            } catch (error) {
+                this.error = error.response.data;
+            }
+            if (!this.hasError()) {
+                await this.fetchAll();
             }
         },
         isSelected(type, options) {
             return options.includes(type);
         },
+        clearErrors(id) {
+            let question = this.data.find(elem => elem.id === id);
+            question.options.forEach(elem => elem.error = null);
+        },
+        hasError() {
+            return Boolean(this.error);
+        }
     },
     created() {
-        this.save(JSON.parse(this.json));
+        this.data = JSON.parse(this.json);
     }
 }
 </script>
