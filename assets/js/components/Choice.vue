@@ -6,7 +6,7 @@
                     <b-form-input class="mb-3" v-model="data.text"></b-form-input>
                     <p v-if="data.error">{{ data.error }}</p>
                     <div v-for="(option, index) in sortedOptions" :key="index">
-                        <div class="d-flex">
+                        <div class="d-flex mb-3">
                             <b-form-input v-model="option.text" size="sm" class="mr-3"></b-form-input>
                             <button @click="remove(index)" type="button" class="close" aria-label="Close">×</button>
                         </div>
@@ -16,7 +16,7 @@
                 <div>
                     <b-btn @click="add">add</b-btn>
                     <b-btn @click="save">save</b-btn>
-                    <b-btn @click="$emit('remove', id)">remove</b-btn>
+                    <b-btn @click="$emit('remove', data.id)">remove</b-btn>
                 </div>
             </b-form>
         </div>
@@ -29,11 +29,7 @@ import axios from "axios";
 export default {
     name: "Choice",
     props: {
-        surveyId: String,
-        id: Number,
         data: Object,
-        type: String,
-        ordering: Number,
     },
     computed: {
         sortedOptions() {
@@ -62,9 +58,9 @@ export default {
                 option.error = '';
             }
             try {
-                await axios.put(`/survey/plan/${this.surveyId}/update`, {
-                    id: this.id,
-                    type: this.type,
+                await axios.put(`/survey/plan/${this.data.survey.id}/update`, {
+                    id: this.data.id,
+                    type: this.data.type,
                     text: this.data.text,
                     options: this.data.options,
                 });
