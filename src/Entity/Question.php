@@ -54,6 +54,11 @@ class Question
      */
     private ?string $type = null;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $ordering = null;
+
     public function __construct()
     {
         $this->options = new ArrayCollection();
@@ -135,6 +140,18 @@ class Question
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getOrdering(): ?int
+    {
+        return $this->ordering;
+    }
+
+    public function setOrdering(?int $ordering): self
+    {
+        $this->ordering = $ordering;
 
         return $this;
     }

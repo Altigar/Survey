@@ -33,6 +33,7 @@ export default {
         id: Number,
         data: Object,
         type: String,
+        ordering: Number,
     },
     computed: {
         sortedOptions() {

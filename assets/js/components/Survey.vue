@@ -8,7 +8,9 @@
                 :type="question.type"
                 :survey-id="id"
                 :id="question.id"
+                :ordering="question.ordering"
                 @remove="remove"
+                ref="question"
             ></choice>
             <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
         </template>
@@ -54,8 +56,9 @@ export default {
             }
         },
         async add() {
+            let number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering));
             try {
-                await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected});
+                await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected, ordering: ++number});
             } catch (error) {
                 this.error = error.response.data;
             }

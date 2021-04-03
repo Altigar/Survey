@@ -49,7 +49,7 @@ class SurveyController extends AbstractController
 	public function plan(int $id): Response
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
-		$questions = $repository->findBy(['survey' => $id]);
+		$questions = $repository->findBy(['survey' => $id], ['ordering' => 'asc']);
 		$json = $this->serializer->serialize($questions, 'json');
 
 		return $this->render('survey/plan.html.twig', [
