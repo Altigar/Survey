@@ -75,7 +75,7 @@ class SurveyController extends AbstractController
 		$data = $this->serializer->decode($request->getContent(), 'json');
 		return $questionService->create($id, $data) ?
 			new JsonResponse([], JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Survey not found'], JsonResponse::HTTP_NOT_FOUND);
+			new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
 	}
 
 	#[Route('/survey/plan/{id}/update', name: 'survey_plan_update', methods: ['PUT'])]
@@ -87,8 +87,9 @@ class SurveyController extends AbstractController
 			return new JsonResponse($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		$questionService->update($data);
-		return new JsonResponse([], JsonResponse::HTTP_OK);
+		return $questionService->update($data) ?
+			new JsonResponse([], JsonResponse::HTTP_OK) :
+			new JsonResponse(['text' => 'Failed to update question'], JsonResponse::HTTP_NOT_FOUND);
 	}
 
 	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
@@ -97,6 +98,6 @@ class SurveyController extends AbstractController
 		$data = $this->serializer->decode($request->getContent(), 'json');
 		return $questionService->delete($data) ?
 			new JsonResponse([], JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Question not found'], JsonResponse::HTTP_NOT_FOUND);
+			new JsonResponse(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
 	}
 }

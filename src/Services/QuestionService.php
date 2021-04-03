@@ -32,28 +32,39 @@ class QuestionService
 		return (bool)$survey;
 	}
 
-	public function update(array $data): void
+	public function update(array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
-		$question = $repository->findById($this->accessor->getValue($data, '[id]'));
-		$question->setType($this->accessor->getValue($data, '[type]'));
-		$question->setText($this->accessor->getValue($data, '[text]'));
-		$options = $question->getOptions()->toArray();
-		foreach ($data['options'] ?? [] as $rawOption) {
-			$optionId = $this->accessor->getValue($rawOption, '[id]');
-			if ($optionId && $option = $this->accessor->getValue($options, '[' . $optionId . ']')) {
-				$option->setText($this->accessor->getValue($rawOption, '[text]'))
-					->setOrdering($this->accessor->getValue($rawOption, '[ordering]'));
-			} else {
-				$option = (new Option())
-					->setText($this->accessor->getValue($rawOption, '[text]'))
-					->setQuestion($question)
-					->setOrdering($this->accessor->getValue($rawOption, '[ordering]'));
-				$question->addOption($option);
+		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
+			$question->setType($this->accessor->getValue($data, '[type]'));
+			$question->setText($this->accessor->getValue($data, '[text]'));
+			$options = $question->getOptions()->toArray();
+			$rawOptions = $data['options'] ?? [];
+
+			if ($optionsIds = array_column($rawOptions, 'id', 'id')) {
+				$removeOptions = array_diff_key($options, $optionsIds);
+				foreach ($removeOptions as $remove) {
+					$question->removeOption($remove);
+				}
 			}
+
+			foreach ($rawOptions as $rawOption) {
+				$optionId = $this->accessor->getValue($rawOption, '[id]');
+				if ($optionId && $option = $this->accessor->getValue($options, '[' . $optionId . ']')) {
+					$option->setText($this->accessor->getValue($rawOption, '[text]'))
+						->setOrdering($this->accessor->getValue($rawOption, '[ordering]'));
+				} else {
+					$option = (new Option())
+						->setText($this->accessor->getValue($rawOption, '[text]'))
+						->setQuestion($question)
+						->setOrdering($this->accessor->getValue($rawOption, '[ordering]'));
+					$question->addOption($option);
+				}
+			}
+			$this->entityManager->persist($question);
+			$this->entityManager->flush();
 		}
-		$this->entityManager->persist($question);
-		$this->entityManager->flush();
+		return (bool)$question;
 	}
 
 	public function delete(array $data): bool

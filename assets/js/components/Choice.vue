@@ -6,9 +6,11 @@
                     <b-form-input class="mb-3" v-model="data.text"></b-form-input>
                     <p v-if="data.error">{{ data.error }}</p>
                     <div v-for="(option, index) in sortedOptions" :key="index">
-                        <b-form-input v-model="option.text" size="sm"></b-form-input>
+                        <div class="d-flex">
+                            <b-form-input v-model="option.text" size="sm" class="mr-3"></b-form-input>
+                            <button @click="remove(index)" type="button" class="close" aria-label="Close">×</button>
+                        </div>
                         <p v-if="option.error">{{ option.error }}</p>
-                        <b-btn @click="remove(index)">remove</b-btn>
                     </div>
                 </b-form-group>
                 <div>
@@ -31,7 +33,6 @@ export default {
         id: Number,
         data: Object,
         type: String,
-        index: Number,
     },
     computed: {
         sortedOptions() {

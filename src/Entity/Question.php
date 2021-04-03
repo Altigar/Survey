@@ -45,7 +45,7 @@ class Question
 
     /**
      * @Assert\Valid
-     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
      */
 	private ArrayCollection|PersistentCollection|null $options = null;
 
