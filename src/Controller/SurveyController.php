@@ -80,9 +80,12 @@ class SurveyController extends AbstractController
 			'string', 'text' => $created = $questionService->createNote($id, $data),
 			default => $created = false,
 		};
-		return $created ?
-			new JsonResponse([], JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
+		if ($created) {
+			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json');
+			return new JsonResponse($json, JsonResponse::HTTP_OK);
+		} else {
+			return new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
+		}
 	}
 
 	#[Route('/survey/plan/{id}/update', name: 'survey_plan_update', methods: ['PUT'])]
@@ -105,11 +108,14 @@ class SurveyController extends AbstractController
 	}
 
 	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
-	public function remove(Request $request, QuestionService $questionService): JsonResponse
+	public function remove(int $id, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		return $questionService->delete($data) ?
-			new JsonResponse([], JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
+		if ($questionService->delete($data)) {
+			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json');
+			return new JsonResponse($json, JsonResponse::HTTP_OK);
+		} else {
+			return new JsonResponse(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
+		}
 	}
 }

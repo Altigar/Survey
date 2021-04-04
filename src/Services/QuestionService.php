@@ -15,6 +15,12 @@ class QuestionService
 		private PropertyAccessorInterface $accessor,
 	) {}
 
+	public function getBySurvey(int $survey): array
+	{
+		$repository = $this->entityManager->getRepository(Question::class);
+		return $repository->findBy(['survey' => $survey], ['ordering' => 'asc']);
+	}
+
 	public function createChoice(int $id, array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Survey::class);
