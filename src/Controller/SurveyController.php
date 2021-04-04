@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -19,6 +20,7 @@ class SurveyController extends AbstractController
 	public function __construct(
 		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
+		private PropertyAccessorInterface $accessor,
 	) {}
 
     #[Route('/survey', name: 'survey')]
@@ -63,7 +65,7 @@ class SurveyController extends AbstractController
 	public function all(int $id): JsonResponse
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
-		$questions = $repository->findBy(['survey' => $id]);
+		$questions = $repository->findBy(['survey' => $id], ['ordering' => 'asc']);
 		return $questions ?
 			new JsonResponse($this->serializer->serialize($questions, 'json'), JsonResponse::HTTP_OK) :
 			new JsonResponse(['text' => 'Questions not found'], JsonResponse::HTTP_NOT_FOUND);
@@ -73,7 +75,12 @@ class SurveyController extends AbstractController
 	public function add(int $id, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		return $questionService->create($id, $data) ?
+		match ($this->accessor->getValue($data, '[type]')) {
+			'radio', 'checkbox' => $created = $questionService->createChoice($id, $data),
+			'string', 'text' => $created = $questionService->createNote($id, $data),
+			default => $created = false,
+		};
+		return $created ?
 			new JsonResponse([], JsonResponse::HTTP_OK) :
 			new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
 	}
@@ -87,7 +94,12 @@ class SurveyController extends AbstractController
 			return new JsonResponse($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		return $questionService->update($data) ?
+		match ($this->accessor->getValue($data, '[type]')) {
+			'radio', 'checkbox' => $updated = $questionService->updateChoice($data),
+			'string', 'text' => $updated = $questionService->updateNote($data),
+			default => $updated = false,
+		};
+		return $updated ?
 			new JsonResponse([], JsonResponse::HTTP_OK) :
 			new JsonResponse(['text' => 'Failed to update question'], JsonResponse::HTTP_NOT_FOUND);
 	}

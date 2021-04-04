@@ -15,7 +15,7 @@ class QuestionService
 		private PropertyAccessorInterface $accessor,
 	) {}
 
-	public function create(int $id, array $data): bool
+	public function createChoice(int $id, array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Survey::class);
 		/** @var $survey Survey */
@@ -33,7 +33,27 @@ class QuestionService
 		return (bool)$survey;
 	}
 
-	public function update(array $data): bool
+	public function createNote(int $id, array $data): bool
+	{
+		$repository = $this->entityManager->getRepository(Survey::class);
+		/** @var $survey Survey */
+		if ($survey = $repository->find($id)) {
+			$type = $this->accessor->getValue($data, '[type]');
+			$question = (new Question())
+				->setSurvey($survey)
+				->setType($this->accessor->getValue($data, '[type]'))
+				->setCreatedAt(new \DateTime('now'))
+				->setOrdering($this->accessor->getValue($data, '[ordering]'));
+			if ($type == 'text') {
+				$question->setRow(3);
+			}
+			$this->entityManager->persist($question);
+			$this->entityManager->flush();
+		}
+		return (bool)$survey;
+	}
+
+	public function updateChoice(array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
@@ -61,6 +81,22 @@ class QuestionService
 						->setOrdering($this->accessor->getValue($rawOption, '[ordering]'));
 					$question->addOption($option);
 				}
+			}
+			$this->entityManager->persist($question);
+			$this->entityManager->flush();
+		}
+		return (bool)$question;
+	}
+
+	public function updateNote(array $data): bool
+	{
+		$repository = $this->entityManager->getRepository(Question::class);
+		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
+			$type = $this->accessor->getValue($data, '[type]');
+			$question->setType($type);
+			$question->setText($this->accessor->getValue($data, '[text]'));
+			if ($type == 'text') {
+				$question->setRow($this->accessor->getValue($data, '[row]'));
 			}
 			$this->entityManager->persist($question);
 			$this->entityManager->flush();

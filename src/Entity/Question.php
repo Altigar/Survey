@@ -59,6 +59,11 @@ class Question
      */
     private ?int $ordering = null;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private ?int $row = null;
+
     public function __construct()
     {
         $this->options = new ArrayCollection();
@@ -152,6 +157,18 @@ class Question
     public function setOrdering(?int $ordering): self
     {
         $this->ordering = $ordering;
+
+        return $this;
+    }
+
+    public function getRow(): ?int
+    {
+        return $this->row;
+    }
+
+    public function setRow(?int $row): self
+    {
+        $this->row = $row;
 
         return $this;
     }

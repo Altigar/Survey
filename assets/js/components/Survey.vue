@@ -3,16 +3,19 @@
         <template v-for="question in data">
             <choice
                 :key="question.id"
-                v-if="isSelected(question.type, ['radio', 'checkbox'])"
                 :data="question"
-                :type="question.type"
-                :survey-id="id"
-                :id="question.id"
                 :ordering="question.ordering"
+                v-if="isSelected(question.type, ['radio', 'checkbox'])"
                 @remove="remove"
                 ref="question"
             ></choice>
-            <string :key="question.id" v-if="question.type === 'string'" :data="question" :type="question.type" :survey-id="id" :id="question.id"></string>
+            <note
+                :key="question.id"
+                :data="question"
+                v-if="isSelected(question.type, ['string', 'text'])"
+                @remove="remove"
+                ref="question"
+            ></note>
         </template>
         <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
         <b-button @click="add">add</b-button>
@@ -24,12 +27,12 @@
 
 <script>
 import axios from "axios";
-import String from "./String";
 import Choice from "./Choice";
+import Note from "./Note";
 
 export default {
     name: "Survey",
-    components: {Choice, String},
+    components: {Choice, Note},
     props: {
         id: String,
         json: String,
@@ -42,7 +45,8 @@ export default {
             options: [
                 {value: 'radio', text: 'radio'},
                 {value: 'checkbox', text: 'checkbox'},
-                {value: 'string', text: 'string'}
+                {value: 'string', text: 'string'},
+                {value: 'text', text: 'text'}
             ],
         }
     },
