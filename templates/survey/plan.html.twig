@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PollController!{% endblock %}
+{% block title %} {{ title }} {% endblock %}
 
 {% block body %}
     <b-row class="min-w-100">
         <b-col tag="section">
-            <survey id="{{ id }}" json="{{ json }}"></survey>
+            <survey
+                id="{{ id }}"
+                questions="{{ questions }}"
+                options="{{ options }}"
+            ></survey>
         </b-col>
     </b-row>
 {% endblock %}

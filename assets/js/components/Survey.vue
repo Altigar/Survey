@@ -17,7 +17,7 @@
                 ref="question"
             ></note>
         </template>
-        <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
+        <b-form-select v-model="selected" :options="types" size="sm"></b-form-select>
         <b-button @click="add">add</b-button>
         <div>
             <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
@@ -35,19 +35,15 @@ export default {
     components: {Choice, Note},
     props: {
         id: String,
-        json: String,
+        questions: String,
+        options: String,
     },
     data() {
         return {
             selected: null,
             error: null,
             data: [],
-            options: [
-                {value: 'radio', text: 'radio'},
-                {value: 'checkbox', text: 'checkbox'},
-                {value: 'string', text: 'string'},
-                {value: 'text', text: 'text'}
-            ],
+            types: [],
         }
     },
     methods: {
@@ -78,7 +74,8 @@ export default {
         },
     },
     created() {
-        this.data = JSON.parse(this.json);
+        this.data = JSON.parse(this.questions);
+        this.types = JSON.parse(this.options);
     }
 }
 </script>

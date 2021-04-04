@@ -52,12 +52,16 @@ class SurveyController extends AbstractController
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $id], ['ordering' => 'asc']);
-		$json = $this->serializer->serialize($questions, 'json');
-
 		return $this->render('survey/plan.html.twig', [
-			'controller_name' => 'SurveyController',
+			'title' => 'Plan',
 			'id' => $id,
-			'json' => $json,
+			'questions' => $this->serializer->serialize($questions, 'json'),
+			'options' => $this->serializer->serialize([
+				['value' => 'radio', 'text' => 'radio'],
+				['value' => 'checkbox', 'text' => 'checkbox'],
+				['value' => 'string', 'text' => 'string'],
+				['value' => 'text', 'text' => 'text'],
+			],'json'),
 		]);
 	}
 
