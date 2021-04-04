@@ -82,8 +82,8 @@ export default {
                         this.data.error = data.text;
                     }
                 }
-                this.$forceUpdate();
             }
+            this.$forceUpdate();
         }
     }
 }

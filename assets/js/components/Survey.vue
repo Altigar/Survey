@@ -48,9 +48,12 @@ export default {
     },
     methods: {
         async add() {
-            let number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering));
+            let number = 1;
+            if (this.$refs.question) {
+                number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
+            }
             try {
-                let response = await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected, ordering: ++number});
+                let response = await axios.post(`/survey/plan/${this.id}/add`, {type: this.selected, ordering: number});
                 this.data = JSON.parse(response.data);
             } catch (error) {
                 this.error = error.response.data;
