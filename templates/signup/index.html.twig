@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+    <b-form method="post">
+        <b-form-group label="Email" label-for="email">
+            <b-form-input id="email" name="email" value="{{ person.email }}"></b-form-input>
+            {% if errors.email is defined %}
+                <b-form-invalid-feedback :state="false">{{ errors.email }}</b-form-invalid-feedback>
+            {% endif %}
+        </b-form-group>
+        <b-form-group label="Password" label-for="password">
+            <b-form-input type="password" id="password" name="password" value="{{ person.password }}"></b-form-input>
+            {% if errors.password is defined %}
+                <b-form-invalid-feedback :state="false">{{ errors.password }}</b-form-invalid-feedback>
+            {% endif %}
+        </b-form-group>
+        <b-form-group label="Confirm password" label-for="password_confirmation">
+            <b-form-input type="password" id="password_confirmation" name="password_confirmation" value="{{ person.passwordConfirmation }}"></b-form-input>
+            {% if errors.password_confirmation is defined %}
+                <b-form-invalid-feedback :state="false">{{ errors.password_confirmation }}</b-form-invalid-feedback>
+            {% endif %}
+        </b-form-group>
+        <b-btn type="submit" variant="primary">Sign Up</b-btn>
+    </b-form>
+{% endblock %}

@@ -7,8 +7,8 @@
 
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
-                    <b-nav-item class="nav-link">Login</b-nav-item>
-                    <b-nav-item class="nav-link">Register</b-nav-item>
+                    <b-nav-item class="nav-link" href="{{ path('app_login') }}">Login</b-nav-item>
+                    <b-nav-item class="nav-link" href="{{ path('signup') }}">Sign Up</b-nav-item>
                 </b-navbar-nav>
 
                 <b-navbar-nav class="ml-auto">
@@ -17,7 +17,7 @@
                             <em>user</em>
                         </template>
                         <b-dropdown-item href="#">Profile</b-dropdown-item>
-                        <b-nav-item role="menuitem" target="_self" class="dropdown-item">Logout</b-nav-item>
+                        <b-nav-item role="menuitem" target="_self" class="dropdown-item" href="{{ path('app_logout') }}">Logout</b-nav-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>
