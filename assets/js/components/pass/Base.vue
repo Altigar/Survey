@@ -4,7 +4,7 @@
             <radio v-if="question.type === 'radio'" :id="question.id" :title="question.text" :data="question.options" ref="question"></radio>
             <checkbox v-else-if="question.type === 'checkbox'" :id="question.id" :title="question.text" :data="question.options" ref="question"></checkbox>
             <note v-else-if="question.type === 'string'" :id="question.id" :title="question.text" ref="question"></note>
-            <note-area v-else-if="question.type === 'text'" :id="question.id" :title="question.text" ref="question"></note-area>
+            <note-area v-else-if="question.type === 'text'" :id="question.id" :title="question.text" :rows="question.row" ref="question"></note-area>
         </b-form-group>
         <hr>
         <b-btn type="submit">submit</b-btn>
@@ -37,18 +37,15 @@ export default {
             for (let question of this.$refs.question) {
                 data[question.$props.id] = question.value;
             }
-            console.log(data);
             try {
                 await axios.post(`/pass/${this.id}/create`, data);
             } catch (error) {
                 let data = error.response.data;
-                console.log(data);
             }
         },
     },
     created() {
         this.data = JSON.parse(this.questions);
-        console.log(this.data);
     }
 }
 </script>

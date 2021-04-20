@@ -1,7 +1,7 @@
 <template>
     <article>
         <h3>{{ title }}</h3>
-        <b-form-textarea :key="id" :name="`question[${id}]`" v-model="value"></b-form-textarea>
+        <b-form-textarea :key="id" :name="`question[${id}]`" v-model="value" :rows="rows"></b-form-textarea>
     </article>
 </template>
 
@@ -11,6 +11,7 @@ export default {
     props: {
         id: Number,
         title: String,
+        rows: Number,
     },
     data() {
         return {
