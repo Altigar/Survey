@@ -19,7 +19,7 @@ import NoteArea from "./NoteArea";
 import axios from "axios";
 
 export default {
-    name: "Pass",
+    name: "Base",
     components: {NoteArea, Radio, Checkbox, Note},
     props: {
         id: String,

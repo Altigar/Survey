@@ -12,8 +12,8 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
-import Survey from "./components/Survey";
-import Pass from "./components/pass/Pass";
+import Survey from "./components/survey/Base";
+import Pass from "./components/pass/Base";
 
 Vue.use(BootstrapVue);
 

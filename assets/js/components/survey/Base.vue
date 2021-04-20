@@ -31,7 +31,7 @@ import Choice from "./Choice";
 import Note from "./Note";
 
 export default {
-    name: "Survey",
+    name: "Base",
     components: {Choice, Note},
     props: {
         id: String,
