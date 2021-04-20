@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ResultController!{% endblock %}
+
+{% block body %}
+    {% for question in questions %}
+        <h3>{{ question.text }}</h3>
+        {% set options = [] %}
+        {% set text = '' %}
+        {% for answer in question.answers %}
+            {% set options = options|merge([answer.option.id]) %}
+            {% if question.type in ['string', 'text'] %}
+                {% set text = answer.text %}
+            {% endif %}
+        {% endfor %}
+        {% for option in question.options %}
+            {% if question.type in ['radio', 'checkbox'] and option.id in options %}
+                <p style="background-color: red;">{{ option.text }}</p>
+            {% elseif question.type in ['string', 'text'] and option.id in options %}
+                <p>{{ text }}</p>
+            {% else %}
+                <p>{{ option.text }}</p>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}

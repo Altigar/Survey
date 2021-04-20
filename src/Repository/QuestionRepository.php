@@ -31,6 +31,21 @@ class QuestionRepository extends ServiceEntityRepository
 			->getOneOrNullResult();
     }
 
+	public function findByIdPersonWithAnswers(int $id, int $person)
+	{
+		return $this->createQueryBuilder('q')
+			->select('q', 'o', 'a')
+			->from(Question::class, 't')
+			->leftJoin('q.options', 'o')
+			->leftJoin('q.answers', 'a')
+			->where('q.survey = :id')
+			->andWhere('a.person = :person')
+			->setParameter('id', $id)
+			->setParameter('person', $person)
+			->getQuery()
+			->getResult();
+    }
+
     // /**
     //  * @return Question[] Returns an array of Question objects
     //  */

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PersonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -20,7 +22,7 @@ class Person implements UserInterface
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -28,7 +30,7 @@ class Person implements UserInterface
     #[Assert\NotBlank]
 	#[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Assert\Length(max: 254, maxMessage: 'Email cannot be longer than {{ limit }} characters')]
-    private ?string $email;
+    private ?string $email = null;
 
     /**
      * @ORM\Column(type="json")
@@ -46,7 +48,7 @@ class Person implements UserInterface
 		minMessage: 'Your Password must be at least {{ limit }} characters long',
 		maxMessage: 'Your Password cannot be longer than {{ limit }} characters',
 	)]
-    private ?string $password;
+    private ?string $password = null;
 
 	#[Assert\NotBlank]
 	#[Assert\Length(
@@ -55,7 +57,17 @@ class Person implements UserInterface
 		minMessage: 'Your Password must be at least {{ limit }} characters long',
 		maxMessage: 'Your Password cannot be longer than {{ limit }} characters',
 	)]
-	private ?string $password_confirmation;
+	private ?string $password_confirmation = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="person")
+     */
+    private $answers;
+
+    public function __construct()
+    {
+        $this->answers = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -162,4 +174,34 @@ class Person implements UserInterface
 				->addViolation();
 		}
 	}
+
+    /**
+     * @return Collection|Answer[]
+     */
+    public function getAnswers(): Collection
+    {
+        return $this->answers;
+    }
+
+    public function addAnswer(Answer $answer): self
+    {
+        if (!$this->answers->contains($answer)) {
+            $this->answers[] = $answer;
+            $answer->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnswer(Answer $answer): self
+    {
+        if ($this->answers->removeElement($answer)) {
+            // set the owning side to null (unless already changed)
+            if ($answer->getPerson() === $this) {
+                $answer->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
 }
