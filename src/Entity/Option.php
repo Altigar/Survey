@@ -6,6 +6,7 @@ use App\Repository\OptionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -44,7 +45,7 @@ class Option
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="option")
      */
-    private $answers;
+    private ArrayCollection|PersistentCollection|null $answers = null;
 
     public function __construct()
     {
@@ -92,9 +93,6 @@ class Option
         return $this;
     }
 
-    /**
-     * @return Collection|Answer[]
-     */
     public function getAnswers(): Collection
     {
         return $this->answers;

@@ -67,7 +67,7 @@ class Question
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question")
      */
-    private $answers;
+    private ArrayCollection|PersistentCollection|null $answers;
 
     public function __construct()
     {
@@ -179,9 +179,6 @@ class Question
         return $this;
     }
 
-    /**
-     * @return Collection|Answer[]
-     */
     public function getAnswers(): Collection
     {
         return $this->answers;

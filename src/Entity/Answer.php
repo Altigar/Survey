@@ -15,30 +15,30 @@ class Answer
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $person;
+    private ?Person $person = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $question;
+    private ?Question $question = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="answers")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $option;
+    private ?Option $option;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $text;
+    private ?string $text = null;
 
     public function getId(): ?int
     {
