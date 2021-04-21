@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PassController extends AbstractController
 {
     #[Route('/pass/{id}', name: 'pass')]
-    public function index(int $id, Request $request, SerializerInterface $serializer): Response
+    public function index(int $id, SerializerInterface $serializer): Response
     {
     	$repository = $this->getDoctrine()->getManager()->getRepository(Question::class);
     	$questions = $repository->findBy(['survey' => $id]);
@@ -23,7 +23,7 @@ class PassController extends AbstractController
         	'title' => 'Survey',
         	'id' => $id,
         	'questions' => $serializer->serialize($questions, 'json', [
-        		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
+        		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 	        ]),
         ]);
     }

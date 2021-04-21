@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=SurveyRepository::class)
@@ -18,17 +19,23 @@ class Survey
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private ?int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $created_at;
+    private ?\DateTimeInterface $created_at = null;
 
     /**
      * @ORM\OneToMany(targetEntity=Question::class, mappedBy="survey", cascade={"persist", "remove"})
      */
-	private ArrayCollection|PersistentCollection|null $questions;
+	private ArrayCollection|PersistentCollection|null $questions = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="surveys", fetch="EAGER")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Person $person = null;
 
     public function __construct()
     {
@@ -75,6 +82,18 @@ class Survey
                 $question->setSurvey(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(Person|UserInterface|null $person): self
+    {
+        $this->person = $person;
 
         return $this;
     }

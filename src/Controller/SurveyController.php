@@ -24,28 +24,24 @@ class SurveyController extends AbstractController
 		private PropertyAccessorInterface $accessor,
 	) {}
 
-    #[Route('/survey', name: 'survey')]
+    #[Route('/survey', name: 'survey', methods: ['GET'])]
     public function index(): Response
     {
+    	$repository = $this->entityManager->getRepository(Survey::class);
         return $this->render('survey/index.html.twig', [
-            'controller_name' => 'SurveyController',
+            'title' => 'Profile',
+	        'surveys' => $repository->findBy(['person' => $this->getUser()->getId()])
         ]);
     }
 
-	#[Route('/survey/create', name: 'survey_create')]
+	#[Route('/survey/create', name: 'survey_create', methods: ['POST'])]
 	public function create(Request $request): Response
 	{
-		if ($request->isMethod('post')) {
-			$survey = (new Survey())->setCreatedAt(new \DateTime('now'));
-			$this->entityManager->persist($survey);
-			$this->entityManager->flush();
+		$survey = (new Survey())->setPerson($this->getUser())->setCreatedAt(new \DateTime('now'));
+		$this->entityManager->persist($survey);
+		$this->entityManager->flush();
 
-			return $this->redirectToRoute('survey_plan', ['id' => $survey->getId()]);
-		}
-
-		return $this->render('survey/create.html.twig', [
-			'controller_name' => 'SurveyController',
-		]);
+		return $this->redirectToRoute('survey_plan', ['id' => $survey->getId()]);
 	}
 
 	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
@@ -57,7 +53,7 @@ class SurveyController extends AbstractController
 			'title' => 'Plan',
 			'id' => $id,
 			'questions' => $this->serializer->serialize($questions, 'json', [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
+				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 			]),
 			'options' => $this->serializer->serialize([
 				['value' => 'radio', 'text' => 'radio'],

@@ -8,7 +8,7 @@
             <b-collapse id="nav-collapse" is-nav>
                 <b-navbar-nav>
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <b-nav-item class="nav-link" href="{{ path('survey_create') }}">Survey</b-nav-item>
+                        <b-nav-item class="nav-link" href="{{ path('survey') }}">Survey</b-nav-item>
                     {% else %}
                         <b-nav-item class="nav-link" href="{{ path('app_login') }}">Login</b-nav-item>
                         <b-nav-item class="nav-link" href="{{ path('signup') }}">Sign Up</b-nav-item>

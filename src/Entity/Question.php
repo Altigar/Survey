@@ -65,7 +65,7 @@ class Question
     private ?int $row = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question")
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question", cascade={"persist", "remove"})
      */
     private ArrayCollection|PersistentCollection|null $answers;
 
