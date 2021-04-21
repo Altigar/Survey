@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
@@ -47,8 +48,12 @@ class SurveyController extends AbstractController
 	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
 	public function plan(int $id): Response
 	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		$questions = $repository->findBy(['survey' => $id], ['ordering' => 'asc']);
+		$surveyRepository = $this->entityManager->getRepository(Survey::class);
+		if (!$surveyRepository->find($id)) {
+			throw new NotFoundHttpException();
+		}
+		$questionRepository = $this->entityManager->getRepository(Question::class);
+		$questions = $questionRepository->findBy(['survey' => $id], ['ordering' => 'asc']);
 		return $this->render('survey/plan.html.twig', [
 			'title' => 'Plan',
 			'id' => $id,
