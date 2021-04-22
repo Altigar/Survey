@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block body %}
+    <b-form method="POST">
+        <b-form-group label="Name" label-for="survey_name">
+            <b-form-input id="survey_name" name="name"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Description" label-for="survey_description">
+            <b-form-input id="survey_description" name="description"></b-form-input>
+        </b-form-group>
+        <b-btn type="submit">create survey</b-btn>
+    </b-form>
+{% endblock %}

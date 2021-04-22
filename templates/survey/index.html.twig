@@ -3,14 +3,23 @@
 {% block title %}Hello SurveyController!{% endblock %}
 
 {% block body %}
-    <b-row class="min-w-100">
-        <b-form method="POST" action="{{ path('survey_create') }}">
-            <b-btn type="submit">create survey</b-btn>
-        </b-form>
-    </b-row>
-    {% for survey in surveys %}
+    <section>
         <div>
-            <b-link href="{{ path('survey_plan', {id: survey.id}) }}">{{ survey.id }}</b-link>
+            <b-link href="{{ path('survey_create') }}">Create survey</b-link>
         </div>
-    {% endfor %}
+        {% for survey in surveys %}
+            <article class="mb-3">
+                <b-link class="text-decoration-none text-body" href="{{ path('survey_plan', {id: survey.id}) }}">
+                    <b-card>
+                        <div class="d-flex justify-content-end">
+                            <small><time>{{ survey.createdAt|date('d-m-Y') }}</time></small>
+                        </div>
+                        <div>
+                            <span>{{ survey.name }}</span>
+                        </div>
+                    </b-card>
+                </b-link>
+            </article>
+        {% endfor %}
+    </section>
 {% endblock %}

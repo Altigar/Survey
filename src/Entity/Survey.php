@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SurveyRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,7 +25,7 @@ class Survey
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?\DateTimeInterface $created_at = null;
+    private ?DateTimeInterface $created_at = null;
 
     /**
      * @ORM\OneToMany(targetEntity=Question::class, mappedBy="survey", cascade={"persist", "remove"})
@@ -37,6 +38,16 @@ class Survey
      */
     private ?Person $person = null;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $name = null;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -47,12 +58,12 @@ class Survey
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt(DateTimeInterface $created_at): self
     {
         $this->created_at = $created_at;
 
@@ -94,6 +105,30 @@ class Survey
     public function setPerson(Person|UserInterface|null $person): self
     {
         $this->person = $person;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

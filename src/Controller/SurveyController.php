@@ -35,14 +35,24 @@ class SurveyController extends AbstractController
         ]);
     }
 
-	#[Route('/survey/create', name: 'survey_create', methods: ['POST'])]
+	#[Route('/survey/create', name: 'survey_create', methods: ['GET', 'POST'])]
 	public function create(Request $request): Response
 	{
-		$survey = (new Survey())->setPerson($this->getUser())->setCreatedAt(new \DateTime('now'));
-		$this->entityManager->persist($survey);
-		$this->entityManager->flush();
+		if ($request->isMethod('post')) {
+			$survey = (new Survey())
+				->setPerson($this->getUser())
+				->setCreatedAt(new \DateTime('now'))
+				->setName($request->get('name'))
+				->setDescription($request->get('description'));
+			$this->entityManager->persist($survey);
+			$this->entityManager->flush();
 
-		return $this->redirectToRoute('survey_plan', ['id' => $survey->getId()]);
+			return $this->redirectToRoute('survey_plan', ['id' => $survey->getId()]);
+		}
+
+		return $this->render('survey/create.html.twig', [
+			'title' => 'New survey'
+		]);
 	}
 
 	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
