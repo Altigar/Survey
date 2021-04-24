@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Answer;
 use App\Entity\Question;
+use App\Utils\Util;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -31,9 +32,13 @@ class StatsController extends AbstractController
     {
     	$entityManager =  $this->getDoctrine()->getManager();
     	$repository = $entityManager->getRepository(Question::class);
+    	$questions = $repository->findBy(['survey' => $id]);
 
+    	$answerRepository = $entityManager->getRepository(Answer::class);
+    	$answers = $answerRepository->findBy(['question' => Util::getColumn($questions, 'id'), 'person' => $person]);
         return $this->render('result/person.html.twig', [
-        	'questions' => $repository->findByIdPersonWithAnswers($id, $person),
+        	'questions' => $questions,
+	        'answers' => Util::reindex($answers, 'option'),
         ]);
     }
 }

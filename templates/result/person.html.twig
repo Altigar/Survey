@@ -5,19 +5,11 @@
 {% block body %}
     {% for question in questions %}
         <h3>{{ question.text }}</h3>
-        {% set options = [] %}
-        {% set text = '' %}
-        {% for answer in question.answers %}
-            {% set options = options|merge([answer.option.id]) %}
-            {% if question.type in ['string', 'text'] %}
-                {% set text = answer.text %}
-            {% endif %}
-        {% endfor %}
         {% for option in question.options %}
-            {% if question.type in ['radio', 'checkbox'] and option.id in options %}
+            {% if question.type in ['radio', 'checkbox'] and answers[option.id] is defined %}
                 <p style="background-color: red;">{{ option.text }}</p>
-            {% elseif question.type in ['string', 'text'] and option.id in options %}
-                <p>{{ text }}</p>
+            {% elseif question.type in ['string', 'text'] and answers[option.id] is defined %}
+                <p>{{ answers[option.id].text }}</p>
             {% else %}
                 <p>{{ option.text }}</p>
             {% endif %}
