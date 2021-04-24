@@ -48,9 +48,15 @@ class Survey
      */
     private ?string $description = null;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Pass::class, mappedBy="survey", orphanRemoval=true)
+     */
+    private $passes;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
+        $this->passes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -129,6 +135,36 @@ class Survey
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pass[]
+     */
+    public function getPasses(): Collection
+    {
+        return $this->passes;
+    }
+
+    public function addPass(Pass $pass): self
+    {
+        if (!$this->passes->contains($pass)) {
+            $this->passes[] = $pass;
+            $pass->setSurvey($this);
+        }
+
+        return $this;
+    }
+
+    public function removePass(Pass $pass): self
+    {
+        if ($this->passes->removeElement($pass)) {
+            // set the owning side to null (unless already changed)
+            if ($pass->getSurvey() === $this) {
+                $pass->setSurvey(null);
+            }
+        }
 
         return $this;
     }

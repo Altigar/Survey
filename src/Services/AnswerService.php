@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Entity\Answer;
+use App\Entity\Pass;
 use App\Entity\Person;
 use App\Entity\Question;
+use App\Entity\Survey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -18,11 +20,15 @@ class AnswerService
 
 	public function create(array $data, int $id, Person|UserInterface $person): bool
 	{
+		$survey = $this->entityManager->getRepository(Survey::class)->find($id);
+		$pass = (new Pass())->setPerson($person)->setSurvey($survey)->setCreatedAt(new \DateTime('now'));
+		$this->entityManager->persist($pass);
+		$this->entityManager->flush();
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $id]);
 		foreach ($data as $questionId => $value) {
 			if ($value && ($question = $this->getByValue($questions, $questionId))) {
-				$answer = (new Answer())->setPerson($person)->setQuestion($question);
+				$answer = (new Answer())->setPerson($person)->setQuestion($question)->setPass($pass);
 				$options = $question->getOptions()->toArray();
 				if (in_array($question->getType(), ['string', 'text'])) {
 					$answer->setText($value);
@@ -32,7 +38,7 @@ class AnswerService
 					$answer->setOption($option);
 				} elseif ($question->getType() == 'checkbox') {
 					foreach ($value as $optionId) {
-						$answer = (new Answer())->setPerson($person)->setQuestion($question);
+						$answer = (new Answer())->setPerson($person)->setQuestion($question)->setPass($pass);
 						if ($option = $this->getByValue($options, $optionId)) {
 							$answer->setOption($option);
 						}

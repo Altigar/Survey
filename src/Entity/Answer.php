@@ -40,6 +40,12 @@ class Answer
      */
     private ?string $text = null;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Pass::class, inversedBy="answers")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $pass;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +95,18 @@ class Answer
     public function setText(?string $text): self
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    public function getPass(): ?Pass
+    {
+        return $this->pass;
+    }
+
+    public function setPass(?Pass $pass): self
+    {
+        $this->pass = $pass;
 
         return $this;
     }

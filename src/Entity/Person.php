@@ -69,10 +69,16 @@ class Person implements UserInterface
      */
     private $surveys;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Pass::class, mappedBy="person", orphanRemoval=true)
+     */
+    private $passes;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
         $this->surveys = new ArrayCollection();
+        $this->passes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -232,6 +238,36 @@ class Person implements UserInterface
             // set the owning side to null (unless already changed)
             if ($survey->getPerson() === $this) {
                 $survey->setPerson(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pass[]
+     */
+    public function getPasses(): Collection
+    {
+        return $this->passes;
+    }
+
+    public function addPass(Pass $pass): self
+    {
+        if (!$this->passes->contains($pass)) {
+            $this->passes[] = $pass;
+            $pass->setPerson($this);
+        }
+
+        return $this;
+    }
+
+    public function removePass(Pass $pass): self
+    {
+        if ($this->passes->removeElement($pass)) {
+            // set the owning side to null (unless already changed)
+            if ($pass->getPerson() === $this) {
+                $pass->setPerson(null);
             }
         }
 
