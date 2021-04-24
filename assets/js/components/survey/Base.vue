@@ -3,6 +3,7 @@
         <template v-for="question in data">
             <choice
                 :key="question.id"
+                :survey-id="id"
                 :data="question"
                 :ordering="question.ordering"
                 v-if="isSelected(question.type, ['radio', 'checkbox'])"
@@ -11,6 +12,7 @@
             ></choice>
             <note
                 :key="question.id"
+                :survey-id="id"
                 :data="question"
                 v-if="isSelected(question.type, ['string', 'text'])"
                 @remove="remove"

@@ -4,23 +4,23 @@
 
 {% block body %}
     {% for question in questions %}
-        <h3>{{ question.text }}</h3>
-        {% set options = [] %}
-        {% set text = '' %}
-        {% for answer in question.answers %}
-            {% set options = options|merge([answer.option.id]) %}
-            {% if question.type in ['string', 'text'] %}
-                {% set text = answer.text %}
-            {% endif %}
-        {% endfor %}
-        {% for option in question.options %}
-            {% if question.type in ['radio', 'checkbox'] and option.id in options %}
-                <p style="background-color: red;">{{ option.text }}</p>
-            {% elseif question.type in ['string', 'text'] and option.id in options %}
-                <p>{{ text }}</p>
-            {% else %}
-                <p>{{ option.text }}</p>
-            {% endif %}
-        {% endfor %}
+        {% if question.type in ['string', 'text'] %}
+            <h3>{{ question.text }}</h3>
+            {% for answer in noteStats %}
+                {% if answer.question_id == question.id %}
+                    <p>{{ answer.text }}</p>
+                {% endif %}
+            {% endfor %}
+        {% elseif question.type in ['radio', 'checkbox'] %}
+            <h3>{{ question.text }}</h3>
+            {% for option in question.options %}
+                <div>
+                    {% if choiceStats[option.id] is defined %}
+                        {{ (((choiceStats[option.id].amount) * 100) / choiceStats[option.id].total)|number_format(1) + 0 }}%
+                    {% endif %}
+                    {{ option.text }} {{ choiceStats[option.id].amount ?? 0 }}
+                </div>
+            {% endfor %}
+        {% endif %}
     {% endfor %}
 {% endblock %}

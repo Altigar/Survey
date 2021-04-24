@@ -29,6 +29,7 @@ import axios from "axios";
 export default {
     name: "Choice",
     props: {
+        surveyId: String,
         data: Object,
     },
     computed: {
@@ -58,7 +59,7 @@ export default {
                 option.error = '';
             }
             try {
-                await axios.put(`/survey/plan/${this.data.survey.id}/update`, {
+                await axios.put(`/survey/plan/${this.surveyId}/update`, {
                     id: this.data.id,
                     type: this.data.type,
                     text: this.data.text,

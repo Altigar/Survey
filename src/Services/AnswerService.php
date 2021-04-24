@@ -21,7 +21,7 @@ class AnswerService
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = $repository->findBy(['survey' => $id]);
 		foreach ($data as $questionId => $value) {
-			if ($question = $this->getByValue($questions, $questionId)) {
+			if ($value && ($question = $this->getByValue($questions, $questionId))) {
 				$answer = (new Answer())->setPerson($person)->setQuestion($question);
 				$options = $question->getOptions()->toArray();
 				if (in_array($question->getType(), ['string', 'text'])) {
