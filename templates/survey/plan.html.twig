@@ -3,6 +3,12 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
+    <div class="mb-3">
+        <b-nav pills>
+            <b-nav-item href="{{ path('stats', {survey: id}) }}">Stats</b-nav-item>
+            <b-nav-item href="{{ path('stats_person_list', {survey: id}) }}">Persons list</b-nav-item>
+        </b-nav>
+    </div>
     <b-row class="min-w-100">
         <b-col tag="section">
             <survey id="{{ id }}" questions="{{ questions }}" options="{{ options }}"></survey>

@@ -3,40 +3,54 @@
 namespace App\Controller;
 
 use App\Entity\Answer;
+use App\Entity\Pass;
 use App\Entity\Question;
 use App\Utils\Util;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class StatsController extends AbstractController
 {
+	public function __construct(
+		private EntityManagerInterface $entityManager
+	) {}
+
 	#[Route('/stats/{survey}', name: 'stats')]
 	public function index(int $survey): Response
 	{
-		$entityManager =  $this->getDoctrine()->getManager();
-		$repository = $entityManager->getRepository(Answer::class);
+		$repository = $this->entityManager->getRepository(Answer::class);
 		$noteStats = $repository->findNoteStatsBySurvey($survey);
 		$choiceStats = $repository->findChoiceStatsBySurvey($survey);
-		$questionRepository = $entityManager->getRepository(Question::class);
+		$questionRepository = $this->entityManager->getRepository(Question::class);
 		$questions = $questionRepository->findByIdPersonWithAnswers($survey, $this->getUser()->getId());
-		return $this->render('result/index.html.twig', [
+		return $this->render('stats/index.html.twig', [
 			'questions' => $questions,
 			'noteStats' => $noteStats,
 			'choiceStats' => $choiceStats,
 		]);
 	}
 
-    #[Route('/stats/{id}/person/{person}', name: 'stats_person')]
-    public function person(int $id, int $person): Response
-    {
-    	$entityManager =  $this->getDoctrine()->getManager();
-    	$repository = $entityManager->getRepository(Question::class);
-    	$questions = $repository->findBy(['survey' => $id]);
+	#[Route('/stats/{survey}/person/list', name: 'stats_person_list')]
+	public function list(int $survey): Response
+	{
+		$repository = $this->entityManager->getRepository(Pass::class);
+		return $this->render('stats/list.html.twig', [
+			'title' => 'Person list',
+			'passes' => $repository->findBy(['survey' => $survey]),
+		]);
+	}
 
-    	$answerRepository = $entityManager->getRepository(Answer::class);
+    #[Route('/stats/{survey}/person/{person}', name: 'stats_person')]
+    public function person(int $survey, int $person): Response
+    {
+    	$repository = $this->entityManager->getRepository(Question::class);
+    	$questions = $repository->findBy(['survey' => $survey]);
+
+    	$answerRepository = $this->entityManager->getRepository(Answer::class);
     	$answers = $answerRepository->findBy(['question' => Util::getColumn($questions, 'id'), 'person' => $person]);
-        return $this->render('result/person.html.twig', [
+        return $this->render('stats/person.html.twig', [
         	'questions' => $questions,
 	        'answers' => Util::reindex($answers, 'option'),
         ]);
