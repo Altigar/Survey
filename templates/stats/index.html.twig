@@ -3,6 +3,7 @@
 {% block title %}Hello ResultController!{% endblock %}
 
 {% block body %}
+    {% include('partials/navigation.html.twig') %}
     {% for question in questions %}
         {% if question.type in ['string', 'text'] %}
             <h3>{{ question.text }}</h3>
@@ -22,5 +23,7 @@
                 </div>
             {% endfor %}
         {% endif %}
+    {% else %}
+        <div>No results</div>
     {% endfor %}
 {% endblock %}

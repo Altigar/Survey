@@ -3,6 +3,7 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
+    {% include('partials/navigation.html.twig') %}
     {% for pass in passes %}
         <article class="mb-3">
             <b-link class="text-decoration-none text-body" href="{{ path('stats_person', {survey: pass.survey.id, person: pass.person.id}) }}">
@@ -14,5 +15,7 @@
                 </b-card>
             </b-link>
         </article>
+    {% else %}
+        <div>No results</div>
     {% endfor %}
 {% endblock %}

@@ -29,6 +29,7 @@ class StatsController extends AbstractController
 			'questions' => $questions,
 			'noteStats' => $noteStats,
 			'choiceStats' => $choiceStats,
+			'survey' => $survey,
 		]);
 	}
 
@@ -38,6 +39,7 @@ class StatsController extends AbstractController
 		$repository = $this->entityManager->getRepository(Pass::class);
 		return $this->render('stats/list.html.twig', [
 			'title' => 'Person list',
+			'survey' => $survey,
 			'passes' => $repository->findBy(['survey' => $survey]),
 		]);
 	}

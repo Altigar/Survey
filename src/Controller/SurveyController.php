@@ -55,18 +55,18 @@ class SurveyController extends AbstractController
 		]);
 	}
 
-	#[Route('/survey/plan/{id}', name: 'survey_plan', methods: ['GET'])]
-	public function plan(int $id): Response
+	#[Route('/survey/plan/{survey}', name: 'survey_plan', methods: ['GET'])]
+	public function plan(int $survey): Response
 	{
 		$surveyRepository = $this->entityManager->getRepository(Survey::class);
-		if (!$surveyRepository->find($id)) {
+		if (!$surveyRepository->find($survey)) {
 			throw new NotFoundHttpException();
 		}
 		$questionRepository = $this->entityManager->getRepository(Question::class);
-		$questions = $questionRepository->findBy(['survey' => $id], ['ordering' => 'asc']);
+		$questions = $questionRepository->findBy(['survey' => $survey], ['ordering' => 'asc']);
 		return $this->render('survey/plan.html.twig', [
 			'title' => 'Plan',
-			'id' => $id,
+			'survey' => $survey,
 			'questions' => $this->serializer->serialize($questions, 'json', [
 				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 			]),
