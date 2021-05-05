@@ -99,7 +99,9 @@ class SurveyController extends AbstractController
 			default => $created = false,
 		};
 		if ($created) {
-			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json');
+			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json', [
+				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
+			]);
 			return new JsonResponse($json, JsonResponse::HTTP_OK);
 		} else {
 			return new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
@@ -130,7 +132,9 @@ class SurveyController extends AbstractController
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
 		if ($questionService->delete($data)) {
-			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json');
+			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json', [
+				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
+			]);
 			return new JsonResponse($json, JsonResponse::HTTP_OK);
 		} else {
 			return new JsonResponse(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
