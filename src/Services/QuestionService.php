@@ -17,8 +17,7 @@ class QuestionService
 
 	public function getBySurvey(int $survey): array
 	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		return $repository->findBy(['survey' => $survey], ['ordering' => 'asc']);
+		return $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	}
 
 	public function createChoice(int $id, array $data): bool

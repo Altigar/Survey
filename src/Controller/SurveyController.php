@@ -2,19 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\Question;
 use App\Entity\Survey;
-use App\Services\QuestionService;
-use App\Services\ValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class SurveyController extends AbstractController
@@ -47,97 +41,11 @@ class SurveyController extends AbstractController
 			$this->entityManager->persist($survey);
 			$this->entityManager->flush();
 
-			return $this->redirectToRoute('survey_plan', ['id' => $survey->getId()]);
+			return $this->redirectToRoute('content', ['id' => $survey->getId()]);
 		}
 
 		return $this->render('survey/create.html.twig', [
 			'title' => 'New survey'
 		]);
-	}
-
-	#[Route('/survey/plan/{survey}', name: 'survey_plan', methods: ['GET'])]
-	public function plan(int $survey): Response
-	{
-		$surveyRepository = $this->entityManager->getRepository(Survey::class);
-		if (!$surveyRepository->find($survey)) {
-			throw new NotFoundHttpException();
-		}
-		$questionRepository = $this->entityManager->getRepository(Question::class);
-		$questions = $questionRepository->findBy(['survey' => $survey], ['ordering' => 'asc']);
-		return $this->render('survey/plan.html.twig', [
-			'title' => 'Plan',
-			'survey' => $survey,
-			'questions' => $this->serializer->serialize($questions, 'json', [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
-			]),
-			'options' => $this->serializer->serialize([
-				['value' => 'radio', 'text' => 'radio'],
-				['value' => 'checkbox', 'text' => 'checkbox'],
-				['value' => 'string', 'text' => 'string'],
-				['value' => 'text', 'text' => 'text'],
-			],'json'),
-		]);
-	}
-
-	#[Route('/survey/plan/{id}/all', name: 'survey_plan_all', methods: ['GET'])]
-	public function all(int $id): JsonResponse
-	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		$questions = $repository->findBy(['survey' => $id], ['ordering' => 'asc']);
-		return $questions ?
-			new JsonResponse($this->serializer->serialize($questions, 'json'), JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Questions not found'], JsonResponse::HTTP_NOT_FOUND);
-	}
-
-	#[Route('/survey/plan/{id}/add', name: 'survey_plan_add', methods: ['POST'])]
-	public function add(int $id, Request $request, QuestionService $questionService): JsonResponse
-	{
-		$data = $this->serializer->decode($request->getContent(), 'json');
-		match ($this->accessor->getValue($data, '[type]')) {
-			'radio', 'checkbox' => $created = $questionService->createChoice($id, $data),
-			'string', 'text' => $created = $questionService->createNote($id, $data),
-			default => $created = false,
-		};
-		if ($created) {
-			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json', [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
-			]);
-			return new JsonResponse($json, JsonResponse::HTTP_OK);
-		} else {
-			return new JsonResponse(['text' => 'Failed to add question'], JsonResponse::HTTP_NOT_FOUND);
-		}
-	}
-
-	#[Route('/survey/plan/{id}/update', name: 'survey_plan_update', methods: ['PUT'])]
-	public function update(Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
-	{
-		$question = $this->serializer->deserialize($request->getContent(), Question::class, 'json');
-		$validationService->validate($question);
-		if ($errors = $validationService->getErrors(Question::class)) {
-			return new JsonResponse($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-		}
-		$data = $this->serializer->decode($request->getContent(), 'json');
-		match ($this->accessor->getValue($data, '[type]')) {
-			'radio', 'checkbox' => $updated = $questionService->updateChoice($data),
-			'string', 'text' => $updated = $questionService->updateNote($data),
-			default => $updated = false,
-		};
-		return $updated ?
-			new JsonResponse([], JsonResponse::HTTP_OK) :
-			new JsonResponse(['text' => 'Failed to update question'], JsonResponse::HTTP_NOT_FOUND);
-	}
-
-	#[Route('/survey/plan/{id}/remove', name: 'survey_plan_remove', methods: ['DELETE'])]
-	public function remove(int $id, Request $request, QuestionService $questionService): JsonResponse
-	{
-		$data = $this->serializer->decode($request->getContent(), 'json');
-		if ($questionService->delete($data)) {
-			$json = $this->serializer->serialize($questionService->getBySurvey($id), 'json', [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
-			]);
-			return new JsonResponse($json, JsonResponse::HTTP_OK);
-		} else {
-			return new JsonResponse(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
-		}
 	}
 }
