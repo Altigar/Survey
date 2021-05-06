@@ -52,11 +52,7 @@ class ContentController extends AbstractController
 	public function create(int $survey, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
-		match ($this->accessor->getValue($data, '[type]')) {
-			'radio', 'checkbox' => $created = $questionService->createChoice($survey, $data),
-			'string', 'text' => $created = $questionService->createNote($survey, $data),
-			default => $created = false,
-		};
+		$created = $this->accessor->getValue($data, '[type]') ? $questionService->create($survey, $data) : false;
 		if ($created) {
 			return $this->json($questionService->getBySurvey($survey), JsonResponse::HTTP_OK, context: [
 				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']

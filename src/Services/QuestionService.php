@@ -20,25 +20,7 @@ class QuestionService
 		return $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	}
 
-	public function createChoice(int $id, array $data): bool
-	{
-		$repository = $this->entityManager->getRepository(Survey::class);
-		/** @var $survey Survey */
-		if ($survey = $repository->find($id)) {
-			$option = (new Option())->setOrdering(1);
-			$question = (new Question())
-				->setSurvey($survey)
-				->setType($this->accessor->getValue($data, '[type]'))
-				->setCreatedAt(new \DateTime('now'))
-				->setOrdering($this->accessor->getValue($data, '[ordering]'))
-				->addOption($option);
-			$this->entityManager->persist($question);
-			$this->entityManager->flush();
-		}
-		return (bool)$survey;
-	}
-
-	public function createNote(int $id, array $data): bool
+	public function create(int $id, array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Survey::class);
 		/** @var $survey Survey */
@@ -62,6 +44,7 @@ class QuestionService
 	public function updateChoice(array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
+		/** @var $question Question */
 		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
 			$question->setType($this->accessor->getValue($data, '[type]'));
 			$question->setText($this->accessor->getValue($data, '[text]'));
@@ -97,6 +80,7 @@ class QuestionService
 	public function updateNote(array $data): bool
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
+		/** @var $question Question */
 		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
 			$type = $this->accessor->getValue($data, '[type]');
 			$question->setType($type);
