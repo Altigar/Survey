@@ -41,7 +41,7 @@ class SurveyController extends AbstractController
 			$this->entityManager->persist($survey);
 			$this->entityManager->flush();
 
-			return $this->redirectToRoute('content', ['id' => $survey->getId()]);
+			return $this->redirectToRoute('content', ['survey' => $survey->getId()]);
 		}
 
 		return $this->render('survey/create.html.twig', [
