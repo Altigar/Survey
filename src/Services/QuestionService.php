@@ -31,7 +31,7 @@ class QuestionService
 				->setType($this->accessor->getValue($data, '[type]'))
 				->setCreatedAt(new \DateTime('now'))
 				->setOrdering($this->accessor->getValue($data, '[ordering]'))
-				->addOption((new Option())->setOrdering(1));
+				->addOption(new Option());
 			if ($type == 'text') {
 				$question->setRow(3);
 			}

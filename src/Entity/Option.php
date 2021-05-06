@@ -38,9 +38,9 @@ class Option
     private ?Question $question = null;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=false)
      */
-    private ?int $ordering = null;
+    private int $ordering = 1;
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="option")
@@ -81,12 +81,12 @@ class Option
         return $this;
     }
 
-    public function getOrdering(): ?int
+    public function getOrdering(): int
     {
         return $this->ordering;
     }
 
-    public function setOrdering(?int $ordering): self
+    public function setOrdering(int $ordering): self
     {
         $this->ordering = $ordering;
 

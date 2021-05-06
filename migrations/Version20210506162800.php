@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210506160308 extends AbstractMigration
+final class Version20210506162800 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,7 +25,7 @@ final class Version20210506160308 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_DADD4A251E27F6BF ON answer (question_id)');
         $this->addSql('CREATE INDEX IDX_DADD4A25A7C41D6F ON answer (option_id)');
         $this->addSql('CREATE INDEX IDX_DADD4A25EC545AE5 ON answer (pass_id)');
-        $this->addSql('CREATE TABLE option (id INT NOT NULL, question_id INT NOT NULL, text TEXT DEFAULT NULL, ordering INT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE option (id INT NOT NULL, question_id INT NOT NULL, text TEXT DEFAULT NULL, ordering INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5A8600B01E27F6BF ON option (question_id)');
         $this->addSql('CREATE TABLE pass (id INT NOT NULL, survey_id INT NOT NULL, person_id INT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_CE70D424B3FE509D ON pass (survey_id)');
