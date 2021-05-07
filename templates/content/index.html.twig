@@ -4,9 +4,5 @@
 
 {% block body %}
     {% include('partials/navigation.html.twig') %}
-    <b-row class="min-w-100">
-        <b-col tag="section">
-            <survey id="{{ survey }}" questions="{{ questions }}" options="{{ options }}"></survey>
-        </b-col>
-    </b-row>
+    <survey id="{{ survey }}" questions="{{ questions }}" options="{{ options }}"></survey>
 {% endblock %}

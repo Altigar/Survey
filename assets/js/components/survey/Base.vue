@@ -1,40 +1,44 @@
 <template>
-    <div>
-        <template v-for="question in data">
-            <choice
-                :key="question.id"
-                :survey-id="id"
-                :data="question"
-                :ordering="question.ordering"
-                v-if="isSelected(question.type, ['radio', 'checkbox'])"
-                @remove="remove"
-                ref="question"
-            ></choice>
-            <note
-                :key="question.id"
-                :survey-id="id"
-                :data="question"
-                v-if="isSelected(question.type, ['string', 'text'])"
-                @remove="remove"
-                ref="question"
-            ></note>
-        </template>
-        <b-form-select v-model="selected" :options="types" size="sm"></b-form-select>
-        <b-button @click="add">add</b-button>
-        <div>
-            <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
-        </div>
-    </div>
+    <b-row class="min-w-100">
+        <b-col class="mb-4" tag="aside" cols="3">
+            <sidebar @add="add" :data="types"></sidebar>
+        </b-col>
+        <b-col tag="section" cols="9">
+            <template v-for="question in data">
+                <choice
+                    :key="question.id"
+                    :survey-id="id"
+                    :data="question"
+                    :ordering="question.ordering"
+                    v-if="isSelected(question.type, ['radio', 'checkbox'])"
+                    @remove="remove"
+                    ref="question"
+                ></choice>
+                <note
+                    :key="question.id"
+                    :survey-id="id"
+                    :data="question"
+                    v-if="isSelected(question.type, ['string', 'text'])"
+                    @remove="remove"
+                    ref="question"
+                ></note>
+            </template>
+            <div>
+                <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
+            </div>
+        </b-col>
+    </b-row>
 </template>
 
 <script>
 import axios from "axios";
 import Choice from "./Choice";
 import Note from "./Note";
+import Sidebar from "./Sidebar";
 
 export default {
     name: "Base",
-    components: {Choice, Note},
+    components: {Sidebar, Choice, Note},
     props: {
         id: String,
         questions: String,
@@ -42,20 +46,19 @@ export default {
     },
     data() {
         return {
-            selected: null,
             error: null,
             data: [],
             types: [],
         }
     },
     methods: {
-        async add() {
+        async add(event) {
             let number = 1;
             if (this.$refs.question) {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
             try {
-                let response = await axios.post(`/content/${this.id}/create`, {type: this.selected, ordering: number});
+                let response = await axios.post(`/content/${this.id}/create`, {type: event.value, ordering: number});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;
