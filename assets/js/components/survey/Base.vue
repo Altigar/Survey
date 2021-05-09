@@ -22,6 +22,14 @@
                     @remove="remove"
                     ref="question"
                 ></note>
+                <scale
+                    :key="question.id"
+                    :survey-id="id"
+                    :data="question"
+                    v-if="isSelected(question.type, ['scale'])"
+                    @remove="remove"
+                    ref="question"
+                ></scale>
             </template>
             <div>
                 <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
@@ -35,10 +43,11 @@ import axios from "axios";
 import Choice from "./Choice";
 import Note from "./Note";
 import Sidebar from "./Sidebar";
+import Scale from "./Scale";
 
 export default {
     name: "Base",
-    components: {Sidebar, Choice, Note},
+    components: {Scale, Sidebar, Choice, Note},
     props: {
         id: String,
         questions: String,

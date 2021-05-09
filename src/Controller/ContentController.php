@@ -44,6 +44,7 @@ class ContentController extends AbstractController
 			    ['value' => 'checkbox', 'text' => 'checkbox'],
 			    ['value' => 'string', 'text' => 'string'],
 			    ['value' => 'text', 'text' => 'text'],
+			    ['value' => 'scale', 'text' => 'scale'],
 		    ],'json'),
 	    ]);
     }
@@ -74,6 +75,7 @@ class ContentController extends AbstractController
 		match ($this->accessor->getValue($data, '[type]')) {
 			'radio', 'checkbox' => $updated = $questionService->updateChoice($data),
 			'string', 'text' => $updated = $questionService->updateNote($data),
+			'scale' => $updated = $questionService->updateScale($data),
 			default => $updated = false,
 		};
 		if ($updated) {

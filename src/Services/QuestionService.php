@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
+use App\Utils\Util;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -30,11 +31,14 @@ class QuestionService
 				->setSurvey($survey)
 				->setType($this->accessor->getValue($data, '[type]'))
 				->setCreatedAt(new \DateTime('now'))
-				->setOrdering($this->accessor->getValue($data, '[ordering]'))
-				->addOption(new Option());
+				->setOrdering($this->accessor->getValue($data, '[ordering]'));
+			$option = new Option();
 			if ($type == 'text') {
 				$question->setRow(3);
+			} elseif ($type == 'scale') {
+				$option->setScale(10);
 			}
+			$question->addOption($option);
 			$this->entityManager->persist($question);
 			$this->entityManager->flush();
 		}
@@ -87,6 +91,24 @@ class QuestionService
 			$question->setText($this->accessor->getValue($data, '[text]'));
 			if ($type == 'text') {
 				$question->setRow($this->accessor->getValue($data, '[row]'));
+			}
+			$this->entityManager->persist($question);
+			$this->entityManager->flush();
+		}
+		return (bool)$question;
+	}
+
+	public function updateScale(array $data): bool
+	{
+		$repository = $this->entityManager->getRepository(Question::class);
+		/** @var $question Question */
+		if ($question = $repository->findById($this->accessor->getValue($data, '[id]'))) {
+			$question->setText($this->accessor->getValue($data, '[text]'));
+			if ($option = $question->getOptions()->first()) {
+				$rawOption = Util::first($this->accessor->getValue($data, '[options]'));
+				$option->setScale($this->accessor->getValue($rawOption, '[scale]'))
+					->setScaleFromText($this->accessor->getValue($rawOption, '[scale_from_text]'))
+					->setScaleToText($this->accessor->getValue($rawOption, '[scale_to_text]'));
 			}
 			$this->entityManager->persist($question);
 			$this->entityManager->flush();

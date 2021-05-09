@@ -32,7 +32,6 @@ export default {
     },
     methods: {
         async save() {
-            console.log(this.$refs);
             let data = {};
             for (let question of this.$refs.question) {
                 data[question.$props.id] = question.value;
