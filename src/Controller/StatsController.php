@@ -54,7 +54,7 @@ class StatsController extends AbstractController
     	$answers = $answerRepository->findBy(['question' => Util::getColumn($questions, 'id'), 'person' => $person]);
         return $this->render('stats/person.html.twig', [
         	'questions' => $questions,
-	        'answers' => Util::reindex($answers, 'option'),
+	        'answers' => Util::reindexRelation($answers, 'option'),
         ]);
     }
 }

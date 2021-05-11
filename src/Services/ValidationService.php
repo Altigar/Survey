@@ -12,9 +12,9 @@ class ValidationService
 		protected array $errors = [],
 	) {}
 
-	public function validate(object $entity): void
+	public function validate(object $entity, ?string $groups = null): void
 	{
-		$errors = $this->validator->validate($entity);
+		$errors = $this->validator->validate($entity, groups: $groups);
 		$normalizedErrors = [];
 		if ($errors->count()) {
 			foreach ($errors as $error) {
