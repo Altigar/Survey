@@ -2,7 +2,7 @@
 
 namespace App\Utils;
 
-class Util
+class ObjectUtil
 {
 	public static function reindexRelation(array $data, string $attribute): array
 	{
@@ -32,10 +32,5 @@ class Util
 			$result[] = $object->{$method}();
 		}
 		return $result;
-	}
-
-	public static function first(?array $data): mixed
-	{
-		return $data[0] ?? null;
 	}
 }

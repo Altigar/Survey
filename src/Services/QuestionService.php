@@ -5,7 +5,8 @@ namespace App\Services;
 use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
-use App\Utils\Util;
+use App\Utils\ArrayUtil;
+use App\Utils\ObjectUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
@@ -49,13 +50,13 @@ class QuestionService
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		if ($questionDb = $repository->find($question->getId())) {
-			$optionIds = Util::getColumn($question->getOptions()->toArray(), 'id');
+			$optionIds = ObjectUtil::getColumn($question->getOptions()->toArray(), 'id');
 			foreach ($questionDb->getOptions()->toArray() as $option) {
 				if (!in_array($option->getId(), $optionIds)) {
 					$questionDb->removeOption($option);
 				}
 			}
-			$options = Util::reindex($questionDb->getOptions()->toArray(), 'id');
+			$options = ObjectUtil::reindex($questionDb->getOptions()->toArray(), 'id');
 			foreach ($question->getOptions()->toArray() as $option) {
 				if (!$option->getId()) {
 					$questionDb->addOption($option);
@@ -87,7 +88,7 @@ class QuestionService
 		if ($questionDb = $repository->find($question->getId())) {
 			$questionDb->setText($question->getText());
 			if ($optionDb = $questionDb->getOptions()->first()) {
-				$option = Util::first($question->getOptions()->toArray());
+				$option = ArrayUtil::first($question->getOptions()->toArray());
 				$optionDb->setScale($option->getScale())
 					->setScaleFromText($option->getScaleFromText())
 					->setScaleToText($option->getScaleToText());

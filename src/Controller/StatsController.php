@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Answer;
 use App\Entity\Pass;
 use App\Entity\Question;
-use App\Utils\Util;
+use App\Utils\ObjectUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,10 +51,10 @@ class StatsController extends AbstractController
     	$questions = $repository->findBy(['survey' => $survey]);
 
     	$answerRepository = $this->entityManager->getRepository(Answer::class);
-    	$answers = $answerRepository->findBy(['question' => Util::getColumn($questions, 'id'), 'person' => $person]);
+    	$answers = $answerRepository->findBy(['question' => ObjectUtil::getColumn($questions, 'id'), 'person' => $person]);
         return $this->render('stats/person.html.twig', [
         	'questions' => $questions,
-	        'answers' => Util::reindexRelation($answers, 'option'),
+	        'answers' => ObjectUtil::reindexRelation($answers, 'option'),
         ]);
     }
 }
