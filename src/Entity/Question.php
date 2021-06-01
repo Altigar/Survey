@@ -60,11 +60,6 @@ class Question
     private ?int $ordering = null;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    private ?int $row = null;
-
-    /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question", cascade={"persist", "remove"})
      */
     private ArrayCollection|PersistentCollection|null $answers;
@@ -170,18 +165,6 @@ class Question
     public function setOrdering(?int $ordering): self
     {
         $this->ordering = $ordering;
-
-        return $this;
-    }
-
-    public function getRow(): ?int
-    {
-        return $this->row;
-    }
-
-    public function setRow(?int $row): self
-    {
-        $this->row = $row;
 
         return $this;
     }

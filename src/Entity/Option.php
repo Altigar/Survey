@@ -61,6 +61,11 @@ class Option
 	#[Assert\Length(max: 40, maxMessage: 'Text cannot be longer than {{ limit }} characters')]
     private ?string $scale_to_text = null;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private ?int $row = null;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -176,4 +181,16 @@ class Option
 
         return $this;
     }
+
+	public function getRow(): ?int
+	{
+		return $this->row;
+	}
+
+	public function setRow(?int $row): self
+	{
+		$this->row = $row;
+
+		return $this;
+	}
 }

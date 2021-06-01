@@ -35,7 +35,7 @@ class QuestionService
 				->setOrdering($this->accessor->getValue($data, '[ordering]'));
 			$option = new Option();
 			if ($type == 'text') {
-				$question->setRow(3);
+				$option->setRow(3);
 			} elseif ($type == 'scale') {
 				$option->setScale(10);
 			}
@@ -76,6 +76,11 @@ class QuestionService
 		$repository = $this->entityManager->getRepository(Question::class);
 		if ($questionDb = $repository->find($question->getId())) {
 			$questionDb->setText($question->getText());
+			if ($question->getType() == 'text') {
+				$option = ArrayUtil::first($question->getOptions()->toArray());
+				$optionDb = ArrayUtil::first($questionDb->getOptions()->toArray());
+				$optionDb->setRow($option->getRow());
+			}
 			$this->entityManager->persist($questionDb);
 			$this->entityManager->flush();
 		}

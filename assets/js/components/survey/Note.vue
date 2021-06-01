@@ -27,27 +27,28 @@ export default {
     },
     data() {
         return {
-            selected: this.data.row,
-            options: Array.from({length: 15}, (_, i) => i + 1),
-            error: null
+            selected: null,
+            error: null,
+            options: Array.from({length: 15}, (_, i) => i + 1)
         }
     },
     methods: {
         async save() {
             this.error = null;
+            this.data.options[0].row = this.selected;
             try {
-                await axios.put(`/content/${this.surveyId}/update`, {
-                    id: this.data.id,
-                    type: this.data.type,
-                    text: this.data.text,
-                    row: this.selected,
-                });
+                await axios.put(`/content/${this.surveyId}/update`, this.data);
             } catch (error) {
                 this.error = error.response.data.text;
                 this.$forceUpdate();
             }
         }
     },
+    created() {
+        if (this.data.options[0]) {
+            this.selected = this.data.options[0].row;
+        }
+    }
 }
 </script>
 
