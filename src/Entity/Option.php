@@ -22,13 +22,10 @@ class Option
     private ?int $id = null;
 
 	/**
-	 * @Assert\NotBlank
-	 * @Assert\Length(
-	 *     max = 100,
-	 *     maxMessage = "Your option cannot be longer than {{ limit }} characters"
-	 * )
 	 * @ORM\Column(type="text", nullable=true)
 	 */
+	#[Assert\NotBlank(groups: ['choice'])]
+	#[Assert\Length(max: 100, maxMessage: 'Your option cannot be longer than {{ limit }} characters')]
     private ?string $text = null;
 
     /**
@@ -47,6 +44,28 @@ class Option
      */
     private ArrayCollection|PersistentCollection|null $answers = null;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private ?int $scale = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+	#[Assert\Length(max: 40, maxMessage: 'Text cannot be longer than {{ limit }} characters')]
+    private ?string $scale_from_text = null;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+	#[Assert\Length(max: 40, maxMessage: 'Text cannot be longer than {{ limit }} characters')]
+    private ?string $scale_to_text = null;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private ?int $row = null;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
@@ -56,6 +75,13 @@ class Option
     {
         return $this->id;
     }
+
+	public function setId(int $id): self
+	{
+		$this->id = $id;
+
+		return $this;
+	}
 
     public function getText(): ?string
     {
@@ -119,4 +145,52 @@ class Option
 
         return $this;
     }
+
+    public function getScale(): ?int
+    {
+        return $this->scale;
+    }
+
+    public function setScale(?int $scale): self
+    {
+        $this->scale = $scale;
+
+        return $this;
+    }
+
+    public function getScaleFromText(): ?string
+    {
+        return $this->scale_from_text;
+    }
+
+    public function setScaleFromText(?string $scale_from_text): self
+    {
+        $this->scale_from_text = $scale_from_text;
+
+        return $this;
+    }
+
+    public function getScaleToText(): ?string
+    {
+        return $this->scale_to_text;
+    }
+
+    public function setScaleToText(?string $scale_to_text): self
+    {
+        $this->scale_to_text = $scale_to_text;
+
+        return $this;
+    }
+
+	public function getRow(): ?int
+	{
+		return $this->row;
+	}
+
+	public function setRow(?int $row): self
+	{
+		$this->row = $row;
+
+		return $this;
+	}
 }

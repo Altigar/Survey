@@ -44,6 +44,7 @@ class ContentController extends AbstractController
 			    ['value' => 'checkbox', 'text' => 'checkbox'],
 			    ['value' => 'string', 'text' => 'string'],
 			    ['value' => 'text', 'text' => 'text'],
+			    ['value' => 'scale', 'text' => 'scale'],
 		    ],'json'),
 	    ]);
     }
@@ -66,14 +67,15 @@ class ContentController extends AbstractController
 	public function update(Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
 	{
 		$question = $this->serializer->deserialize($request->getContent(), Question::class, 'json');
-		$validationService->validate($question);
+		in_array($question->getType(), ['radio', 'checkbox']) ? $group = 'choice' : $group = null;
+		$validationService->validate($question, $group);
 		if ($errors = $validationService->getErrors(Question::class)) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		$data = $this->serializer->decode($request->getContent(), 'json');
-		match ($this->accessor->getValue($data, '[type]')) {
-			'radio', 'checkbox' => $updated = $questionService->updateChoice($data),
-			'string', 'text' => $updated = $questionService->updateNote($data),
+		match ($question->getType()) {
+			'radio', 'checkbox' => $updated = $questionService->updateChoice($question),
+			'string', 'text' => $updated = $questionService->updateNote($question),
+			'scale' => $updated = $questionService->updateScale($question),
 			default => $updated = false,
 		};
 		if ($updated) {
