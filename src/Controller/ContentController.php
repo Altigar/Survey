@@ -49,7 +49,7 @@ class ContentController extends AbstractController
 	    ]);
     }
 
-	#[Route('/content/{survey}/create', name: 'content_create', methods: ['POST'])]
+	#[Route('/content/{survey}', name: 'content_create', methods: ['POST'])]
 	public function create(int $survey, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');
@@ -63,7 +63,7 @@ class ContentController extends AbstractController
 		}
 	}
 
-	#[Route('/content/{survey}/update', name: 'content_update', methods: ['PUT'])]
+	#[Route('/content/{survey}', name: 'content_update', methods: ['PUT'])]
 	public function update(Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
 	{
 		$question = $this->serializer->deserialize($request->getContent(), Question::class, 'json');
@@ -85,7 +85,7 @@ class ContentController extends AbstractController
 		}
 	}
 
-	#[Route('/content/{survey}/remove', name: 'content_remove', methods: ['DELETE'])]
+	#[Route('/content/{survey}', name: 'content_remove', methods: ['DELETE'])]
 	public function remove(int $survey, Request $request, QuestionService $questionService): JsonResponse
 	{
 		$data = $this->serializer->decode($request->getContent(), 'json');

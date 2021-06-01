@@ -67,7 +67,7 @@ export default {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
             try {
-                let response = await axios.post(`/content/${this.id}/create`, {type: event.value, ordering: number});
+                let response = await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;
@@ -76,7 +76,7 @@ export default {
         async remove(id) {
             this.clearErrors(id);
             try {
-                let response = await axios.delete(`/content/${this.id}/remove`, {data: {id: id}});
+                let response = await axios.delete(`/content/${this.id}`, {data: {id: id}});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;
