@@ -80,9 +80,9 @@ export default {
             }
         },
         async remove(id) {
-            this.clearErrors(id);
             try {
-                let response = await axios.delete(`/content/${this.id}`, {data: {id: id}});
+                await axios.delete(`/content/${id}`);
+                let response = await axios.get(`/content/${this.id}`, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;
@@ -90,10 +90,6 @@ export default {
         },
         isSelected(type, options) {
             return options.includes(type);
-        },
-        clearErrors(id) {
-            let question = this.data.find(elem => elem.id === id);
-            question.options.forEach(elem => elem.error = null);
         },
     },
     created() {

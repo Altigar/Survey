@@ -17,11 +17,6 @@ class QuestionService
 		private PropertyAccessorInterface $accessor,
 	) {}
 
-	public function getBySurvey(int $survey): array
-	{
-		return $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
-	}
-
 	public function create(Survey $survey, Question $question): void
 	{
 		$question->setSurvey($survey)
@@ -93,16 +88,5 @@ class QuestionService
 			$this->entityManager->flush();
 		}
 		return $questionDb;
-	}
-
-	public function delete(array $data): bool
-	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		$id = $this->accessor->getValue($data, '[id]');
-		if ($question = $repository->find((int)$id)) {
-			$this->entityManager->remove($question);
-			$this->entityManager->flush();
-		}
-		return (bool)$question;
 	}
 }

@@ -76,16 +76,11 @@ class ContentController extends AbstractController
 		}
 	}
 
-	#[Route('/content/{survey}', name: 'content_remove', methods: ['DELETE'])]
-	public function remove(int $survey, Request $request, QuestionService $questionService): JsonResponse
+	#[Route('/content/{question}', name: 'content_remove', requirements: ['question' => '\d+'], methods: ['DELETE'])]
+	public function remove(Question $question): JsonResponse
 	{
-		$data = $this->serializer->decode($request->getContent(), 'json');
-		if ($questionService->delete($data)) {
-			return $this->json($questionService->getBySurvey($survey), JsonResponse::HTTP_OK, context: [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']
-			]);
-		} else {
-			return $this->json(['text' => 'Failed to remove question'], JsonResponse::HTTP_NOT_FOUND);
-		}
+		$this->entityManager->remove($question);
+		$this->entityManager->flush();
+		return $this->json([], JsonResponse::HTTP_NO_CONTENT);
 	}
 }
