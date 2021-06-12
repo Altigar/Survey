@@ -15,6 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Question
 {
+	const TYPE_RADIO = 'radio';
+	const TYPE_CHECKBOX = 'checkbox';
+
+	const TYPES = [
+		self::TYPE_RADIO,
+		self::TYPE_CHECKBOX,
+	];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -52,11 +60,15 @@ class Question
     /**
      * @ORM\Column(type="string", length=255)
      */
+	#[Assert\NotBlank(groups: ['default'])]
+	#[Assert\Choice(self::TYPES, groups: ['default'])]
     private ?string $type = null;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
      */
+	#[Assert\NotBlank(groups: ['default'])]
+	#[Assert\Positive(groups: ['default'])]
     private ?int $ordering = null;
 
     /**

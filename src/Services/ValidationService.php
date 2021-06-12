@@ -9,10 +9,9 @@ class ValidationService
 {
 	public function __construct(
 		protected ValidatorInterface $validator,
-		protected array $errors = [],
 	) {}
 
-	public function validate(object $entity, ?string $groups = null): void
+	public function validate(object $entity, ?array $groups = null): array
 	{
 		$errors = $this->validator->validate($entity, groups: $groups);
 		$normalizedErrors = [];
@@ -26,12 +25,8 @@ class ValidationService
 					$normalizedErrors[$elements[0]] = $error->getMessage();
 				}
 			}
-			$this->errors[$entity::class] = $normalizedErrors;
 		}
+		return $normalizedErrors;
 	}
 
-	public function getErrors(string $entity): array
-	{
-		return $this->errors[$entity] ?? [];
-	}
 }
