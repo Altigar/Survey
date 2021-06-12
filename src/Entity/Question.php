@@ -17,11 +17,9 @@ class Question
 {
 	const TYPE_RADIO = 'radio';
 	const TYPE_CHECKBOX = 'checkbox';
-
-	const TYPES = [
-		self::TYPE_RADIO,
-		self::TYPE_CHECKBOX,
-	];
+	const TYPE_STRING = 'string';
+	const TYPE_TEXT = 'text';
+	const TYPE_SCALE = 'scale';
 
     /**
      * @ORM\Id
@@ -61,7 +59,13 @@ class Question
      * @ORM\Column(type="string", length=255)
      */
 	#[Assert\NotBlank(groups: ['default'])]
-	#[Assert\Choice(self::TYPES, groups: ['default'])]
+	#[Assert\Choice([
+		self::TYPE_RADIO,
+		self::TYPE_CHECKBOX,
+		self::TYPE_STRING,
+		self::TYPE_TEXT,
+		self::TYPE_SCALE
+	], groups: ['default'])]
     private ?string $type = null;
 
     /**

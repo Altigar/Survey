@@ -38,13 +38,6 @@ class ContentController extends AbstractController
 			    'questions' => $this->serializer->serialize($questions, 'json', [
 				    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 			    ]),
-			    'options' => $this->serializer->serialize([
-				    ['value' => 'radio', 'text' => 'radio'],
-				    ['value' => 'checkbox', 'text' => 'checkbox'],
-				    ['value' => 'string', 'text' => 'string'],
-				    ['value' => 'text', 'text' => 'text'],
-				    ['value' => 'scale', 'text' => 'scale'],
-			    ], 'json'),
 		    ]);
 	    }
     }

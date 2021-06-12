@@ -51,13 +51,18 @@ export default {
     props: {
         id: String,
         questions: String,
-        options: String,
     },
     data() {
         return {
             error: null,
             data: [],
-            types: [],
+            types: [
+                {value: 'radio'},
+                {value: 'checkbox'},
+                {value: 'string'},
+                {value: 'text'},
+                {value: 'scale'},
+            ],
         }
     },
     methods: {
@@ -93,7 +98,6 @@ export default {
     },
     created() {
         this.data = JSON.parse(this.questions);
-        this.types = JSON.parse(this.options);
     }
 }
 </script>
