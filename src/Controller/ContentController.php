@@ -25,17 +25,13 @@ class ContentController extends AbstractController
 		private PropertyAccessorInterface $accessor,
 	) {}
 
-    #[Route('/content/{survey}', name: 'content', methods: ['GET'])]
-    public function index(int $survey, QuestionService $questionService): Response
+    #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
+    public function index(Survey $survey): Response
     {
-	    $surveyRepository = $this->entityManager->getRepository(Survey::class);
-	    if (!$surveyRepository->find($survey)) {
-		    throw new NotFoundHttpException();
-	    }
-	    $questions = $questionService->getBySurvey($survey);
+	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	    return $this->render('content/index.html.twig', [
 		    'title' => 'Content',
-		    'survey' => $survey,
+		    'survey' => $survey->getId(),
 		    'questions' => $this->serializer->serialize($questions, 'json', [
 			    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 		    ]),
