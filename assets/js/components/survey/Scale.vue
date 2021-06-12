@@ -37,7 +37,7 @@ export default {
         async save() {
             this.error = null;
             try {
-                await axios.put(`/content/${this.surveyId}/update`, {
+                await axios.put(`/content/${this.surveyId}`, {
                     id: this.data.id,
                     type: this.data.type,
                     text: this.data.text,

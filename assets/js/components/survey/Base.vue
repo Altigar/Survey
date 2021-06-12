@@ -63,11 +63,12 @@ export default {
     methods: {
         async add(event) {
             let number = 1;
-            if (this.$refs.question) {
+            if (Array.isArray(this.$refs.question) && this.$refs.question.length > 0) {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
             try {
-                let response = await axios.post(`/content/${this.id}/create`, {type: event.value, ordering: number});
+                await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
+                let response = await axios.get(`/content/${this.id}`, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;
@@ -76,7 +77,7 @@ export default {
         async remove(id) {
             this.clearErrors(id);
             try {
-                let response = await axios.delete(`/content/${this.id}/remove`, {data: {id: id}});
+                let response = await axios.delete(`/content/${this.id}`, {data: {id: id}});
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;

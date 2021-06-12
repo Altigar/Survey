@@ -59,7 +59,7 @@ export default {
                 option.error = '';
             }
             try {
-                await axios.put(`/content/${this.surveyId}/update`, this.data);
+                await axios.put(`/content/${this.surveyId}`, this.data);
             } catch (error) {
                 let data = error.response.data;
                 for (let key in data) {

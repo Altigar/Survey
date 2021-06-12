@@ -22,28 +22,19 @@ class QuestionService
 		return $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	}
 
-	public function create(int $id, array $data): bool
+	public function create(Survey $survey, Question $question): void
 	{
-		$repository = $this->entityManager->getRepository(Survey::class);
-		/** @var $survey Survey */
-		if ($survey = $repository->find($id)) {
-			$type = $this->accessor->getValue($data, '[type]');
-			$question = (new Question())
-				->setSurvey($survey)
-				->setType($this->accessor->getValue($data, '[type]'))
-				->setCreatedAt(new \DateTime('now'))
-				->setOrdering($this->accessor->getValue($data, '[ordering]'));
-			$option = new Option();
-			if ($type == 'text') {
-				$option->setRow(3);
-			} elseif ($type == 'scale') {
-				$option->setScale(10);
-			}
-			$question->addOption($option);
-			$this->entityManager->persist($question);
-			$this->entityManager->flush();
+		$question->setSurvey($survey)
+			->setCreatedAt(new \DateTime('now'));
+		$option = new Option();
+		if ($question->getType() == 'text') {
+			$option->setRow(3);
+		} elseif ($question->getType() == 'scale') {
+			$option->setScale(10);
 		}
-		return (bool)$survey;
+		$question->addOption($option);
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
 	}
 
 	public function updateChoice(Question $question): ?Question
