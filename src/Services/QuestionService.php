@@ -22,9 +22,9 @@ class QuestionService
 		$question->setSurvey($survey)
 			->setCreatedAt(new \DateTime('now'));
 		$option = new Option();
-		if ($question->getType() == Question::TYPE_TEXT) {
+		if (($type = $question->getType()) == Question::TYPE_TEXT) {
 			$option->setRow(3);
-		} elseif ($question->getType() == Question::TYPE_SCALE) {
+		} elseif ($type == Question::TYPE_SCALE) {
 			$option->setScale(10);
 		}
 		$question->addOption($option);

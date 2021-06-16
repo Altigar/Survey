@@ -21,6 +21,8 @@ class ContentController extends AbstractController
 	public function __construct(
 		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
+		private QuestionService $questionService,
+		private ValidationService $validationService,
 	) {}
 
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
@@ -29,32 +31,31 @@ class ContentController extends AbstractController
 	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	    if ($request->isXmlHttpRequest()) {
 	    	return $this->json($questions);
-	    } else {
-		    return $this->render('content/index.html.twig', [
-			    'title' => 'Content',
-			    'survey' => $survey->getId(),
-			    'questions' => $this->serializer->serialize($questions, 'json', [
-				    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
-			    ]),
-		    ]);
 	    }
+	    return $this->render('content/index.html.twig', [
+		    'title' => 'Content',
+		    'survey' => $survey->getId(),
+		    'questions' => $this->serializer->serialize($questions, 'json', [
+			    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
+		    ]),
+	    ]);
     }
 
 	#[Route('/content/{survey}', name: 'content_create', requirements: ['survey' => '\d+'], methods: ['POST'])]
-	public function create(Survey $survey, Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
+	public function create(Request $request, Survey $survey): JsonResponse
 	{
 		$question = $this->serializer->deserialize($request->getContent(), Question::class,'json', [
 			AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
 		]);
-		if ($errors = $validationService->validate($question, ['default'])) {
+		if ($errors = $this->validationService->validate($question, ['default'])) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		$questionService->create($survey, $question);
+		$this->questionService->create($survey, $question);
 		return $this->json([], JsonResponse::HTTP_CREATED);
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
-	public function update(Request $request, Question $question, QuestionService $questionService, ValidationService $validationService): JsonResponse
+	public function update(Request $request, Question $question): JsonResponse
 	{
 		$questionData = $this->serializer->deserialize($request->getContent(), Question::class, 'json', [
 			AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
@@ -64,15 +65,15 @@ class ContentController extends AbstractController
 			Question::TYPE_TEXT => 'text',
 			default => [],
 		};
-		if ($errors = $validationService->validate($questionData, array_merge($group, ['default']))) {
+		if ($errors = $this->validationService->validate($questionData, array_merge($group, ['default']))) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
 		match ($type) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $questionService->updateChoice($question, $questionData),
-			Question::TYPE_STRING, Question::TYPE_TEXT => $questionService->updateNote($question, $questionData),
-			Question::TYPE_SCALE => $questionService->updateScale($question, $questionData),
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->questionService->updateChoice($question, $questionData),
+			Question::TYPE_STRING, Question::TYPE_TEXT => $this->questionService->updateNote($question, $questionData),
+			Question::TYPE_SCALE => $this->questionService->updateScale($question, $questionData),
 		};
-		return $this->json([], JsonResponse::HTTP_OK);
+		return $this->json([]);
 	}
 
 	#[Route('/content/{question}', name: 'content_remove', requirements: ['question' => '\d+'], methods: ['DELETE'])]
