@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -22,7 +21,6 @@ class ContentController extends AbstractController
 	public function __construct(
 		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
-		private PropertyAccessorInterface $accessor,
 	) {}
 
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
@@ -55,25 +53,26 @@ class ContentController extends AbstractController
 		return $this->json([], JsonResponse::HTTP_CREATED);
 	}
 
-	#[Route('/content/{survey}', name: 'content_update', methods: ['PUT'])]
-	public function update(Request $request, QuestionService $questionService, ValidationService $validationService): JsonResponse
+	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
+	public function update(Request $request, Question $question, QuestionService $questionService, ValidationService $validationService): JsonResponse
 	{
-		$question = $this->serializer->deserialize($request->getContent(), Question::class, 'json');
-		in_array($question->getType(), ['radio', 'checkbox']) ? $group = 'choice' : $group = null;
-		if ($errors = $validationService->validate($question, [$group])) {
+		$questionData = $this->serializer->deserialize($request->getContent(), Question::class, 'json', [
+			AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
+		]);
+		$group = (array)match ($type = $questionData->getType()) {
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => 'choice',
+			Question::TYPE_TEXT => 'text',
+			default => [],
+		};
+		if ($errors = $validationService->validate($questionData, array_merge($group, ['default']))) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		match ($question->getType()) {
-			'radio', 'checkbox' => $updated = $questionService->updateChoice($question),
-			'string', 'text' => $updated = $questionService->updateNote($question),
-			'scale' => $updated = $questionService->updateScale($question),
-			default => $updated = false,
+		match ($type) {
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $questionService->updateChoice($question, $questionData),
+			Question::TYPE_STRING, Question::TYPE_TEXT => $questionService->updateNote($question, $questionData),
+			Question::TYPE_SCALE => $questionService->updateScale($question, $questionData),
 		};
-		if ($updated) {
-			return $this->json([], JsonResponse::HTTP_OK);
-		} else {
-			return $this->json(['text' => 'Failed to update question'], JsonResponse::HTTP_NOT_FOUND);
-		}
+		return $this->json([], JsonResponse::HTTP_OK);
 	}
 
 	#[Route('/content/{question}', name: 'content_remove', requirements: ['question' => '\d+'], methods: ['DELETE'])]

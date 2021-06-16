@@ -37,10 +37,11 @@ export default {
         async save() {
             this.error = null;
             try {
-                await axios.put(`/content/${this.surveyId}`, {
+                await axios.put(`/content/${this.data.id}`, {
                     id: this.data.id,
                     type: this.data.type,
                     text: this.data.text,
+                    ordering: this.data.ordering,
                     options: [{
                         scale: this.selected,
                         scale_from_text: this.textFrom,

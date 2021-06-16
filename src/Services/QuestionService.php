@@ -22,9 +22,9 @@ class QuestionService
 		$question->setSurvey($survey)
 			->setCreatedAt(new \DateTime('now'));
 		$option = new Option();
-		if ($question->getType() == 'text') {
+		if ($question->getType() == Question::TYPE_TEXT) {
 			$option->setRow(3);
-		} elseif ($question->getType() == 'scale') {
+		} elseif ($question->getType() == Question::TYPE_SCALE) {
 			$option->setScale(10);
 		}
 		$question->addOption($option);
@@ -32,61 +32,51 @@ class QuestionService
 		$this->entityManager->flush();
 	}
 
-	public function updateChoice(Question $question): ?Question
+	public function updateChoice(Question $question, Question $questionData): void
 	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		if ($questionDb = $repository->find($question->getId())) {
-			$optionIds = ObjectUtil::getColumn($question->getOptions()->toArray(), 'id');
-			foreach ($questionDb->getOptions()->toArray() as $option) {
-				if (!in_array($option->getId(), $optionIds)) {
-					$questionDb->removeOption($option);
-				}
+		//remove
+		$optionIds = ObjectUtil::getColumn($questionData->getOptions()->toArray(), 'id');
+		foreach ($question->getOptions()->toArray() as $option) {
+			if (!in_array($option->getId(), $optionIds)) {
+				$question->removeOption($option);
 			}
-			$options = ObjectUtil::reindex($questionDb->getOptions()->toArray(), 'id');
-			foreach ($question->getOptions()->toArray() as $option) {
-				if (!$option->getId()) {
-					$questionDb->addOption($option);
-				} elseif ($obj = $this->accessor->getValue($options, '[' . $option->getId() . ']')) {
-					$obj->setText($option->getText());
-				}
-			}
-			$questionDb->setText($question->getText());
-			$this->entityManager->persist($questionDb);
-			$this->entityManager->flush();
 		}
-		return $questionDb;
+		//add
+		$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
+		foreach ($questionData->getOptions()->toArray() as $option) {
+			if (!$option->getId()) {
+				$question->addOption($option);
+			} elseif ($obj = $this->accessor->getValue($options, '[' . $option->getId() . ']')) {
+				$obj->setText($option->getText());
+			}
+		}
+		$question->setText($questionData->getText());
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
 	}
 
-	public function updateNote(Question $question): ?Question
+	public function updateNote(Question $question, Question $questionData): void
 	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		if ($questionDb = $repository->find($question->getId())) {
-			$questionDb->setText($question->getText());
-			if ($question->getType() == 'text') {
-				$option = ArrayUtil::first($question->getOptions()->toArray());
-				$optionDb = ArrayUtil::first($questionDb->getOptions()->toArray());
-				$optionDb->setRow($option->getRow());
-			}
-			$this->entityManager->persist($questionDb);
-			$this->entityManager->flush();
+		$question->setText($questionData->getText());
+		if ($questionData->getType() == Question::TYPE_TEXT) {
+			$option = ArrayUtil::first($questionData->getOptions()->toArray());
+			$optionDb = ArrayUtil::first($question->getOptions()->toArray());
+			$optionDb->setRow($option->getRow());
 		}
-		return $questionDb;
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
 	}
 
-	public function updateScale(Question $question): ?Question
+	public function updateScale(Question $question, Question $questionData): void
 	{
-		$repository = $this->entityManager->getRepository(Question::class);
-		if ($questionDb = $repository->find($question->getId())) {
-			$questionDb->setText($question->getText());
-			if ($optionDb = $questionDb->getOptions()->first()) {
-				$option = ArrayUtil::first($question->getOptions()->toArray());
-				$optionDb->setScale($option->getScale())
-					->setScaleFromText($option->getScaleFromText())
-					->setScaleToText($option->getScaleToText());
-			}
-			$this->entityManager->persist($questionDb);
-			$this->entityManager->flush();
+		$question->setText($questionData->getText());
+		if ($optionDb = $question->getOptions()->first()) {
+			$option = ArrayUtil::first($questionData->getOptions()->toArray());
+			$optionDb->setScale($option->getScale())
+				->setScaleFromText($option->getScaleFromText())
+				->setScaleToText($option->getScaleToText());
 		}
-		return $questionDb;
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
 	}
 }

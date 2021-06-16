@@ -64,6 +64,8 @@ class Option
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
+    #[Assert\NotBlank(groups: ['text'])]
+    #[Assert\Positive(groups: ['text'])]
     private ?int $row = null;
 
     public function __construct()

@@ -37,7 +37,7 @@ export default {
             this.error = null;
             this.data.options[0].row = this.selected;
             try {
-                await axios.put(`/content/${this.surveyId}`, this.data);
+                await axios.put(`/content/${this.data.id}`, this.data);
             } catch (error) {
                 this.error = error.response.data.text;
                 this.$forceUpdate();
