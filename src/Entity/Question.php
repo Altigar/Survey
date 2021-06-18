@@ -80,6 +80,11 @@ class Question
      */
     private ArrayCollection|PersistentCollection|null $answers;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    private bool $is_required = false;
+
     public function __construct()
     {
         $this->options = new ArrayCollection();
@@ -211,4 +216,16 @@ class Question
 
         return $this;
     }
+
+	public function getIsRequired(): ?bool
+	{
+		return $this->is_required;
+	}
+
+	public function setIsRequired(bool $is_required): self
+	{
+		$this->is_required = $is_required;
+
+		return $this;
+	}
 }

@@ -34,6 +34,8 @@ class QuestionService
 
 	public function updateChoice(Question $question, Question $questionData): void
 	{
+		$question->setIsRequired($questionData->getIsRequired());
+		$question->setText($questionData->getText());
 		//remove
 		$optionIds = ObjectUtil::getColumn($questionData->getOptions()->toArray(), 'id');
 		foreach ($question->getOptions()->toArray() as $option) {
@@ -50,13 +52,13 @@ class QuestionService
 				$obj->setText($option->getText());
 			}
 		}
-		$question->setText($questionData->getText());
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 	}
 
 	public function updateNote(Question $question, Question $questionData): void
 	{
+		$question->setIsRequired($questionData->getIsRequired());
 		$question->setText($questionData->getText());
 		if ($questionData->getType() == Question::TYPE_TEXT) {
 			$option = ArrayUtil::first($questionData->getOptions()->toArray());
@@ -69,6 +71,7 @@ class QuestionService
 
 	public function updateScale(Question $question, Question $questionData): void
 	{
+		$question->setIsRequired($questionData->getIsRequired());
 		$question->setText($questionData->getText());
 		if ($optionDb = $question->getOptions()->first()) {
 			$option = ArrayUtil::first($questionData->getOptions()->toArray());

@@ -7,6 +7,7 @@
                 <b-form-select class="mb-3" v-model="selected" :options="options" size="sm" style="width: 4rem;"></b-form-select>
                 <b-form-input class="mb-3" v-model="textFrom" placeholder="From"></b-form-input>
                 <b-form-input class="mb-3" v-model="textTo" placeholder="To"></b-form-input>
+                <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
                 <div>
                     <b-btn @click="save">save</b-btn>
                     <b-btn @click="$emit('remove', data.id)">remove</b-btn>
@@ -42,6 +43,7 @@ export default {
                     type: this.data.type,
                     text: this.data.text,
                     ordering: this.data.ordering,
+                    is_required: this.data.isRequired,
                     options: [{
                         scale: this.selected,
                         scale_from_text: this.textFrom,

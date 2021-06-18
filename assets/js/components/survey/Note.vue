@@ -6,6 +6,7 @@
                     <b-form-input class="mb-3" v-model="data.text" value="question"></b-form-input>
                     <p v-if="error">{{ error }}</p>
                     <b-form-select v-if="data.type === 'text'" v-model="selected" :options="options" size="sm" style="width: 4rem;"></b-form-select>
+                    <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
                 </b-form-group>
                 <div>
                     <b-btn @click="save">save</b-btn>

@@ -12,6 +12,7 @@
                         </div>
                         <p v-if="option.error">{{ option.error }}</p>
                     </div>
+                    <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
                 </b-form-group>
                 <div>
                     <b-btn @click="add">add</b-btn>
