@@ -10,6 +10,8 @@ export default {
     name: "Note",
     props: {
         id: Number,
+        type: String,
+        optionId: Number,
         title: String,
     },
     data() {

@@ -10,6 +10,8 @@ export default {
     name: "NoteArea",
     props: {
         id: Number,
+        type: String,
+        optionId: Number,
         title: String,
         rows: Number,
     },

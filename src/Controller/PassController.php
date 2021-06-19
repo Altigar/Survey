@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\Survey;
 use App\Services\AnswerService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,31 +16,24 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class PassController extends AbstractController
 {
-    #[Route('/pass/{id}', name: 'pass')]
-    public function index(int $id, SerializerInterface $serializer): Response
+    #[Route('/pass/{survey}', name: 'pass', methods: ['GET'])]
+    public function index(Survey $survey, SerializerInterface $serializer, EntityManagerInterface $entityManager): Response
     {
-    	$repository = $this->getDoctrine()->getManager()->getRepository(Question::class);
-    	$questions = $repository->findBy(['survey' => $id]);
+	    $questions = $entityManager->getRepository(Question::class)->findBy(['survey' => $survey]);
         return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
-        	'id' => $id,
+        	'id' => $survey->getId(),
         	'questions' => $serializer->serialize($questions, 'json', [
         		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 	        ]),
         ]);
     }
 
-	#[Route('/pass/{id}/create', name: 'pass_create', methods: ['POST'])]
-	public function create(int $id, Request $request, SerializerInterface $serializer, AnswerService $service): JsonResponse
+	#[Route('/pass/{survey}', name: 'pass_create', methods: ['POST'])]
+	public function create(Request $request, Survey $survey, SerializerInterface $serializer, AnswerService $service): JsonResponse
 	{
-		$data = $serializer->decode($request->getContent(), 'json');
-		if ($service->create($data, $id, $this->getUser())) {
-			$data = [];
-			$code = JsonResponse::HTTP_CREATED;
-		} else {
-			$data = ['text' => 'Failed to create answer'];
-			$code = JsonResponse::HTTP_BAD_REQUEST;
-		}
-		return $this->json($data, $code);
+		$data = $serializer->deserialize($request->getContent(), Question::class . '[]', 'json');
+		$service->create($data, $survey, $this->getUser());
+		return $this->json([], JsonResponse::HTTP_CREATED);
 	}
 }

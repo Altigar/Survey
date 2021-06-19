@@ -41,7 +41,7 @@ class Answer
     private ?string $text = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Pass::class, inversedBy="answers")
+     * @ORM\ManyToOne(targetEntity=Pass::class, inversedBy="answers", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $pass;
