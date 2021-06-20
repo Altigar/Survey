@@ -30,7 +30,7 @@ class ContentController extends AbstractController
     {
 	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
 	    if ($request->isXmlHttpRequest()) {
-	    	return $this->json($questions, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers']]);
+	    	return $this->json($questions, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']]);
 	    }
 	    return $this->render('content/index.html.twig', [
 		    'title' => 'Content',

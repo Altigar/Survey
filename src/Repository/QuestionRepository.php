@@ -34,14 +34,11 @@ class QuestionRepository extends ServiceEntityRepository
 	public function findByIdPersonWithAnswers(int $id, int $person)
 	{
 		return $this->createQueryBuilder('q')
-			->select('q', 'o', 'a')
+			->select('q', 'o')
 			->from(Question::class, 't')
-			->leftJoin('q.options', 'o')
-			->leftJoin('q.answers', 'a')
+			->join('q.options', 'o')
 			->where('q.survey = :id')
-			->andWhere('a.person = :person')
 			->setParameter('id', $id)
-			->setParameter('person', $person)
 			->getQuery()
 			->getResult();
     }
