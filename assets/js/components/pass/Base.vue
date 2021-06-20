@@ -18,22 +18,33 @@
                 ref="question"
             ></checkbox>
             <note
-                v-else-if="question.type === 'string' && getFirstOptionId(question)"
+                v-else-if="question.type === 'string' && getFirstOptionAttribute(question, 'id')"
                 :id="question.id"
                 :title="question.text"
                 :type="question.type"
-                :option-id="getFirstOptionId(question)"
+                :option-id="getFirstOptionAttribute(question, 'id')"
                 ref="question"
             ></note>
             <note-area
-                v-else-if="question.type === 'text' && getFirstOptionId(question)"
+                v-else-if="question.type === 'text' && getFirstOptionAttribute(question, 'id')"
                 :id="question.id"
                 :title="question.text"
                 :type="question.type"
-                :option-id="getFirstOptionId(question)"
+                :option-id="getFirstOptionAttribute(question, 'id')"
                 :rows="question.row"
                 ref="question"
             ></note-area>
+            <scale
+                v-else-if="question.type === 'scale' && getFirstOptionAttribute(question, 'scale')"
+                :id="question.id"
+                :title="question.text"
+                :type="question.type"
+                :message-from="getFirstOptionAttribute(question, 'scaleFromText')"
+                :message-to="getFirstOptionAttribute(question, 'scaleToText')"
+                :option-id="getFirstOptionAttribute(question, 'id')"
+                :amount="getFirstOptionAttribute(question, 'scale')"
+                ref="question"
+            ></scale>
         </b-form-group>
         <hr>
         <b-btn type="submit">submit</b-btn>
@@ -41,15 +52,16 @@
 </template>
 
 <script>
+import axios from "axios";
 import Radio from "./Radio";
 import Checkbox from "./Checkbox";
 import Note from "./Note";
 import NoteArea from "./NoteArea";
-import axios from "axios";
+import Scale from "./Scale";
 
 export default {
     name: "Base",
-    components: {NoteArea, Radio, Checkbox, Note},
+    components: {Scale, NoteArea, Radio, Checkbox, Note},
     props: {
         id: String,
         questions: String,
@@ -64,15 +76,17 @@ export default {
             let data = [];
             for (let question of this.$refs.question) {
                 if (question.type === 'radio') {
-                    data.push({id: question.$props.id, answers: [{option: {id: question.value}}]});
+                    data.push({id: question.id, answers: [{option: {id: question.value}}]});
                 } else if (question.type === 'checkbox') {
                     let options = [];
                     for (let optionId of question.value) {
                         options.push({option: {id: optionId}});
                     }
-                    data.push({id: question.$props.id, answers: options});
+                    data.push({id: question.id, answers: options});
                 } else if (['string', 'text'].includes(question.type)) {
-                    data.push({id: question.$props.id, answers: [{option: {id: question.$props.optionId}, text: question.value}]});
+                    data.push({id: question.id, answers: [{option: {id: question.optionId}, text: question.value}]});
+                } else if (question.type === 'scale') {
+                    data.push({id: question.id, answers: [{option: {id: question.optionId}, scale_value: question.value}]});
                 }
             }
             try {
@@ -81,9 +95,9 @@ export default {
                 let data = error.response.data;
             }
         },
-        getFirstOptionId(question) {
-            if (question.options[0] && question.options[0].hasOwnProperty('id')) {
-                return question.options[0].id;
+        getFirstOptionAttribute(question, attr) {
+            if (question.options[0] && question.options[0].hasOwnProperty(attr)) {
+                return question.options[0][attr];
             }
         }
     },

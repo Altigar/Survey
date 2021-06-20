@@ -36,8 +36,11 @@ class AnswerService
 					->setQuestion($question)
 					->setPass($pass)
 					->setOption($options[$answerData->getOption()->getId()]);
-				if (in_array($question->getType(), [Question::TYPE_STRING, Question::TYPE_TEXT])) {
+				$type = $question->getType();
+				if (in_array($type, [Question::TYPE_STRING, Question::TYPE_TEXT])) {
 					$answer->setText($answerData->getText());
+				} elseif ($type == Question::TYPE_SCALE) {
+					$answer->setScaleValue($answerData->getScaleValue());
 				}
 				$this->entityManager->persist($answer);
 			}

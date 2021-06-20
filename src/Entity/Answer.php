@@ -46,6 +46,11 @@ class Answer
      */
     private $pass;
 
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private ?int $scale_value = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -110,4 +115,16 @@ class Answer
 
         return $this;
     }
+
+	public function getScaleValue(): ?int
+	{
+		return $this->scale_value;
+	}
+
+	public function setScaleValue(?int $scale_value): self
+	{
+		$this->scale_value = $scale_value;
+
+		return $this;
+	}
 }
