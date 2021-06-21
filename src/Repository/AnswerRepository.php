@@ -22,7 +22,6 @@ class AnswerRepository extends ServiceEntityRepository
 
 	public function findNoteStatsBySurvey(int $survey): array
 	{
-		$entityManager = $this->getEntityManager();
 		$sql = <<<SQL
 			SELECT question_id, answer.text
 			FROM answer
@@ -34,7 +33,7 @@ class AnswerRepository extends ServiceEntityRepository
 		$rsm = (new ResultSetMapping())
 			->addScalarResult('text', 'text')
 			->addScalarResult('question_id', 'question_id');
-		$query = $entityManager->createNativeQuery($sql, $rsm)
+		$query = $this->getEntityManager()->createNativeQuery($sql, $rsm)
 			->setParameter(':survey', $survey)
 			->setParameter(':text', 'text')
 			->setParameter(':string', 'string');
@@ -44,7 +43,6 @@ class AnswerRepository extends ServiceEntityRepository
 
 	public function findChoiceStatsBySurvey(int $survey): array
 	{
-		$entityManager = $this->getEntityManager();
 		$sql = <<<SQL
 			SELECT question_id, option_id, count(option_id) AS amount, sum(count(option_id)) OVER(partition by question_id) as total
 			FROM answer
@@ -60,7 +58,7 @@ class AnswerRepository extends ServiceEntityRepository
 			->addScalarResult('option_id', 'option_id')
 			->addScalarResult('amount', 'amount')
 			->addScalarResult('total', 'total');
-		$query = $entityManager->createNativeQuery($sql, $rsm)
+		$query = $this->getEntityManager()->createNativeQuery($sql, $rsm)
 			->setParameter(':survey', $survey)
 			->setParameter(':radio', 'radio')
 			->setParameter(':checkbox', 'checkbox');
@@ -68,32 +66,27 @@ class AnswerRepository extends ServiceEntityRepository
 		return $query->getResult();
 	}
 
-    // /**
-    //  * @return Answer[] Returns an array of Answer objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+	public function findScaleStatsBySurvey(int $survey): array
+	{
+		$sql = <<<SQL
+			SELECT question_id, option_id, count(option_id) AS amount, sum(count(option_id)) OVER(partition by question_id) as total, scale_value
+			FROM answer
+			JOIN question ON question.id = answer.question_id
+			JOIN survey ON question.survey_id = survey.id
+			WHERE survey_id = :survey AND question.type = :scale
+			GROUP BY question_id, option_id, scale_value
+		SQL;
+		$rsm = (new ResultSetMapping())
+			->addScalarResult('id', 'id')
+			->addScalarResult('question_id', 'question_id')
+			->addScalarResult('option_id', 'option_id')
+			->addScalarResult('amount', 'amount')
+			->addScalarResult('total', 'total')
+			->addScalarResult('scale_value', 'scale_value');
+		$query = $this->getEntityManager()->createNativeQuery($sql, $rsm)
+			->setParameter(':survey', $survey)
+			->setParameter(':scale', 'scale');
 
-    /*
-    public function findOneBySomeField($value): ?Answer
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+		return $query->getResult();
+	}
 }

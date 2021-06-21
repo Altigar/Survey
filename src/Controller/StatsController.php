@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Answer;
 use App\Entity\Pass;
 use App\Entity\Question;
+use App\Entity\Survey;
 use App\Utils\ObjectUtil;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,16 +19,18 @@ class StatsController extends AbstractController
 	) {}
 
 	#[Route('/stats/{survey}', name: 'stats')]
-	public function index(int $survey): Response
+	public function index(Survey $survey): Response
 	{
+		$surveyId = $survey->getId();
 		$questionRepository = $this->entityManager->getRepository(Question::class);
-		$questions = $questionRepository->findByIdPersonWithAnswers($survey, $this->getUser()->getId());
+		$questions = $questionRepository->findByIdPersonWithAnswers($surveyId, $this->getUser()->getId());
 		$answerRepository = $this->entityManager->getRepository(Answer::class);
 		return $this->render('stats/index.html.twig', [
+			'survey' => $surveyId,
 			'questions' => $questions,
-			'noteStats' => $answerRepository->findNoteStatsBySurvey($survey),
-			'choiceStats' => $answerRepository->findChoiceStatsBySurvey($survey),
-			'survey' => $survey,
+			'noteStats' => $answerRepository->findNoteStatsBySurvey($surveyId),
+			'choiceStats' => $answerRepository->findChoiceStatsBySurvey($surveyId),
+			'scaleStats' => $answerRepository->findScaleStatsBySurvey($surveyId),
 		]);
 	}
 

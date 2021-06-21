@@ -17,9 +17,18 @@
             {% for option in question.options %}
                 <div>
                     {% if choiceStats[option.id] is defined %}
-                        {{ (((choiceStats[option.id].amount) * 100) / choiceStats[option.id].total)|number_format(1) + 0 }}%
+                        {{ (choiceStats[option.id].amount * 100 / choiceStats[option.id].total)|number_format(1) + 0 }}%
+                    {% else %}
+                        0%
                     {% endif %}
                     {{ option.text }} {{ choiceStats[option.id].amount ?? 0 }}
+                </div>
+            {% endfor %}
+        {% elseif question.type == 'scale' %}
+            <h3>{{ question.text }}</h3>
+            {% for stat in scaleStats %}
+                <div>
+                    {{ (stat.amount * 100 / stat.total)|number_format(1) + 0 }}% {{ stat.scale_value }} {{ stat.amount }}
                 </div>
             {% endfor %}
         {% endif %}
