@@ -5,3 +5,7 @@ body {
 .w-896 {
     max-width: 896px;
 }
+
+[v-cloak] {
+    display: none;
+}
