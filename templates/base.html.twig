@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -12,9 +13,9 @@
         {% endblock %}
     </head>
     <body>
-        <div id="app" v-cloak>
+        <div id="app">
             {% include('partials/header.html.twig') %}
-            <main id="content">
+            <main id="content" v-cloak>
                 <b-container class="w-896">
                     {% block body %}{% endblock %}
                 </b-container>
