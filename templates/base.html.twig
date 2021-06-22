@@ -15,10 +15,10 @@
     <body>
         <div id="app">
             {% include('partials/header.html.twig') %}
-            <main id="content" v-cloak>
-                <b-container class="w-896">
+            <main id="content">
+                <div class="container w-896">
                     {% block body %}{% endblock %}
-                </b-container>
+                </div>
             </main>
         </div>
     </body>
