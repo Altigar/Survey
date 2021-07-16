@@ -2,6 +2,7 @@
     <article>
         <h3>{{ title }}</h3>
         <b-form-input :key="id" :name="`question[${id}]`" v-model="value"></b-form-input>
+        <small v-if="error" class="text-danger">{{ error }}</small>
     </article>
 </template>
 
@@ -10,6 +11,7 @@ export default {
     name: "Note",
     props: {
         id: Number,
+        isRequired: Boolean,
         type: String,
         optionId: Number,
         title: String,
@@ -17,6 +19,7 @@ export default {
     data() {
         return {
             value: null,
+            error: null,
         };
     },
 }

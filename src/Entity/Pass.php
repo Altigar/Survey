@@ -46,6 +46,16 @@ class Pass
         $this->answers = new ArrayCollection();
     }
 
+	public static function create(Survey $survey, Person $person): self
+	{
+		$self = new self();
+		$self->survey = $survey;
+		$self->person = $person;
+		$self->created_at = new \DateTime('now');
+
+		return $self;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

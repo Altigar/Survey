@@ -17,31 +17,28 @@ class AnswerService
 		private EntityManagerInterface $entityManager,
 	) {}
 
-	public function create(array $data, Survey $survey, Person|UserInterface $person): void
+	public function create(array $requestData, Survey $survey, Person|UserInterface $person): void
 	{
-		$pass = (new Pass())
-			->setPerson($person)
-			->setSurvey($survey)
-			->setCreatedAt(new \DateTime('now'));
-
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = ObjectUtil::reindex($repository->findBy(['survey' => $survey]), 'id');
 
-		foreach ($data as $questionData) {
+		foreach ($requestData as $questionData) {
 			$question = $questions[$questionData->getId()];
 			foreach ($questionData->getAnswers() as $answerData) {
 				$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
-				$answer = (new Answer())
-					->setPerson($person)
-					->setQuestion($question)
-					->setPass($pass)
-					->setOption($options[$answerData->getOption()->getId()]);
+				$data = [
+					'person' => $person,
+					'question' => $question,
+					'pass' => Pass::create($survey, $person),
+					'option' => $options[$answerData->getOption()->getId()]
+				];
 				$type = $question->getType();
 				if (in_array($type, [Question::TYPE_STRING, Question::TYPE_TEXT])) {
-					$answer->setText($answerData->getText());
+					$data['text'] = $answerData->getText();
 				} elseif ($type == Question::TYPE_SCALE) {
-					$answer->setScaleValue($answerData->getScaleValue());
+					$data['scale_value'] = $answerData->getScaleValue();
 				}
+				$answer = Answer::create($data);
 				$this->entityManager->persist($answer);
 			}
 		}

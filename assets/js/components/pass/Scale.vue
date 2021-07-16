@@ -8,6 +8,7 @@
         <div class="d-flex justify-content-between">
             <b-form-radio v-for="number in amount" :key="number" :name="`question[${id}]`" :value="number" v-model="value">{{ number }}</b-form-radio>
         </div>
+        <small v-if="error" class="text-danger">{{ error }}</small>
     </article>
 </template>
 
@@ -16,6 +17,7 @@ export default {
     name: "Scale",
     props: {
         id: Number,
+        isRequired: Boolean,
         type: String,
         title: String,
         optionId: Number,
@@ -26,6 +28,7 @@ export default {
     data() {
         return {
             value: null,
+            error: null,
         };
     }
 }

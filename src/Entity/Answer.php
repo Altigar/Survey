@@ -21,19 +21,19 @@ class Answer
      * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Person $person = null;
+    private Person $person;
 
     /**
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Question $question = null;
+    private Question $question;
 
     /**
      * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Option $option;
+    private Option $option;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -51,6 +51,20 @@ class Answer
      */
     private ?int $scale_value = null;
 
+	public static function create(array $data): self
+	{
+		$self = new self();
+		$self->person = $data['person'];
+		$self->option = $data['option'];
+		$self->question = $data['question'];
+		$self->pass = $data['pass'];
+
+		$self->text = $data['text'] ?? null;
+		$self->scale_value = $data['scale_value'] ?? null;
+
+		return $self;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,23 +75,9 @@ class Answer
         return $this->person;
     }
 
-    public function setPerson(?Person $person): self
-    {
-        $this->person = $person;
-
-        return $this;
-    }
-
     public function getQuestion(): ?Question
     {
         return $this->question;
-    }
-
-    public function setQuestion(?Question $question): self
-    {
-        $this->question = $question;
-
-        return $this;
     }
 
     public function getOption(): ?Option
@@ -85,23 +85,9 @@ class Answer
         return $this->option;
     }
 
-    public function setOption(?Option $option): self
-    {
-        $this->option = $option;
-
-        return $this;
-    }
-
     public function getText(): ?string
     {
         return $this->text;
-    }
-
-    public function setText(?string $text): self
-    {
-        $this->text = $text;
-
-        return $this;
     }
 
     public function getPass(): ?Pass
@@ -109,22 +95,8 @@ class Answer
         return $this->pass;
     }
 
-    public function setPass(?Pass $pass): self
-    {
-        $this->pass = $pass;
-
-        return $this;
-    }
-
 	public function getScaleValue(): ?int
 	{
 		return $this->scale_value;
-	}
-
-	public function setScaleValue(?int $scale_value): self
-	{
-		$this->scale_value = $scale_value;
-
-		return $this;
 	}
 }
