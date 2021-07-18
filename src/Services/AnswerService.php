@@ -21,6 +21,7 @@ class AnswerService
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = ObjectUtil::reindex($repository->findBy(['survey' => $survey]), 'id');
+		$pass = Pass::create($survey, $person);
 
 		foreach ($requestData as $questionData) {
 			$question = $questions[$questionData->getId()];
@@ -29,7 +30,7 @@ class AnswerService
 				$data = [
 					'person' => $person,
 					'question' => $question,
-					'pass' => Pass::create($survey, $person),
+					'pass' => $pass,
 					'option' => $options[$answerData->getOption()->getId()]
 				];
 				$type = $question->getType();
