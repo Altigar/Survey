@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Pass;
 use App\Entity\Question;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,32 +44,18 @@ class QuestionRepository extends ServiceEntityRepository
 			->getResult();
     }
 
-    // /**
-    //  * @return Question[] Returns an array of Question objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('q.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+	public function findByPassWithOptionsAndAnswers(Pass $pass): array
+	{
+		return $this->createQueryBuilder('q')
+			->select('q', 'o', 'a')
+			->from(Question::class, 't')
+			->join('q.options', 'o')
+			->join('q.answers', 'a', indexBy: 'a.option')
+			->where('a.pass = :id')
+			->orderBy('o.ordering')
+			->addOrderBy('q.ordering')
+			->setParameter('id', $pass)
+			->getQuery()
+			->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Question
-    {
-        return $this->createQueryBuilder('q')
-            ->andWhere('q.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

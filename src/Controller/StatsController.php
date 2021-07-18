@@ -18,7 +18,7 @@ class StatsController extends AbstractController
 		private EntityManagerInterface $entityManager
 	) {}
 
-	#[Route('/stats/{survey}', name: 'stats')]
+	#[Route('/stats/{survey}', name: 'stats', requirements: ['survey' => '\d+'], methods: ['GET'])]
 	public function index(Survey $survey): Response
 	{
 		$surveyId = $survey->getId();
@@ -26,6 +26,7 @@ class StatsController extends AbstractController
 		$questions = $questionRepository->findByIdPersonWithAnswers($surveyId, $this->getUser()->getId());
 		$answerRepository = $this->entityManager->getRepository(Answer::class);
 		return $this->render('stats/index.html.twig', [
+			'title' => 'Stats',
 			'survey' => $surveyId,
 			'questions' => $questions,
 			'noteStats' => $answerRepository->findNoteStatsBySurvey($surveyId),
@@ -34,28 +35,25 @@ class StatsController extends AbstractController
 		]);
 	}
 
-	#[Route('/stats/{survey}/person/list', name: 'stats_person_list')]
-	public function list(int $survey): Response
+	#[Route('/stats/{survey}/people', name: 'stats_people', requirements: ['survey' => '\d+'], methods: ['GET'])]
+	public function list(Survey $survey): Response
 	{
-		$repository = $this->entityManager->getRepository(Pass::class);
 		return $this->render('stats/list.html.twig', [
 			'title' => 'Person list',
-			'survey' => $survey,
-			'passes' => $repository->findBy(['survey' => $survey]),
+			'survey' => $survey->getId(),
+			'passes' => $this->entityManager->getRepository(Pass::class)->findBy(['survey' => $survey]),
 		]);
 	}
 
-    #[Route('/stats/{survey}/person/{person}', name: 'stats_person')]
-    public function person(int $survey, int $person): Response
+    #[Route('/stats/{pass}/person', name: 'stats_person', requirements: ['pass' => '\d+'], methods: ['GET'])]
+    public function person(Pass $pass): Response
     {
-    	$repository = $this->entityManager->getRepository(Question::class);
-    	$questions = $repository->findBy(['survey' => $survey]);
-
-    	$answerRepository = $this->entityManager->getRepository(Answer::class);
-    	$answers = $answerRepository->findBy(['question' => ObjectUtil::getColumn($questions, 'id'), 'person' => $person]);
+    	$questions = $this->entityManager->getRepository(Question::class)
+		    ->findByPassWithOptionsAndAnswers($pass);
         return $this->render('stats/person.html.twig', [
+        	'title' => 'Person statistics',
         	'questions' => $questions,
-	        'answers' => ObjectUtil::reindexRelation($answers, 'option'),
+	        'survey' => $pass->getSurvey()->getId()
         ]);
     }
 }
