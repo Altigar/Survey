@@ -13,3 +13,7 @@ body {
 .pointer {
     cursor: pointer;
 }
+
+.flicker:hover {
+    background-color: #f8f9fa;
+}
