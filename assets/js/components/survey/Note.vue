@@ -6,7 +6,7 @@
                     <b-form-input class="mb-3" v-model="data.text" value="question"></b-form-input>
                     <p v-if="error">{{ error }}</p>
                     <b-form-select v-if="data.type === 'text'" v-model="selected" :options="options" size="sm" style="width: 4rem;"></b-form-select>
-                    <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
+                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </b-form-group>
                 <div>
                     <b-btn @click="save">save</b-btn>
@@ -19,15 +19,18 @@
 
 <script>
 import axios from "axios";
+import VSwitch from "../VSwitch";
 
 export default {
     name: "Note",
+    components: {VSwitch},
     props: {
         surveyId: String,
         data: Object,
     },
     data() {
         return {
+            switch_id: null,
             selected: null,
             error: null,
             options: Array.from({length: 15}, (_, i) => i + 1)
@@ -49,6 +52,7 @@ export default {
         if (this.data.options[0]) {
             this.selected = this.data.options[0].row;
         }
+        this.switch_id = `switch_${this.data.id}`;
     }
 }
 </script>

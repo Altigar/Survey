@@ -12,7 +12,7 @@
                         </div>
                         <p v-if="option.error">{{ option.error }}</p>
                     </div>
-                    <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
+                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </b-form-group>
                 <div>
                     <b-btn @click="add">add</b-btn>
@@ -26,12 +26,19 @@
 
 <script>
 import axios from "axios";
+import VSwitch from "../VSwitch";
 
 export default {
     name: "Choice",
+    components: {VSwitch},
     props: {
         surveyId: String,
         data: Object,
+    },
+    data() {
+        return {
+            switch_id: null,
+        }
     },
     computed: {
         sortedOptions() {
@@ -82,6 +89,9 @@ export default {
             }
             this.$forceUpdate();
         }
+    },
+    created() {
+        this.switch_id = `switch_${this.data.id}`;
     }
 }
 </script>

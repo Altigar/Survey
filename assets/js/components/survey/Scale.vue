@@ -7,7 +7,7 @@
                 <b-form-select class="mb-3" v-model="selected" :options="options" size="sm" style="width: 4rem;"></b-form-select>
                 <b-form-input class="mb-3" v-model="textFrom" placeholder="From"></b-form-input>
                 <b-form-input class="mb-3" v-model="textTo" placeholder="To"></b-form-input>
-                <b-form-checkbox switch v-model="data.isRequired">Required</b-form-checkbox>
+                <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 <div>
                     <b-btn @click="save">save</b-btn>
                     <b-btn @click="$emit('remove', data.id)">remove</b-btn>
@@ -19,14 +19,17 @@
 
 <script>
 import axios from "axios";
+import VSwitch from "../VSwitch";
 
 export default {
     name: "Scale",
+    components: {VSwitch},
     props: {
         data: Object,
     },
     data() {
         return {
+            switch_id: null,
             options: this.range(2, 10, 1),
             selected: null,
             textFrom: null,
@@ -65,6 +68,7 @@ export default {
             this.textFrom = this.data.options[0].scaleFromText;
             this.textTo = this.data.options[0].scaleToText;
         }
+        this.switch_id = `switch_${this.data.id}`;
     }
 }
 </script>
