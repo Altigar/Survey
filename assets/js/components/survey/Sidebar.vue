@@ -1,8 +1,10 @@
 <template>
     <aside>
-        <b-list-group>
-            <b-list-group-item v-for="item in data" @click="add(item)" :key="item.value" button>{{ item.value }}</b-list-group-item>
-        </b-list-group>
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-action pointer mb-1 border rounded" v-for="item in data" @click="add(item)" :key="item.value" button>
+                {{ item.value }}
+            </li>
+        </ul>
     </aside>
 </template>
 
