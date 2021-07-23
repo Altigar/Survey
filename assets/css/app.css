@@ -1,5 +1,6 @@
 body {
     background-color: #f7f7f7;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 .w-896 {
@@ -16,4 +17,12 @@ body {
 
 .flicker:hover {
     background-color: #f8f9fa;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    background-color: #fff;
+}
+
+.resize-none {
+    resize: none;
 }

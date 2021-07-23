@@ -1,29 +1,46 @@
 <template>
-    <article class="pr-0 shadow-sm mb-4 bg-white rounded border">
-        <div class="card p-3 border-0">
-            <b-form method="post">
-                <b-form-input class="mb-3" v-model="data.text" value="question"></b-form-input>
-                <p v-if="error">{{ error }}</p>
-                <b-form-select class="mb-3" v-model="selected" :options="options" size="sm" style="width: 4rem;"></b-form-select>
-                <b-form-input class="mb-3" v-model="textFrom" placeholder="From"></b-form-input>
-                <b-form-input class="mb-3" v-model="textTo" placeholder="To"></b-form-input>
-                <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
-                <div>
-                    <b-btn @click="save">save</b-btn>
-                    <b-btn @click="$emit('remove', data.id)">remove</b-btn>
+    <div @click="toggleEdit(true)" class="card pr-0 mb-4 bg-white rounded border">
+        <div class="card-body">
+            <div v-if="!edited">
+                <h3>{{ data.text }}</h3>
+                <div class="d-flex justify-content-between mb-2">
+                    <div><span>{{ textFrom }}</span></div>
+                    <div><span>{{ textTo }}</span></div>
                 </div>
-            </b-form>
+                <div class="d-flex justify-content-around">
+                    <div v-for="number in range(1, selected, 1)" :key="number" class="form-check">
+                        <input class="form-check-input" type="radio">
+                        <label class="form-check-label">{{ number }}</label>
+                    </div>
+                </div>
+            </div>
+            <form v-else-if="edited" method="post">
+                <div class="mb-2">
+                    <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
+                    <p v-if="error">{{ error }}</p>
+                    <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
+                        <option v-for="option in options">{{ option }}</option>
+                    </select>
+                    <input v-model="textFrom" type="text" class="form-control mb-2" placeholder="From">
+                    <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
+                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
+                </div>
+                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="toggleEdit(false)"></v-footer>
+            </form>
         </div>
-    </article>
+    </div>
 </template>
 
 <script>
 import axios from "axios";
+import Base from "./Base";
 import VSwitch from "../VSwitch";
+import VFooter from "./VFooter";
 
 export default {
     name: "Scale",
-    components: {VSwitch},
+    mixins: [Base],
+    components: {VFooter, VSwitch},
     props: {
         data: Object,
     },
@@ -53,6 +70,7 @@ export default {
                         scale_to_text: this.textTo,
                     }]
                 });
+                this.toggleEdit(false);
             } catch (error) {
                 this.error = error.response.data.text;
                 this.$forceUpdate();

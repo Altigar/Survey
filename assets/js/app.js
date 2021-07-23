@@ -12,7 +12,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
-import Survey from "./components/survey/Base";
+import SurveyLayout from "./components/survey/Layout";
 import Pass from "./components/pass/Base";
 
 Vue.use(BootstrapVue);
@@ -21,7 +21,7 @@ new Vue({
 	el: '#app',
 	// template: '<App/>',
 	components: {
-		Survey,
+		SurveyLayout,
 		Pass,
 	},
 });

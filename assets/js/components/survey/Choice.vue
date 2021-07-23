@@ -1,36 +1,46 @@
 <template>
-    <article class="pr-0 shadow-sm mb-4 bg-white rounded border">
-        <div class="card p-3 border-0">
-            <b-form method="post">
-                <b-form-group>
-                    <b-form-input class="mb-3" v-model="data.text"></b-form-input>
+    <div class="card pr-0 mb-4 bg-white rounded border" @click="toggleEdit(true)">
+        <div class="card-body">
+            <div v-if="!edited">
+                <h3>{{ data.text }}</h3>
+                <div v-for="option in sortedOptions" :key="option.id" class="form-check">
+                    <input v-if="data.type === 'radio'" class="form-check-input" type="radio">
+                    <input v-else-if="data.type === 'checkbox'" class="form-check-input" type="checkbox">
+                    <label class="form-check-label">{{ option.text }}</label>
+                </div>
+            </div>
+            <form method="post" v-else-if="edited">
+                <div class="mb-2">
+                    <input v-model="data.text" type="text" class="form-control mb-3">
                     <p v-if="data.error">{{ data.error }}</p>
                     <div v-for="(option, index) in sortedOptions" :key="index">
-                        <div class="d-flex mb-3">
-                            <b-form-input v-model="option.text" size="sm" class="mr-3"></b-form-input>
-                            <button @click="remove(index)" type="button" class="close" aria-label="Close">×</button>
+                        <div class="d-flex mb-2">
+                            <input type="text" v-model="option.text" class="form-control me-3" size="sm">
+                            <button @click="remove(index)" type="button" class="btn-close align-self-center" aria-label="Close"></button>
                         </div>
                         <p v-if="option.error">{{ option.error }}</p>
                     </div>
+                    <div class="mb-2">
+                        <a @click.prevent="add" class="pointer text-decoration-none"><span style="font-weight: bold; font-size: 25px;">+</span> Add new option</a>
+                    </div>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
-                </b-form-group>
-                <div>
-                    <b-btn @click="add">add</b-btn>
-                    <b-btn @click="save">save</b-btn>
-                    <b-btn @click="$emit('remove', data.id)">remove</b-btn>
                 </div>
-            </b-form>
+                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="toggleEdit(false)"></v-footer>
+            </form>
         </div>
-    </article>
+    </div>
 </template>
 
 <script>
 import axios from "axios";
+import Base from "./Base";
 import VSwitch from "../VSwitch";
+import VFooter from "./VFooter";
 
 export default {
     name: "Choice",
-    components: {VSwitch},
+    mixins: [Base],
+    components: {VFooter, VSwitch},
     props: {
         surveyId: String,
         data: Object,
@@ -68,6 +78,7 @@ export default {
             }
             try {
                 await axios.put(`/content/${this.data.id}`, this.data);
+                this.toggleEdit(false);
             } catch (error) {
                 let data = error.response.data;
                 for (let key in data) {

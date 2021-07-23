@@ -3,12 +3,15 @@
         <div class="card-body">
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>
-                <input type="text" class="form-control">
+                <textarea class="form-control resize-none" :rows="selected"></textarea>
             </div>
             <form method="post" v-else-if="edited">
                 <div class="mb-2">
                     <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
                     <p v-if="error">{{ error }}</p>
+                    <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
+                        <option v-for="option in options">{{ option }}</option>
+                    </select>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="toggleEdit(false)"></v-footer>
@@ -24,7 +27,7 @@ import VSwitch from "../VSwitch";
 import VFooter from "./VFooter";
 
 export default {
-    name: "Note",
+    name: "NoteArea",
     mixins: [Base],
     components: {VFooter, VSwitch},
     props: {
@@ -42,6 +45,7 @@ export default {
     methods: {
         async save() {
             this.error = null;
+            this.data.options[0].row = this.selected;
             try {
                 await axios.put(`/content/${this.data.id}`, this.data);
                 this.toggleEdit(false);
@@ -52,6 +56,9 @@ export default {
         }
     },
     created() {
+        if (this.data.options[0]) {
+            this.selected = this.data.options[0].row;
+        }
         this.switch_id = `switch_${this.data.id}`;
     }
 }
