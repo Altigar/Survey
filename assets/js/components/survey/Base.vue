@@ -8,15 +8,15 @@ export default {
         }
     },
     computed: {
-        edited() {
-            return this.editState;
+        edited: {
+            get() {
+                return this.editState;
+            },
+            set(state) {
+                this.editState = state;
+            }
         }
     },
-    methods: {
-        toggleEdit(state) {
-            this.editState = state;
-        },
-    }
 }
 </script>
 

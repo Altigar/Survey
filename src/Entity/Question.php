@@ -91,6 +91,18 @@ class Question
         $this->answers = new ArrayCollection();
     }
 
+	public static function createContent(Survey $survey, string $type, int $ordering): self
+	{
+		$question = new self();
+		$question->survey = $survey;
+		$question->type = $type;
+		$question->text = 'Question text';
+		$question->ordering = $ordering;
+		$question->created_at = new \DateTime('now');
+
+		return $question;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

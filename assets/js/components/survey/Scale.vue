@@ -1,5 +1,5 @@
 <template>
-    <div @click="toggleEdit(true)" class="card pr-0 mb-4 bg-white rounded border">
+    <div @click="edited = true" class="card pr-0 mb-4 bg-white rounded border">
         <div class="card-body">
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>
@@ -25,7 +25,7 @@
                     <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
-                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="toggleEdit(false)"></v-footer>
+                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
         </div>
     </div>
@@ -70,7 +70,7 @@ export default {
                         scale_to_text: this.textTo,
                     }]
                 });
-                this.toggleEdit(false);
+                this.edited = false;
             } catch (error) {
                 this.error = error.response.data.text;
                 this.$forceUpdate();

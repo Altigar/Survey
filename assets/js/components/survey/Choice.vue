@@ -1,5 +1,5 @@
 <template>
-    <div class="card pr-0 mb-4 bg-white rounded border" @click="toggleEdit(true)">
+    <div class="card pr-0 mb-4 bg-white rounded border" @click="edited = true">
         <div class="card-body">
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>
@@ -25,7 +25,7 @@
                     </div>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
-                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="toggleEdit(false)"></v-footer>
+                <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
         </div>
     </div>
@@ -78,7 +78,7 @@ export default {
             }
             try {
                 await axios.put(`/content/${this.data.id}`, this.data);
-                this.toggleEdit(false);
+                this.edited = false;
             } catch (error) {
                 let data = error.response.data;
                 for (let key in data) {

@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Data\Content\Create\QuestionData;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Services\QuestionService;
 use App\Services\ValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,14 +46,19 @@ class ContentController extends AbstractController
 	#[Route('/content/{survey}', name: 'content_create', requirements: ['survey' => '\d+'], methods: ['POST'])]
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
-		$question = $this->serializer->deserialize($request->getContent(), Question::class,'json', [
-			AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
-		]);
-		if ($errors = $this->validationService->validate($question, ['default'])) {
-			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+		try {
+			$questionData = $this->serializer->deserialize($request->getContent(), QuestionData::class,'json');
+			if ($errors = $this->validationService->validate($questionData, ['default'])) {
+				return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+			}
+			return $this->json([
+				'code' => JsonResponse::HTTP_CREATED,
+				'status' => 'OK',
+				'data' => ['id' => $this->questionService->create($survey, $questionData)]
+			], JsonResponse::HTTP_CREATED);
+		} catch (\Throwable) {
+			throw new BadRequestException();
 		}
-		$this->questionService->create($survey, $question);
-		return $this->json([], JsonResponse::HTTP_CREATED);
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]

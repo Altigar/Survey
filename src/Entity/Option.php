@@ -14,6 +14,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Option
 {
+	public const DEFAULT_ROW = 3;
+	public const DEFAULT_SCALE = 10;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -71,6 +74,16 @@ class Option
     public function __construct()
     {
         $this->answers = new ArrayCollection();
+    }
+
+	public static function createContent(array $data): self
+	{
+		$option = new self;
+		$option->text = $data['text'] ?? null;
+		$option->row = $data['row'] ?? null;
+		$option->scale = $data['scale'] ?? null;
+
+		return $option;
     }
 
     public function getId(): ?int

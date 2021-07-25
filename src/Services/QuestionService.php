@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\Content\Create\QuestionData;
 use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
@@ -17,19 +18,21 @@ class QuestionService
 		private PropertyAccessorInterface $accessor,
 	) {}
 
-	public function create(Survey $survey, Question $question): void
+	public function create(Survey $survey, QuestionData $questionData): int
 	{
-		$question->setSurvey($survey)
-			->setCreatedAt(new \DateTime('now'));
-		$option = new Option();
-		if (($type = $question->getType()) == Question::TYPE_TEXT) {
-			$option->setRow(3);
-		} elseif ($type == Question::TYPE_SCALE) {
-			$option->setScale(10);
-		}
+		$question = Question::createContent($survey, $questionData->getType(), $questionData->getOrdering());
+		$data = match ($question->getType()) {
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => ['text' => 'First option'],
+			Question::TYPE_TEXT => ['row' => Option::DEFAULT_ROW],
+			Question::TYPE_SCALE => ['scale' => Option::DEFAULT_SCALE],
+			default => [],
+		};
+		$option = Option::createContent($data);
 		$question->addOption($option);
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
+
+		return $question->getId();
 	}
 
 	public function updateChoice(Question $question, Question $questionData): void
