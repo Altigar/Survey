@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Data\Content\Create\QuestionData;
+use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
@@ -35,12 +36,11 @@ class QuestionService
 		return $question->getId();
 	}
 
-	public function updateChoice(Question $question, Question $questionData): void
+	public function updateChoice(Question $question, QuestionDataUpdate $questionData): void
 	{
-		$question->setIsRequired($questionData->getIsRequired());
-		$question->setText($questionData->getText());
+		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
 		//remove
-		$optionIds = ObjectUtil::getColumn($questionData->getOptions()->toArray(), 'id');
+		$optionIds = ObjectUtil::getColumn($questionData->getOptions(), 'id');
 		foreach ($question->getOptions()->toArray() as $option) {
 			if (!in_array($option->getId(), $optionIds)) {
 				$question->removeOption($option);
@@ -48,40 +48,46 @@ class QuestionService
 		}
 		//add
 		$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
-		foreach ($questionData->getOptions()->toArray() as $option) {
-			if (!$option->getId()) {
+		foreach ($questionData->getOptions() as $optionData) {
+			if (!$optionData->getId()) {
+				$option = Option::createContent(['text' => $optionData->getText()]);
 				$question->addOption($option);
-			} elseif ($obj = $this->accessor->getValue($options, '[' . $option->getId() . ']')) {
-				$obj->setText($option->getText());
+			} elseif ($option = $this->accessor->getValue($options, '[' . $optionData->getId() . ']')) {
+				$option->updateContent(text: $optionData->getText());
 			}
 		}
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 	}
 
-	public function updateNote(Question $question, Question $questionData): void
+	public function updateString(Question $question, QuestionDataUpdate $questionData): void
 	{
-		$question->setIsRequired($questionData->getIsRequired());
-		$question->setText($questionData->getText());
-		if ($questionData->getType() == Question::TYPE_TEXT) {
-			$option = ArrayUtil::first($questionData->getOptions()->toArray());
-			$optionDb = ArrayUtil::first($question->getOptions()->toArray());
-			$optionDb->setRow($option->getRow());
-		}
+		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
+
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 	}
 
-	public function updateScale(Question $question, Question $questionData): void
+	public function updateText(Question $question, QuestionDataUpdate $questionData): void
 	{
-		$question->setIsRequired($questionData->getIsRequired());
-		$question->setText($questionData->getText());
-		if ($optionDb = $question->getOptions()->first()) {
-			$option = ArrayUtil::first($questionData->getOptions()->toArray());
-			$optionDb->setScale($option->getScale())
-				->setScaleFromText($option->getScaleFromText())
-				->setScaleToText($option->getScaleToText());
-		}
+		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
+
+		$optionData = ArrayUtil::first($questionData->getOptions());
+		$option = ArrayUtil::first($question->getOptions()->toArray());
+		$option->updateContent(row: $optionData->getRow());
+
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
+	}
+
+	public function updateScale(Question $question, QuestionDataUpdate $questionData): void
+	{
+		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
+
+		$optionData = ArrayUtil::first($questionData->getOptions());
+		$option = $question->getOptions()->first();
+		$option->updateContentScale($optionData->getScale(), $optionData->getScaleFromText(), $optionData->getScaleToText());
+
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 	}

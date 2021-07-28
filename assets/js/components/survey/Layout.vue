@@ -81,7 +81,7 @@ export default {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
             try {
-                let responseCreate = await axios.post(`/content/${this.id}`, {type: 1, ordering: number});
+                let responseCreate = await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
                 let response = await axios.get(`/content/${this.id}`, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
                 this.data = response.data;
                 this.$nextTick(() => {

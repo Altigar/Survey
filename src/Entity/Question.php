@@ -103,6 +103,14 @@ class Question
 		return $question;
     }
 
+	public function updateContent(bool $is_required, string $text): self
+	{
+		$this->is_required = $is_required;
+		$this->text = $text;
+
+		return $this;
+	}
+
     public function getId(): ?int
     {
         return $this->id;

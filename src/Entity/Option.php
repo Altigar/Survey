@@ -86,6 +86,23 @@ class Option
 		return $option;
     }
 
+	public function updateContent(?int $row = null, ?string $text = null): self
+	{
+		$this->row = $row;
+		$this->text = $text;
+
+		return $this;
+    }
+
+	public function updateContentScale(int $scale, string $scale_from_text, string $scale_to_text): self
+	{
+		$this->scale = $scale;
+		$this->scale_from_text = $scale_from_text;
+		$this->scale_to_text = $scale_to_text;
+
+		return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

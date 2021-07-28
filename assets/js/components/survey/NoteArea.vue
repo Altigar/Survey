@@ -47,7 +47,17 @@ export default {
             this.error = null;
             this.data.options[0].row = this.selected;
             try {
-                await axios.put(`/content/${this.data.id}`, this.data);
+                await axios.put(`/content/${this.data.id}`, {
+                    id: this.data.id,
+                    type: this.data.type,
+                    text: this.data.text,
+                    ordering: this.data.ordering,
+                    isRequired: this.data.isRequired,
+                    options: [{
+                        ordering: this.data.options[0].ordering,
+                        row: Number(this.selected),
+                    }]
+                });
                 this.edited = false;
             } catch (error) {
                 this.error = error.response.data.text;

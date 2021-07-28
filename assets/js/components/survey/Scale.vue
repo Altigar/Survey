@@ -63,9 +63,10 @@ export default {
                     type: this.data.type,
                     text: this.data.text,
                     ordering: this.data.ordering,
-                    is_required: this.data.isRequired,
+                    isRequired: this.data.isRequired,
                     options: [{
-                        scale: this.selected,
+                        ordering: this.data.options[0].ordering,
+                        scale: Number(this.selected),
                         scale_from_text: this.textFrom,
                         scale_to_text: this.textTo,
                     }]

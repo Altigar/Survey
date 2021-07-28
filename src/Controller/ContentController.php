@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Data\Content\Create\QuestionData;
+use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Services\QuestionService;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ContentController extends AbstractController
@@ -64,9 +64,7 @@ class ContentController extends AbstractController
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
 	public function update(Request $request, Question $question): JsonResponse
 	{
-		$questionData = $this->serializer->deserialize($request->getContent(), Question::class, 'json', [
-			AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true
-		]);
+		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
 		$group = (array)match ($type = $questionData->getType()) {
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => 'choice',
 			Question::TYPE_TEXT => 'text',
@@ -77,7 +75,8 @@ class ContentController extends AbstractController
 		}
 		match ($type) {
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->questionService->updateChoice($question, $questionData),
-			Question::TYPE_STRING, Question::TYPE_TEXT => $this->questionService->updateNote($question, $questionData),
+			Question::TYPE_STRING => $this->questionService->updateString($question, $questionData),
+			Question::TYPE_TEXT => $this->questionService->updateText($question, $questionData),
 			Question::TYPE_SCALE => $this->questionService->updateScale($question, $questionData),
 		};
 		return $this->json([]);
