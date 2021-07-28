@@ -14,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Option
 {
-	public const DEFAULT_ROW = 3;
+	public const DEFAULT_ROW = 1;
 	public const DEFAULT_SCALE = 10;
 
     /**
@@ -76,12 +76,13 @@ class Option
         $this->answers = new ArrayCollection();
     }
 
-	public static function createContent(array $data): self
+	public static function createContent(?string $text = null, ?int $row = null, ?int $scale = null, int $ordering = 1): self
 	{
 		$option = new self;
-		$option->text = $data['text'] ?? null;
-		$option->row = $data['row'] ?? null;
-		$option->scale = $data['scale'] ?? null;
+		$option->text = $text;
+		$option->row = $row;
+		$option->scale = $scale;
+		$option->ordering = $ordering;
 
 		return $option;
     }

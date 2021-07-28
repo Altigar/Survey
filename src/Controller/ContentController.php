@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Data\Content\Create\QuestionData;
+use App\Data\Content\Create\QuestionData as QuestionDataCreate;
 use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
@@ -47,7 +47,7 @@ class ContentController extends AbstractController
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
 		try {
-			$questionData = $this->serializer->deserialize($request->getContent(), QuestionData::class,'json');
+			$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataCreate::class,'json');
 			if ($errors = $this->validationService->validate($questionData, ['default'])) {
 				return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 			}
@@ -73,12 +73,7 @@ class ContentController extends AbstractController
 		if ($errors = $this->validationService->validate($questionData, array_merge($group, ['default']))) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
-		match ($type) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->questionService->updateChoice($question, $questionData),
-			Question::TYPE_STRING => $this->questionService->updateString($question, $questionData),
-			Question::TYPE_TEXT => $this->questionService->updateText($question, $questionData),
-			Question::TYPE_SCALE => $this->questionService->updateScale($question, $questionData),
-		};
+		$this->questionService->update($question, $questionData);
 		return $this->json([]);
 	}
 
