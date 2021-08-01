@@ -81,16 +81,9 @@ export default {
                 this.edited = false;
             } catch (error) {
                 let data = error.response.data;
-                for (let key in data) {
-                    if (!data.hasOwnProperty(key)) {
-                        continue;
-                    }
+                for (let key of Object.keys(data)) {
                     if (typeof data[key] === 'object') {
-                        let nestedData = data[key];
-                        for (let nestedKey in nestedData) {
-                            if (!nestedData.hasOwnProperty(nestedKey)) {
-                                continue;
-                            }
+                        for (let nestedKey of Object.keys(data[key])) {
                             this.data.options[nestedKey].error = data[key][nestedKey].text;
                         }
                     } else {

@@ -2,21 +2,37 @@
 
 namespace App\Data\Content\Update;
 
+use App\Entity\Question;
+use Symfony\Component\Validator\Constraints as Assert;
+
 class OptionData
 {
 	private ?int $id;
+
+	#[Assert\Positive(groups: ['default'])]
 	private int $ordering;
+
+	#[Assert\Length(min: 1, max: 300, groups: [Question::TYPE_RADIO, Question::TYPE_CHECKBOX])]
 	private ?string $text;
+
+	#[Assert\Range(min: 1, max: 10, groups: [Question::TYPE_TEXT])]
 	private ?int $row;
+
+	#[Assert\Positive(groups: [Question::TYPE_SCALE])]
+	#[Assert\Range(min: 2, max: 10, groups: [Question::TYPE_SCALE])]
 	private ?int $scale;
+
+	#[Assert\Length(max: 40, groups: [Question::TYPE_SCALE])]
 	private ?string $scale_from_text;
+
+	#[Assert\Length(max: 40, groups: [Question::TYPE_SCALE])]
 	private ?string $scale_to_text;
 
 	public function __construct(
 		?int $id,
 		int $ordering,
 		?string $text,
-		int|string|null $row,
+		?int $row,
 		?int $scale,
 		?string $scale_from_text,
 		?string $scale_to_text

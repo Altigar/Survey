@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Data\Content\Update\QuestionData;
 use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -25,16 +26,22 @@ class ValidationService
 		return array_filter($errors);
 	}
 
-	public function validate(object $entity, ?array $groups = null): array
+	public function validate(QuestionData $questionData, ?array $groups = null): array
 	{
-		$errors = $this->validator->validate($entity, groups: $groups);
+		$errors = $this->validator->validate($questionData, groups: $groups);
 		$normalizedErrors = [];
 		if ($errors->count()) {
 			foreach ($errors as $error) {
 				$path = new PropertyPath($error->getPropertyPath());
 				$elements = $path->getElements();
 				if ($path->getParent()) {
-					$normalizedErrors[$elements[0]][$elements[1]] = [$elements[2] => $error->getMessage()];
+					if ($questionData->getType() == 'scale') {
+						$normalizedErrors[$elements[2]] = $error->getMessage();
+					} elseif (in_array($questionData->getType(), ['radio', 'checkbox'])) {
+						$normalizedErrors[$elements[0]][$elements[1]] = [$elements[2] => $error->getMessage()];
+					} elseif ($questionData->getType() == 'text') {
+						$normalizedErrors[$elements[2]] = $error->getMessage();
+					}
 				} else {
 					$normalizedErrors[$elements[0]] = $error->getMessage();
 				}
@@ -42,5 +49,4 @@ class ValidationService
 		}
 		return $normalizedErrors;
 	}
-
 }

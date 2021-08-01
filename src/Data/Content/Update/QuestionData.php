@@ -17,12 +17,22 @@ class QuestionData
 		Question::TYPE_STRING,
 		Question::TYPE_TEXT,
 		Question::TYPE_SCALE
-	], groups: ['default'])]
+	], message: 'Type {{ value }} does not exist', groups: ['default'])]
 	private string $type;
+
+	#[Assert\Length(min: 1, max: 300, groups: ['default'])]
 	private string $text;
 
 	#[Assert\Positive(groups: ['default'])]
 	private int $ordering;
+
+	#[Assert\Valid(groups: [
+		Question::TYPE_RADIO,
+		Question::TYPE_CHECKBOX,
+		Question::TYPE_TEXT,
+		Question::TYPE_SCALE,
+		'default',
+	])]
 	private ?array $options;
 
 	public function __construct(

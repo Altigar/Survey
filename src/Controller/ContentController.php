@@ -64,13 +64,12 @@ class ContentController extends AbstractController
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
 	public function update(Request $request, Question $question): JsonResponse
 	{
-		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
-		$group = (array)match ($type = $questionData->getType()) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => 'choice',
-			Question::TYPE_TEXT => 'text',
-			default => [],
-		};
-		if ($errors = $this->validationService->validate($questionData, array_merge($group, ['default']))) {
+		try {
+			$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
+		} catch (\Exception) {
+			throw new BadRequestException();
+		}
+		if ($errors = $this->validationService->validate($questionData, [$questionData->getType(), 'default'])) {
 			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 		}
 		$this->questionService->update($question, $questionData);

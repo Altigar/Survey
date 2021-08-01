@@ -22,7 +22,9 @@
                         <option v-for="option in options">{{ option }}</option>
                     </select>
                     <input v-model="textFrom" type="text" class="form-control mb-2" placeholder="From">
+                    <p v-if="textFromError"><small>{{ textFromError }}</small></p>
                     <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
+                    <p v-if="textToError"><small>{{ textToError }}</small></p>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
@@ -52,11 +54,15 @@ export default {
             textFrom: null,
             textTo: null,
             error: null,
+            textFromError: null,
+            textToError: null,
         };
     },
     methods: {
         async save() {
             this.error = null;
+            this.textFromError = null;
+            this.textToError = null;
             try {
                 await axios.put(`/content/${this.data.id}`, {
                     id: this.data.id,
@@ -74,6 +80,8 @@ export default {
                 this.edited = false;
             } catch (error) {
                 this.error = error.response.data.text;
+                this.textFromError = error.response.data.scale_from_text;
+                this.textToError = error.response.data.scale_to_text;
                 this.$forceUpdate();
             }
         },

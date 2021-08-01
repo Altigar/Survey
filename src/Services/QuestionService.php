@@ -40,6 +40,7 @@ class QuestionService
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->choice($question, $questionData),
 			Question::TYPE_TEXT => $this->text($question, $questionData),
 			Question::TYPE_SCALE => $this->scale($question, $questionData),
+			default => $question,
 		};
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();

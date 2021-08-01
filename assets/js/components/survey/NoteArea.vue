@@ -12,6 +12,7 @@
                     <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
                         <option v-for="option in options">{{ option }}</option>
                     </select>
+                    <p v-if="rowError"><small>{{ rowError }}</small></p>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
@@ -38,13 +39,15 @@ export default {
         return {
             switch_id: null,
             selected: null,
-            error: null,
             options: Array.from({length: 10}, (_, i) => i + 1),
+            error: null,
+            rowError: null,
         }
     },
     methods: {
         async save() {
             this.error = null;
+            this.rowError = null;
             this.data.options[0].row = this.selected;
             try {
                 await axios.put(`/content/${this.data.id}`, {
@@ -61,6 +64,7 @@ export default {
                 this.edited = false;
             } catch (error) {
                 this.error = error.response.data.text;
+                this.rowError = error.response.data.row;
                 this.$forceUpdate();
             }
         }
