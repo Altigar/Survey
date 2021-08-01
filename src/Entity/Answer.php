@@ -27,13 +27,13 @@ class Answer
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Question $question;
+    private ?Question $question;
 
     /**
      * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Option $option;
+    private ?Option $option;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -80,10 +80,24 @@ class Answer
         return $this->question;
     }
 
+	public function setQuestion(?Question $question): self
+	{
+		$this->question = $question;
+
+		return $this;
+	}
+
     public function getOption(): ?Option
     {
         return $this->option;
     }
+
+	public function setOption(?Option $option): self
+	{
+		$this->option = $option;
+
+		return $this;
+	}
 
     public function getText(): ?string
     {

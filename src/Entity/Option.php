@@ -109,23 +109,9 @@ class Option
         return $this->id;
     }
 
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
-
     public function getText(): ?string
     {
         return $this->text;
-    }
-
-    public function setText(?string $text): self
-    {
-        $this->text = $text;
-
-        return $this;
     }
 
     public function getQuestion(): ?Question
@@ -143,13 +129,6 @@ class Option
     public function getOrdering(): int
     {
         return $this->ordering;
-    }
-
-    public function setOrdering(int $ordering): self
-    {
-        $this->ordering = $ordering;
-
-        return $this;
     }
 
     public function getAnswers(): Collection
@@ -184,23 +163,9 @@ class Option
         return $this->scale;
     }
 
-    public function setScale(?int $scale): self
-    {
-        $this->scale = $scale;
-
-        return $this;
-    }
-
     public function getScaleFromText(): ?string
     {
         return $this->scale_from_text;
-    }
-
-    public function setScaleFromText(?string $scale_from_text): self
-    {
-        $this->scale_from_text = $scale_from_text;
-
-        return $this;
     }
 
     public function getScaleToText(): ?string
@@ -208,22 +173,8 @@ class Option
         return $this->scale_to_text;
     }
 
-    public function setScaleToText(?string $scale_to_text): self
-    {
-        $this->scale_to_text = $scale_to_text;
-
-        return $this;
-    }
-
 	public function getRow(): ?int
 	{
 		return $this->row;
-	}
-
-	public function setRow(?int $row): self
-	{
-		$this->row = $row;
-
-		return $this;
 	}
 }

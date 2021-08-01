@@ -116,35 +116,14 @@ class Question
         return $this->id;
     }
 
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
-
     public function getText(): ?string
     {
         return $this->text;
     }
 
-    public function setText(?string $text): self
-    {
-        $this->text = $text;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->created_at;
-    }
-
-    public function setCreatedAt(DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
     }
 
     public function getSurvey(): ?Survey
@@ -191,23 +170,9 @@ class Question
         return $this->type;
     }
 
-    public function setType(?string $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getOrdering(): ?int
     {
         return $this->ordering;
-    }
-
-    public function setOrdering(?int $ordering): self
-    {
-        $this->ordering = $ordering;
-
-        return $this;
     }
 
     public function getAnswers(): Collection
@@ -240,12 +205,5 @@ class Question
 	public function getIsRequired(): ?bool
 	{
 		return $this->is_required;
-	}
-
-	public function setIsRequired(bool $is_required): self
-	{
-		$this->is_required = $is_required;
-
-		return $this;
 	}
 }

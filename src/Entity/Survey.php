@@ -69,13 +69,6 @@ class Survey
         return $this->created_at;
     }
 
-    public function setCreatedAt(DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
-    }
-
     public function getQuestions(): Collection|PersistentCollection|null
     {
         return $this->questions;
@@ -120,23 +113,9 @@ class Survey
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     /**
