@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Data\Content\Update\QuestionData;
+use App\Data\Content\Create\QuestionData as QuestionDataCreate;
+use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -26,7 +27,7 @@ class ValidationService
 		return array_filter($errors);
 	}
 
-	public function validate(QuestionData $questionData, ?array $groups = null): array
+	public function validate(QuestionDataCreate|QuestionDataUpdate $questionData, ?array $groups = null): array
 	{
 		$errors = $this->validator->validate($questionData, groups: $groups);
 		$normalizedErrors = [];
