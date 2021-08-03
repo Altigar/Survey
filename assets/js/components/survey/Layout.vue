@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../axios";
 import Choice from "./Choice";
 import Note from "./Note";
 import Sidebar from "./Sidebar";
@@ -82,10 +82,10 @@ export default {
             }
             try {
                 let responseCreate = await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
-                let response = await axios.get(`/content/${this.id}`, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
+                let response = await axios.get(`/content/${this.id}`);
                 this.data = response.data;
                 this.$nextTick(() => {
-                    let question = this.$refs.question.find(elem => elem.data.id === responseCreate.data.data.id);
+                    let question = this.$refs.question.find(elem => elem.data.id === responseCreate.data.id);
                     if (question) {
                         question.edited = true;
                     }
@@ -97,7 +97,7 @@ export default {
         async remove(id) {
             try {
                 await axios.delete(`/content/${id}`);
-                let response = await axios.get(`/content/${this.id}`, {headers: {'X-Requested-With': 'XMLHttpRequest'}});
+                let response = await axios.get(`/content/${this.id}`);
                 this.data = response.data;
             } catch (error) {
                 this.error = error.response.data;

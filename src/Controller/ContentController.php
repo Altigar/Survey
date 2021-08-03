@@ -6,8 +6,9 @@ use App\Data\Content\Create\QuestionData as QuestionDataCreate;
 use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
+use App\Exception\Content\CreateValidationException;
+use App\Exception\Content\UpdateValidationException;
 use App\Services\QuestionService;
-use App\Services\ValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ContentController extends AbstractController
 {
@@ -24,7 +26,7 @@ class ContentController extends AbstractController
 		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
 		private QuestionService $questionService,
-		private ValidationService $validationService,
+		private ValidatorInterface $validator,
 	) {}
 
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
@@ -48,17 +50,14 @@ class ContentController extends AbstractController
 	{
 		try {
 			$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataCreate::class,'json');
-			if ($errors = $this->validationService->validate($questionData, ['default'])) {
-				return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
-			}
-			return $this->json([
-				'code' => JsonResponse::HTTP_CREATED,
-				'status' => 'OK',
-				'data' => ['id' => $this->questionService->create($survey, $questionData)]
-			], JsonResponse::HTTP_CREATED);
 		} catch (\Throwable) {
 			throw new BadRequestException();
 		}
+		$errors = $this->validator->validate($questionData, groups: ['default']);
+		if ($errors->count()) {
+			throw new CreateValidationException($errors);
+		}
+		return $this->json(['id' => $this->questionService->create($survey, $questionData)], JsonResponse::HTTP_CREATED);
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
@@ -69,8 +68,9 @@ class ContentController extends AbstractController
 		} catch (\Exception) {
 			throw new BadRequestException();
 		}
-		if ($errors = $this->validationService->validate($questionData, [$questionData->getType(), 'default'])) {
-			return $this->json($errors, JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+		$errors = $this->validator->validate($questionData, groups: [$questionData->getType(), 'default']);
+		if ($errors->count()) {
+			throw new UpdateValidationException($errors);
 		}
 		$this->questionService->update($question, $questionData);
 		return $this->json([]);

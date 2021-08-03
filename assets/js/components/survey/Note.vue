@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../axios";
 import Base from "./Base";
 import VSwitch from "../VSwitch";
 import VFooter from "./VFooter";

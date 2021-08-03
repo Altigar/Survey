@@ -3,7 +3,7 @@
 namespace App\Data\Pass;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator as PassAssert;
+use App\Validator\Pass as PassAssert;
 
 #[PassAssert\Required(groups: ['required'])]
 final class QuestionData

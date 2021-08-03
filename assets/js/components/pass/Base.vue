@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../axios";
 import Radio from "./Radio";
 import Checkbox from "./Checkbox";
 import Note from "./Note";
