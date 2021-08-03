@@ -11,7 +11,6 @@ use App\Exception\ValidationException;
 use App\Services\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,11 +47,7 @@ class ContentController extends AbstractController
 	#[Route('/content/{survey}', name: 'content_create', requirements: ['survey' => '\d+'], methods: ['POST'])]
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
-		try {
-			$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataCreate::class,'json');
-		} catch (\Throwable) {
-			throw new BadRequestException();
-		}
+		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataCreate::class,'json');
 		$errors = $this->validator->validate($questionData, groups: ['default']);
 		if ($errors->count()) {
 			throw new ValidationException($errors);
@@ -63,11 +58,7 @@ class ContentController extends AbstractController
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
 	public function update(Request $request, Question $question): JsonResponse
 	{
-		try {
-			$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
-		} catch (\Exception) {
-			throw new BadRequestException();
-		}
+		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
 		$errors = $this->validator->validate($questionData, groups: [$questionData->getType(), 'default']);
 		if ($errors->count()) {
 			throw new UpdateValidationException($errors);

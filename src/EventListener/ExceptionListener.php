@@ -6,6 +6,7 @@ use App\Exception\ValidationExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 
 class ExceptionListener
 {
@@ -17,6 +18,8 @@ class ExceptionListener
 		if ($exception instanceof ValidationExceptionInterface) {
 			$response->setData($exception->getErrors());
 			$response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+		} elseif ($exception instanceof NotNormalizableValueException) {
+			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 		}
 
 		$event->setResponse($response);

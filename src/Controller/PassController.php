@@ -9,7 +9,6 @@ use App\Exception\Pass\CreateValidationException;
 use App\Services\AnswerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,11 +43,7 @@ class PassController extends AbstractController
 	#[Route('/pass/{survey}', name: 'pass_create', methods: ['POST'])]
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
-		try {
-			$data = $this->serializer->deserialize($request->getContent(), QuestionData::class . '[]', 'json');
-		} catch (\Exception $e) {
-			throw new BadRequestException();
-		}
+		$data = $this->serializer->deserialize($request->getContent(), QuestionData::class . '[]', 'json');
 		$errors = new ConstraintViolationList();
 		foreach ($data as $questionData) {
 			$error = $this->validator->validate($questionData, groups: [$questionData->getType(), 'required']);
