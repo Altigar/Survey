@@ -6,8 +6,8 @@ use App\Data\Content\Create\QuestionData as QuestionDataCreate;
 use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
-use App\Exception\Content\CreateValidationException;
 use App\Exception\Content\UpdateValidationException;
+use App\Exception\ValidationException;
 use App\Services\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,7 +55,7 @@ class ContentController extends AbstractController
 		}
 		$errors = $this->validator->validate($questionData, groups: ['default']);
 		if ($errors->count()) {
-			throw new CreateValidationException($errors);
+			throw new ValidationException($errors);
 		}
 		return $this->json(['id' => $this->questionService->create($survey, $questionData)], JsonResponse::HTTP_CREATED);
 	}
