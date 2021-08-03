@@ -4,7 +4,7 @@ namespace App\Exception;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-abstract class ValidationException extends \Exception implements ValidationExceptionInterface
+class ValidationException extends \Exception implements ValidationExceptionInterface
 {
 	protected ConstraintViolationListInterface $errors;
 

@@ -115,8 +115,8 @@ export default {
                 await axios.post(`/pass/${this.id}`, requestData);
                 window.location.href = '/';
             } catch (error) {
-                if (error.response.data.status === 422) {
-                    let data = error.response.data.errors;
+                if (error.response.status === 422) {
+                    let data = error.response.data;
                     for (let violationKey of Object.keys(data)) {
                         for (let question of this.$refs.question) {
                             if (Number(violationKey) === Number(question.id)) {
