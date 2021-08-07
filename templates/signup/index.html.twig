@@ -3,25 +3,33 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
-    <b-form method="post">
-        <b-form-group label="Email" label-for="email">
-            <b-form-input id="email" name="email" value="{{ person.email }}"></b-form-input>
-            {% if errors.email is defined %}
-                <b-form-invalid-feedback :state="false">{{ errors.email }}</b-form-invalid-feedback>
-            {% endif %}
-        </b-form-group>
-        <b-form-group label="Password" label-for="password">
-            <b-form-input type="password" id="password" name="password" value="{{ person.password }}"></b-form-input>
-            {% if errors.password is defined %}
-                <b-form-invalid-feedback :state="false">{{ errors.password }}</b-form-invalid-feedback>
-            {% endif %}
-        </b-form-group>
-        <b-form-group label="Confirm password" label-for="password_confirmation">
-            <b-form-input type="password" id="password_confirmation" name="password_confirmation" value="{{ person.passwordConfirmation }}"></b-form-input>
-            {% if errors.password_confirmation is defined %}
-                <b-form-invalid-feedback :state="false">{{ errors.password_confirmation }}</b-form-invalid-feedback>
-            {% endif %}
-        </b-form-group>
-        <b-btn type="submit" variant="primary">Sign Up</b-btn>
-    </b-form>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST">
+                <h3>Sign Up</h3>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="text" class="form-control" id="email" name="email" value="{{ person.email }}">
+                    {% if errors.email is defined %}
+                        <v-error v-cloak class="mt-2">{{ errors.email }}</v-error>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" value="{{ person.password }}">
+                    {% if errors.password is defined %}
+                        <v-error v-cloak class="mt-2">{{ errors.password }}</v-error>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label">Confirm password</label>
+                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{ person.passwordConfirmation }}">
+                    {% if errors.password_confirmation is defined %}
+                        <v-error v-cloak class="mt-2">{{ errors.password_confirmation }}</v-error>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -14,6 +14,7 @@ import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
 import SurveyLayout from "./components/survey/Layout";
 import Pass from "./components/pass/Base";
+import VError from "./components/VError";
 
 Vue.use(BootstrapVue);
 
@@ -23,5 +24,6 @@ new Vue({
 	components: {
 		SurveyLayout,
 		Pass,
+		VError,
 	},
 });
