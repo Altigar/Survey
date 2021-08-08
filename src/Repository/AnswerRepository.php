@@ -44,7 +44,7 @@ class AnswerRepository extends ServiceEntityRepository
 	public function findChoiceStatsBySurvey(int $survey): array
 	{
 		$sql = <<<SQL
-			SELECT question_id, option_id, count(option_id) AS amount, sum(count(option_id)) OVER(partition by question_id) as total
+			SELECT question_id, option_id, count(*) AS amount, sum(count(*)) OVER(partition by question_id) as total
 			FROM answer
 			JOIN question ON question.id = answer.question_id
 			JOIN survey ON question.survey_id = survey.id
@@ -69,7 +69,7 @@ class AnswerRepository extends ServiceEntityRepository
 	public function findScaleStatsBySurvey(int $survey): array
 	{
 		$sql = <<<SQL
-			SELECT question_id, option_id, count(option_id) AS amount, sum(count(option_id)) OVER(partition by question_id) as total, scale_value
+			SELECT question_id, count(*) AS amount, sum(count(*)) OVER(partition by question_id) as total, scale_value
 			FROM answer
 			JOIN question ON question.id = answer.question_id
 			JOIN survey ON question.survey_id = survey.id
@@ -79,7 +79,6 @@ class AnswerRepository extends ServiceEntityRepository
 		$rsm = (new ResultSetMapping())
 			->addScalarResult('id', 'id')
 			->addScalarResult('question_id', 'question_id')
-			->addScalarResult('option_id', 'option_id')
 			->addScalarResult('amount', 'amount')
 			->addScalarResult('total', 'total')
 			->addScalarResult('scale_value', 'scale_value');
