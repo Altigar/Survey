@@ -26,3 +26,7 @@ body {
 .resize-none {
     resize: none;
 }
+
+.stats-row .row:last-child {
+    border: none !important;
+}
