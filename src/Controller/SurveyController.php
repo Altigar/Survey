@@ -33,11 +33,7 @@ class SurveyController extends AbstractController
 	public function create(Request $request): Response
 	{
 		if ($request->isMethod('post')) {
-			$survey = (new Survey())
-				->setPerson($this->getUser())
-				->setCreatedAt(new \DateTime('now'))
-				->setName($request->get('name'))
-				->setDescription($request->get('description'));
+			$survey = Survey::create($this->getUser(), $request->get('name'), $request->get('name'));
 			$this->entityManager->persist($survey);
 			$this->entityManager->flush();
 

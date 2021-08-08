@@ -36,7 +36,7 @@ class Survey
      * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="surveys", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Person $person = null;
+    private ?UserInterface $person = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -57,6 +57,17 @@ class Survey
     {
         $this->questions = new ArrayCollection();
         $this->passes = new ArrayCollection();
+    }
+
+	public static function create(UserInterface $person, string $name, string $description): self
+	{
+		$survey = new self();
+		$survey->created_at = new \DateTime('now');
+		$survey->person = $person;
+		$survey->name = $name;
+		$survey->description = $description;
+
+		return $survey;
     }
 
     public function getId(): ?int
@@ -96,12 +107,12 @@ class Survey
         return $this;
     }
 
-    public function getPerson(): ?Person
+    public function getPerson(): ?UserInterface
     {
         return $this->person;
     }
 
-    public function setPerson(Person|UserInterface|null $person): self
+    public function setPerson(?UserInterface $person): self
     {
         $this->person = $person;
 
