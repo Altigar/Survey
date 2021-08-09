@@ -1,5 +1,6 @@
 security:
-    encoders:
+    enable_authenticator_manager: true
+    password_hashers:
         App\Entity\Person:
             algorithm: argon2i
 
@@ -15,12 +16,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
             lazy: true
             provider: app_user_provider
-            guard:
-                authenticators:
-                    - App\Security\Authenticator
+            custom_authenticator: App\Security\Authenticator
             logout:
                 path: app_logout
                 # where to redirect after logout

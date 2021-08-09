@@ -9,17 +9,17 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SignupController extends AbstractController
 {
 	public function __construct(
 		private ValidatorInterface $validator,
-		private UserPasswordEncoderInterface $passwordEncoder,
-		private GuardAuthenticatorHandler $guard,
+		private UserPasswordHasherInterface $passwordEncoder,
+		private UserAuthenticatorInterface  $userAuthenticator,
 		private Authenticator $authenticator,
 		private EntityManagerInterface $entityManager,
 	) {}
@@ -38,11 +38,10 @@ class SignupController extends AbstractController
 				    throw new ValidationException($violations);
 			    }
 			    $person->setRoles(['ROLE_USER'])
-				    ->setPassword($this->passwordEncoder->encodePassword($person, $person->getPassword()));
+				    ->setPassword($this->passwordEncoder->hashPassword($person, $person->getPassword()));
 			    $this->entityManager->persist($person);
 			    $this->entityManager->flush();
-			    $this->guard->authenticateUserAndHandleSuccess($person, $request, $this->authenticator, 'main');
-			    return $this->redirectToRoute('home');
+			    return $this->userAuthenticator->authenticateUser($person, $this->authenticator, $request);
 		    } catch (ValidationException $exception) {
 			    $errors = $exception->getErrors();
 		    }
