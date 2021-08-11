@@ -33,7 +33,7 @@ class PassController extends AbstractController
 	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey]);
         return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
-        	'id' => $survey->getId(),
+        	'survey' => $survey,
         	'questions' => $this->serializer->serialize($questions, 'json', [
         		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 	        ]),

@@ -12,9 +12,11 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
-import SurveyLayout from "./components/survey/Layout";
+import ContentLayout from "./components/content/Layout";
 import Pass from "./components/pass/Base";
-import VError from "./components/VError";
+import SurveyLayout from "./components/survey/Layout";
+import VFormError from "./components/VFormError";
+import VSwitch from "./components/VSwitch";
 
 Vue.use(BootstrapVue);
 
@@ -22,8 +24,10 @@ new Vue({
 	el: '#app',
 	// template: '<App/>',
 	components: {
+		ContentLayout,
 		SurveyLayout,
 		Pass,
-		VError,
+		VFormError,
+		VSwitch,
 	},
 });

@@ -3,5 +3,14 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
-    <pass id="{{ id }}" questions="{{ questions }}"></pass>
+    {% if survey.repeatable %}
+        <pass id="{{ survey.id }}" questions="{{ questions }}"></pass>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <h3 class="text-primary">{{ survey.name }}</h3>
+                <div>You have already completed this survey</div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

@@ -1,6 +1,6 @@
 <template>
     <div class='form-check form-switch'>
-        <input class='form-check-input' type='checkbox' :id="id" :checked='value' @input="$emit('input', $event.target.checked)">
+        <input class='form-check-input' type='checkbox' :id="id" :name="name" :checked='value' @input="$emit('input', $event.target.checked)">
         <label class='form-check-label' :for="id"><slot></slot></label>
     </div>
 </template>
@@ -10,7 +10,8 @@ export default {
     name: "VSwitch",
     props: {
         id: String,
-        value: Boolean
+        name: String,
+        value: Boolean,
     },
 }
 </script>

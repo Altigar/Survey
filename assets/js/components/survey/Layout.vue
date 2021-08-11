@@ -1,114 +1,78 @@
 <template>
-    <b-row class="min-w-100">
-        <b-col class="mb-4" tag="aside" cols="3">
-            <sidebar @add="add" :data="types"></sidebar>
-        </b-col>
-        <b-col tag="section" cols="9">
-            <template v-for="question in data">
-                <choice
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    :ordering="question.ordering"
-                    v-if="isSelected(question.type, ['radio', 'checkbox'])"
-                    @remove="remove"
-                    ref="question"
-                ></choice>
-                <note
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['string'])"
-                    @remove="remove"
-                    ref="question"
-                ></note>
-                <note-area
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['text'])"
-                    @remove="remove"
-                    ref="question"
-                ></note-area>
-                <scale
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['scale'])"
-                    @remove="remove"
-                    ref="question"
-                ></scale>
-            </template>
-            <div>
-                <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
+    <div>
+        <div v-if="error" class="alert alert-danger" role="alert">
+            <span>{{ error }}</span>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3>Create survey</h3>
+                <form>
+                    <div class="mb-2">
+                        <label for="name" class="form-label">Name</label>
+                        <input v-model="name" type="text" class="form-control mb-2" id="name">
+                        <v-form-error v-if="errors.name">{{ errors.name }}</v-form-error>
+                    </div>
+                    <div class="mb-2">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea v-model="description" type="text" class="form-control mb-2" id="description"></textarea>
+                        <v-form-error v-if="errors.description">{{ errors.description }}</v-form-error>
+                    </div>
+                    <div class="mb-2">
+                        <v-switch v-model="repeatable" id="repeatable">Re-participate in a survey</v-switch>
+                    </div>
+                    <button v-if="loading" class="btn btn-primary" type="button" disabled>
+                        <span class="me-2">Create</span>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                    <button v-else @click="save" type="button" class="btn btn-primary">Create</button>
+                </form>
             </div>
-        </b-col>
-    </b-row>
+        </div>
+    </div>
 </template>
 
 <script>
 import axios from "../../axios";
-import Choice from "./Choice";
-import Note from "./Note";
-import Sidebar from "./Sidebar";
-import Scale from "./Scale";
-import NoteArea from "./NoteArea";
+import VSwitch from "../VSwitch";
+import VFormError from "../VFormError";
 
 export default {
     name: "Layout",
-    components: {NoteArea, Scale, Sidebar, Choice, Note},
-    props: {
-        id: String,
-        questions: String,
-    },
+    components: {VSwitch, VFormError},
     data() {
         return {
+            name: '',
+            description: null,
+            repeatable: false,
+            loading: false,
             error: null,
-            data: [],
-            types: [
-                {value: 'radio'},
-                {value: 'checkbox'},
-                {value: 'string'},
-                {value: 'text'},
-                {value: 'scale'},
-            ],
-        }
+            errors: {},
+        };
     },
     methods: {
-        async add(event) {
-            let number = 1;
-            if (Array.isArray(this.$refs.question) && this.$refs.question.length > 0) {
-                number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
-            }
+        async save() {
+            this.loading = true;
+            this.errors = {};
+            this.error = null;
             try {
-                let responseCreate = await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
-                let response = await axios.get(`/content/${this.id}`);
-                this.data = response.data;
-                this.$nextTick(() => {
-                    let question = this.$refs.question.find(elem => elem.data.id === responseCreate.data.id);
-                    if (question) {
-                        question.edited = true;
-                    }
+                let response = await axios.post(`/survey/create`, {
+                    name: this.name,
+                    description: this.description,
+                    repeatable: this.repeatable,
                 });
+                window.location.href = `/content/${response.data.id}`;
             } catch (error) {
-                this.error = error.response.data;
+                switch (error.response.status) {
+                    case 422:
+                        this.errors = error.response.data;
+                        break;
+                    default:
+                        this.error = 'Something went wrong';
+                        break;
+                }
             }
-        },
-        async remove(id) {
-            try {
-                await axios.delete(`/content/${id}`);
-                let response = await axios.get(`/content/${this.id}`);
-                this.data = response.data;
-            } catch (error) {
-                this.error = error.response.data;
-            }
-        },
-        isSelected(type, options) {
-            return options.includes(type);
-        },
-    },
-    created() {
-        this.data = JSON.parse(this.questions);
+            this.loading = false;
+        }
     }
 }
 </script>

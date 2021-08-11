@@ -53,19 +53,25 @@ class Survey
      */
     private $passes;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private bool $repeatable;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
         $this->passes = new ArrayCollection();
     }
 
-	public static function create(UserInterface $person, string $name, string $description): self
+	public static function create(UserInterface $person, string $name, ?string $description, bool $repeatable = false): self
 	{
 		$survey = new self();
 		$survey->created_at = new \DateTime('now');
 		$survey->person = $person;
 		$survey->name = $name;
 		$survey->description = $description;
+		$survey->repeatable = $repeatable;
 
 		return $survey;
     }
@@ -157,5 +163,10 @@ class Survey
         }
 
         return $this;
+    }
+
+    public function getRepeatable(): ?bool
+    {
+        return $this->repeatable;
     }
 }
