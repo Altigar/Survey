@@ -3,7 +3,7 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
-    {% if survey.repeatable %}
+    {% if survey.repeatable or (survey.repeatable == false and pass is empty) %}
         <pass id="{{ survey.id }}" questions="{{ questions }}"></pass>
     {% else %}
         <div class="card">

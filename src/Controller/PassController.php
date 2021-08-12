@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Data\Pass\QuestionData;
+use App\Entity\Pass;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Exception\Pass\CreateValidationException;
@@ -31,9 +32,13 @@ class PassController extends AbstractController
     public function index(Survey $survey): Response
     {
 	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey]);
-        return $this->render('pass/index.html.twig', [
+	    return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
         	'survey' => $survey,
+        	'pass' => $this->entityManager->getRepository(Pass::class)->findBy([
+        		'survey' => $survey,
+		        'person' => $this->getUser()
+	        ]),
         	'questions' => $this->serializer->serialize($questions, 'json', [
         		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 	        ]),
