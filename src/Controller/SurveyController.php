@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -56,6 +57,32 @@ class SurveyController extends AbstractController
 		$this->entityManager->persist($survey);
 		$this->entityManager->flush();
 
-		return $this->json(['id' => $survey->getId()], JsonResponse::HTTP_CREATED);
+		return $this->json(['id' => $survey->getId()], Response::HTTP_CREATED);
+	}
+
+	#[Route('/survey/edit/{survey}', name: 'survey_edit', methods: ['GET'])]
+	public function edit(Survey $survey): Response
+	{
+		return $this->render('survey/edit.html.twig', [
+			'title' => 'Edit survey',
+			'survey' => $this->serializer->serialize($survey, 'json', [
+				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers','survey', 'questions', 'passes', 'person']
+			]),
+		]);
+	}
+
+	#[Route('/survey/edit/{survey}', name: 'survey_update', methods: ['PUT'])]
+	public function update(Request $request, Survey $survey): JsonResponse
+	{
+		$surveyData = $this->serializer->deserialize($request->getContent(), SurveyData::class, 'json');
+		$errors = $this->validator->validate($surveyData);
+		if ($errors->count()) {
+			throw new ValidationException($errors);
+		}
+		$survey->update($surveyData->getName(), $surveyData->getDescription(), $surveyData->getRepeatable());
+		$this->entityManager->persist($survey);
+		$this->entityManager->flush();
+
+		return $this->json(['id' => $survey->getId()], Response::HTTP_CREATED);
 	}
 }

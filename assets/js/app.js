@@ -15,6 +15,7 @@ import BootstrapVue from "bootstrap-vue";
 import ContentLayout from "./components/content/Layout";
 import Pass from "./components/pass/Base";
 import SurveyLayout from "./components/survey/Layout";
+import UpdateSurveyLayout from "./components/survey/UpdateLayout";
 import VFormError from "./components/VFormError";
 import VSwitch from "./components/VSwitch";
 
@@ -26,6 +27,7 @@ new Vue({
 	components: {
 		ContentLayout,
 		SurveyLayout,
+		UpdateSurveyLayout,
 		Pass,
 		VFormError,
 		VSwitch,

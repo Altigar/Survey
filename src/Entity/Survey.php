@@ -76,6 +76,13 @@ class Survey
 		return $survey;
     }
 
+	public function update(string $name, ?string $description, bool $repeatable = false): void
+	{
+		$this->name = $name;
+		$this->description = $description;
+		$this->repeatable = $repeatable;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

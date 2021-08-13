@@ -9,11 +9,11 @@ class SurveyData
 	#[Assert\Length(min: 1, max: 255)]
 	private string $name;
 
-	#[Assert\Length(min: 1, max: 400)]
+	#[Assert\Length(max: 400)]
 	private ?string $description;
 	private bool $repeatable;
 
-	public function __construct(string $name, string $description = null, bool $repeatable = false)
+	public function __construct(string $name, ?string $description = null, bool $repeatable = false)
 	{
 		$this->name = $name;
 		$this->description = $description;
