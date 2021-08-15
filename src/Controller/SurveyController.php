@@ -65,8 +65,9 @@ class SurveyController extends AbstractController
 	{
 		return $this->render('survey/edit.html.twig', [
 			'title' => 'Edit survey',
-			'survey' => $this->serializer->serialize($survey, 'json', [
-				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers','survey', 'questions', 'passes', 'person']
+			'survey' => $survey->getId(),
+			'data' => $this->serializer->serialize($survey, 'json', [
+				AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'questions', 'passes', 'person']
 			]),
 		]);
 	}

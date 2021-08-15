@@ -1,9 +1,9 @@
 <template>
     <b-row class="min-w-100">
-        <b-col class="mb-4" tag="aside" cols="3">
+        <b-col class="mb-4" tag="aside" md="3">
             <sidebar @add="add" :data="types"></sidebar>
         </b-col>
-        <b-col tag="section" cols="9">
+        <b-col tag="section" md="9">
             <template v-for="question in data">
                 <choice
                     :key="question.id"

@@ -16,7 +16,7 @@ body {
 }
 
 .flicker:hover {
-    background-color: #f8f9fa;
+    background-color: #f8f9fa !important;
 }
 
 .form-control:disabled, .form-control[readonly] {

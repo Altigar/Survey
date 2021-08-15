@@ -3,5 +3,6 @@
 {% block title %} {{ title }} {% endblock %}
 
 {% block body %}
-    <update-survey-layout survey="{{ survey }}"></update-survey-layout>
+    {% include('partials/navigation.html.twig') %}
+    <update-survey-layout survey="{{ data }}"></update-survey-layout>
 {% endblock %}
