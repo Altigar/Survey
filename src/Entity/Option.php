@@ -27,8 +27,6 @@ class Option
 	/**
 	 * @ORM\Column(type="text", nullable=true)
 	 */
-	#[Assert\NotBlank(groups: ['choice'])]
-	#[Assert\Length(max: 100, maxMessage: 'Your option cannot be longer than {{ limit }} characters')]
     private ?string $text = null;
 
     /**
@@ -55,20 +53,16 @@ class Option
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-	#[Assert\Length(max: 40, maxMessage: 'Text cannot be longer than {{ limit }} characters')]
     private ?string $scale_from_text = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-	#[Assert\Length(max: 40, maxMessage: 'Text cannot be longer than {{ limit }} characters')]
     private ?string $scale_to_text = null;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      */
-    #[Assert\NotBlank(groups: ['text'])]
-    #[Assert\Positive(groups: ['text'])]
     private ?int $row = null;
 
     public function __construct()
