@@ -8,7 +8,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=QuestionRepository::class)
@@ -29,11 +28,6 @@ class Question
     private ?int $id = null;
 
 	/**
-	 * @Assert\NotBlank
-	 * @Assert\Length(
-	 *     max = 255,
-	 *     maxMessage = "Your question cannot be longer than {{ limit }} characters"
-	 * )
 	 * @ORM\Column(type="text", nullable=true)
 	 */
     private ?string $text = null;
@@ -50,7 +44,6 @@ class Question
     private ?Survey $survey = null;
 
     /**
-     * @Assert\Valid
      * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
      */
 	private ArrayCollection|PersistentCollection|null $options = null;
@@ -58,21 +51,11 @@ class Question
     /**
      * @ORM\Column(type="string", length=255)
      */
-	#[Assert\NotBlank(groups: ['default'])]
-	#[Assert\Choice([
-		self::TYPE_RADIO,
-		self::TYPE_CHECKBOX,
-		self::TYPE_STRING,
-		self::TYPE_TEXT,
-		self::TYPE_SCALE
-	], groups: ['default'])]
     private ?string $type = null;
 
     /**
      * @ORM\Column(type="integer")
      */
-	#[Assert\NotBlank(groups: ['default'])]
-	#[Assert\Positive(groups: ['default'])]
     private ?int $ordering = null;
 
     /**
