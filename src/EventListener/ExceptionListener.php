@@ -13,6 +13,7 @@ class ExceptionListener
 	public function onKernelException(ExceptionEvent $event): void
 	{
 		$response = $event->getRequest()->isXmlHttpRequest() ? new JsonResponse() : new Response();
+		$responseCopy = clone $response;
 
 		$exception = $event->getThrowable();
 		if ($exception instanceof ValidationExceptionInterface) {
@@ -22,6 +23,8 @@ class ExceptionListener
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 		}
 
-		$event->setResponse($response);
+		if ($response != $responseCopy) {
+			$event->setResponse($response);
+		}
 	}
 }
