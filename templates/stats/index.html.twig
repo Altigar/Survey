@@ -8,11 +8,13 @@
         {% if question.type in ['string', 'text'] %}
             <div class="card mb-3">
                 <div class="card-body">
-                    <h3 class="text-primary">{{ question.text }}</h3>
+                    <h3>{{ question.text }}</h3>
                     {% for answer in noteStats %}
                         {% if answer.question_id == question.id %}
                             <div class="mb-1 bg-light p-2">{{ answer.text }}</div>
                         {% endif %}
+                    {% else %}
+                        <div>No results</div>
                     {% endfor %}
                 </div>
             </div>
@@ -48,6 +50,8 @@
                                 <div class="col-md-1 p-0"> {{ stat.amount }}</div>
                                 <div class="col-md-1 p-0 text-md-end">{{ (stat.amount * 100 / stat.total)|number_format(1) + 0 }}%</div>
                             </div>
+                        {% else %}
+                            <div>No results</div>
                         {% endfor %}
                     </div>
                 </div>
