@@ -18,7 +18,7 @@
                         <app-form-error v-if="errors.description">{{ errors.description }}</app-form-error>
                     </div>
                     <div class="mb-2">
-                        <v-switch v-if="data" v-model="data.repeatable" id="repeatable">Re-participate in a survey</v-switch>
+                        <app-switch v-if="data" v-model="data.repeatable" id="repeatable">Re-participate in a survey</app-switch>
                     </div>
                     <button v-if="loading" class="btn btn-primary" type="button" disabled>
                         <span class="me-2">Update</span>
@@ -33,12 +33,12 @@
 
 <script>
 import axios from "../../axios";
-import VSwitch from "../VSwitch";
+import AppSwitch from "../AppSwitch";
 import AppFormError from "../AppFormError";
 
 export default {
     name: "Layout",
-    components: {VSwitch, AppFormError},
+    components: {AppSwitch, AppFormError},
     props: {
         survey: String
     },

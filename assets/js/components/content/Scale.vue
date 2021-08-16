@@ -31,7 +31,7 @@
                         <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
                         <app-form-error v-if="textToError">{{ textToError }}</app-form-error>
                     </div>
-                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
+                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -42,14 +42,14 @@
 <script>
 import axios from "../../axios";
 import Base from "./Base";
-import VSwitch from "../VSwitch";
+import AppSwitch from "../AppSwitch";
 import VFooter from "./VFooter";
 import AppFormError from "../AppFormError";
 
 export default {
     name: "Scale",
     mixins: [Base],
-    components: {AppFormError, VFooter, VSwitch},
+    components: {AppFormError, VFooter, AppSwitch},
     props: {
         data: Object,
     },

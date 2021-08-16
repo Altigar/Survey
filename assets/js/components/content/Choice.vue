@@ -23,7 +23,7 @@
                     <div class="mb-2">
                         <a @click.prevent="add" class="pointer text-decoration-none"><span style="font-weight: bold; font-size: 25px;">+</span> Add new option</a>
                     </div>
-                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
+                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -34,14 +34,14 @@
 <script>
 import axios from "../../axios";
 import Base from "./Base";
-import VSwitch from "../VSwitch";
+import AppSwitch from "../AppSwitch";
 import VFooter from "./VFooter";
 import AppFormError from "../AppFormError";
 
 export default {
     name: "Choice",
     mixins: [Base],
-    components: {AppFormError, VFooter, VSwitch},
+    components: {AppFormError, VFooter, AppSwitch},
     props: {
         surveyId: String,
         data: Object,

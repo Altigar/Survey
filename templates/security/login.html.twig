@@ -22,7 +22,7 @@
                     <input type="password" class="form-control" id="password" name="password">
                 </div>
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                <v-switch class="mb-2" id="remember_me" name="_remember_me">Remember me</v-switch>
+                <app-switch class="mb-2" id="remember_me" name="_remember_me">Remember me</app-switch>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>

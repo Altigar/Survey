@@ -9,7 +9,7 @@
                 <div class="mb-2">
                     <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
                     <app-form-error v-if="error">{{ error }}</app-form-error>
-                    <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
+                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -20,14 +20,14 @@
 <script>
 import axios from "../../axios";
 import Base from "./Base";
-import VSwitch from "../VSwitch";
+import AppSwitch from "../AppSwitch";
 import VFooter from "./VFooter";
 import AppFormError from "../AppFormError";
 
 export default {
     name: "Note",
     mixins: [Base],
-    components: {AppFormError, VFooter, VSwitch},
+    components: {AppFormError, VFooter, AppSwitch},
     props: {
         surveyId: String,
         data: Object,

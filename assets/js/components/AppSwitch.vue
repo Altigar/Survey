@@ -7,7 +7,7 @@
 
 <script>
 export default {
-    name: "VSwitch",
+    name: "AppSwitch",
     props: {
         id: String,
         name: String,
