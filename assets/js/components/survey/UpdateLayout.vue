@@ -10,18 +10,18 @@
                     <div class="mb-2">
                         <label for="name" class="form-label">Name</label>
                         <input v-if="data" v-model="data.name" type="text" class="form-control mb-2" id="name">
-                        <v-form-error v-if="errors.name">{{ errors.name }}</v-form-error>
+                        <app-form-error v-if="errors.name">{{ errors.name }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <label for="description" class="form-label">Description</label>
                         <textarea v-if="data" v-model="data.description" type="text" class="form-control mb-2" id="description"></textarea>
-                        <v-form-error v-if="errors.description">{{ errors.description }}</v-form-error>
+                        <app-form-error v-if="errors.description">{{ errors.description }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <v-switch v-if="data" v-model="data.repeatable" id="repeatable">Re-participate in a survey</v-switch>
                     </div>
                     <button v-if="loading" class="btn btn-primary" type="button" disabled>
-                        <span class="me-2">Create</span>
+                        <span class="me-2">Update</span>
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </button>
                     <button v-else @click="save" type="button" class="btn btn-primary">Update</button>
@@ -34,11 +34,11 @@
 <script>
 import axios from "../../axios";
 import VSwitch from "../VSwitch";
-import VFormError from "../VFormError";
+import AppFormError from "../AppFormError";
 
 export default {
     name: "Layout",
-    components: {VSwitch, VFormError},
+    components: {VSwitch, AppFormError},
     props: {
         survey: String
     },

@@ -10,12 +10,12 @@
                     <div class="mb-2">
                         <label for="name" class="form-label">Name</label>
                         <input v-model="name" type="text" class="form-control mb-2" id="name">
-                        <v-form-error v-if="errors.name">{{ errors.name }}</v-form-error>
+                        <app-form-error v-if="errors.name">{{ errors.name }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <label for="description" class="form-label">Description</label>
                         <textarea v-model="description" type="text" class="form-control mb-2" id="description"></textarea>
-                        <v-form-error v-if="errors.description">{{ errors.description }}</v-form-error>
+                        <app-form-error v-if="errors.description">{{ errors.description }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <v-switch v-model="repeatable" id="repeatable">Re-participate in a survey</v-switch>
@@ -34,11 +34,11 @@
 <script>
 import axios from "../../axios";
 import VSwitch from "../VSwitch";
-import VFormError from "../VFormError";
+import AppFormError from "../AppFormError";
 
 export default {
     name: "Layout",
-    components: {VSwitch, VFormError},
+    components: {VSwitch, AppFormError},
     data() {
         return {
             name: '',

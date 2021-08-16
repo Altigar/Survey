@@ -8,7 +8,7 @@
 
 <script>
 export default {
-    name: "VFormError"
+    name: "AppFormError"
 }
 </script>
 

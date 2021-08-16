@@ -11,21 +11,21 @@
                     <label for="email" class="form-label">Email address</label>
                     <input type="text" class="form-control" id="email" name="email" value="{{ person.email }}">
                     {% if errors.email is defined %}
-                        <v-form-error v-cloak class="mt-2">{{ errors.email }}</v-form-error>
+                        <app-form-error v-cloak class="mt-2">{{ errors.email }}</app-form-error>
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" value="{{ person.password }}">
                     {% if errors.password is defined %}
-                        <v-form-error v-cloak class="mt-2">{{ errors.password }}</v-form-error>
+                        <app-form-error v-cloak class="mt-2">{{ errors.password }}</app-form-error>
                     {% endif %}
                 </div>
                 <div class="mb-3">
                     <label for="password_confirmation" class="form-label">Confirm password</label>
                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{ person.passwordConfirmation }}">
                     {% if errors.password_confirmation is defined %}
-                        <v-form-error v-cloak class="mt-2">{{ errors.password_confirmation }}</v-form-error>
+                        <app-form-error v-cloak class="mt-2">{{ errors.password_confirmation }}</app-form-error>
                     {% endif %}
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>

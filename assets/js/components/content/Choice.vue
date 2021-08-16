@@ -18,7 +18,7 @@
                             <input type="text" v-model="option.text" class="form-control me-3" size="sm">
                             <button @click="remove(index)" type="button" class="btn-close align-self-center" aria-label="Close"></button>
                         </div>
-                        <p v-if="option.error">{{ option.error }}</p>
+                        <app-form-error v-if="option.error">{{ option.error }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <a @click.prevent="add" class="pointer text-decoration-none"><span style="font-weight: bold; font-size: 25px;">+</span> Add new option</a>
@@ -36,11 +36,12 @@ import axios from "../../axios";
 import Base from "./Base";
 import VSwitch from "../VSwitch";
 import VFooter from "./VFooter";
+import AppFormError from "../AppFormError";
 
 export default {
     name: "Choice",
     mixins: [Base],
-    components: {VFooter, VSwitch},
+    components: {AppFormError, VFooter, VSwitch},
     props: {
         surveyId: String,
         data: Object,

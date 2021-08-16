@@ -16,15 +16,21 @@
             </div>
             <form v-else-if="edited" method="post">
                 <div class="mb-2">
-                    <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
-                    <p v-if="error">{{ error }}</p>
+                    <div class="mb-2">
+                        <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
+                        <app-form-error v-if="error">{{ error }}</app-form-error>
+                    </div>
                     <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
                         <option v-for="option in options">{{ option }}</option>
                     </select>
-                    <input v-model="textFrom" type="text" class="form-control mb-2" placeholder="From">
-                    <p v-if="textFromError"><small>{{ textFromError }}</small></p>
-                    <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
-                    <p v-if="textToError"><small>{{ textToError }}</small></p>
+                    <div class="mb-2">
+                        <input v-model="textFrom" type="text" class="form-control mb-2" placeholder="From">
+                        <app-form-error v-if="textFromError">{{ textFromError }}</app-form-error>
+                    </div>
+                    <div class="mb-2">
+                        <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
+                        <app-form-error v-if="textToError">{{ textToError }}</app-form-error>
+                    </div>
                     <v-switch :id="switch_id" v-model="data.isRequired">Required</v-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
@@ -38,11 +44,12 @@ import axios from "../../axios";
 import Base from "./Base";
 import VSwitch from "../VSwitch";
 import VFooter from "./VFooter";
+import AppFormError from "../AppFormError";
 
 export default {
     name: "Scale",
     mixins: [Base],
-    components: {VFooter, VSwitch},
+    components: {AppFormError, VFooter, VSwitch},
     props: {
         data: Object,
     },

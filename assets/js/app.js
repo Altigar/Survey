@@ -17,7 +17,7 @@ import Pass from "./components/pass/Base";
 import SurveyLayout from "./components/survey/Layout";
 import UpdateSurveyLayout from "./components/survey/UpdateLayout";
 import AppError from "./components/AppError";
-import VFormError from "./components/VFormError";
+import AppFormError from "./components/AppFormError";
 import VSwitch from "./components/VSwitch";
 
 Vue.use(BootstrapVue);
@@ -31,7 +31,7 @@ new Vue({
 		UpdateSurveyLayout,
 		Pass,
 		AppError,
-		VFormError,
+		AppFormError,
 		VSwitch,
 	},
 });
