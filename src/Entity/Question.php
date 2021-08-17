@@ -111,14 +111,14 @@ class Question
 		return $question;
 	}
 
-	public function text(?int $row): self
+	public function textType(?int $row): self
 	{
 		$this->row = $row;
 
 		return $this;
 	}
 
-	public function scale(?int $scale = null, ?string $scale_from_text = null, ?string $scale_to_text = null): self
+	public function scaleType(?int $scale = null, ?string $scale_from_text = null, ?string $scale_to_text = null): self
 	{
 		$this->scale = $scale;
 		$this->scale_from_text = $scale_from_text;

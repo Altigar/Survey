@@ -4,11 +4,11 @@
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>
                 <div class="d-flex justify-content-between mb-2">
-                    <div><span>{{ textFrom }}</span></div>
-                    <div><span>{{ textTo }}</span></div>
+                    <div><span>{{ data.scaleFromText }}</span></div>
+                    <div><span>{{ data.scaleToText }}</span></div>
                 </div>
                 <div class="d-flex justify-content-around">
-                    <div v-for="number in range(1, selected, 1)" :key="number" class="form-check">
+                    <div v-for="number in range(1, data.scale, 1)" :key="number" class="form-check">
                         <input class="form-check-input" type="radio">
                         <label class="form-check-label">{{ number }}</label>
                     </div>
@@ -20,15 +20,15 @@
                         <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
                         <app-form-error v-if="error">{{ error }}</app-form-error>
                     </div>
-                    <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
+                    <select v-model="data.scale" class="form-select form-select-sm mb-2" style="width: 5rem;">
                         <option v-for="option in options">{{ option }}</option>
                     </select>
                     <div class="mb-2">
-                        <input v-model="textFrom" type="text" class="form-control mb-2" placeholder="From">
+                        <input v-model="data.scaleFromText" type="text" class="form-control mb-2" placeholder="From">
                         <app-form-error v-if="textFromError">{{ textFromError }}</app-form-error>
                     </div>
                     <div class="mb-2">
-                        <input v-model="textTo" type="text" class="form-control mb-2" placeholder="To">
+                        <input v-model="data.scaleToText" type="text" class="form-control mb-2" placeholder="To">
                         <app-form-error v-if="textToError">{{ textToError }}</app-form-error>
                     </div>
                     <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
@@ -57,7 +57,6 @@ export default {
         return {
             switch_id: null,
             options: this.range(2, 10, 1),
-            selected: null,
             textFrom: null,
             textTo: null,
             error: null,
@@ -77,12 +76,9 @@ export default {
                     text: this.data.text,
                     ordering: this.data.ordering,
                     isRequired: this.data.isRequired,
-                    options: [{
-                        ordering: this.data.options[0].ordering,
-                        scale: Number(this.selected),
-                        scale_from_text: this.textFrom,
-                        scale_to_text: this.textTo,
-                    }]
+                    scale: Number(this.data.scale),
+                    scale_from_text: this.data.scaleFromText,
+                    scale_to_text: this.data.scaleToText,
                 });
                 this.edited = false;
             } catch (error) {
@@ -96,12 +92,7 @@ export default {
             return Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
         }
     },
-    created() {
-        if (this.data.options[0]) {
-            this.selected = this.data.options[0].scale;
-            this.textFrom = this.data.options[0].scaleFromText;
-            this.textTo = this.data.options[0].scaleToText;
-        }
+    mounted() {
         this.switch_id = `switch_${this.data.id}`;
     }
 }

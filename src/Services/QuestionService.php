@@ -3,11 +3,10 @@
 namespace App\Services;
 
 use App\Data\Content\QuestionDataCreate;
-use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
+use App\Data\Content\QuestionDataUpdate;
 use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
-use App\Utils\ArrayUtil;
 use App\Utils\ObjectUtil;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -21,9 +20,9 @@ class QuestionService
 	{
 		$question = Question::create($survey, $questionData->getType(), $questionData->getOrdering());
 		match ($question->getType()) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $question->addOption(Option::createContent()),
-			Question::TYPE_TEXT => $question->text(Question::DEFAULT_ROW),
-			Question::TYPE_SCALE => $question->scale(Question::DEFAULT_SCALE),
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $question->addOption(Option::create()),
+			Question::TYPE_TEXT => $question->textType(Question::DEFAULT_ROW),
+			Question::TYPE_SCALE => $question->scaleType(Question::DEFAULT_SCALE),
 			default => null,
 		};
 		$this->entityManager->persist($question);
@@ -37,8 +36,12 @@ class QuestionService
 		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
 		$question = match ($question->getType()) {
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->choice($question, $questionData),
-			Question::TYPE_TEXT => $this->text($question, $questionData),
-			Question::TYPE_SCALE => $this->scale($question, $questionData),
+			Question::TYPE_TEXT => $question->textType($questionData->getRow()),
+			Question::TYPE_SCALE => $question->scaleType(
+				$questionData->getScale(),
+				$questionData->getScaleFromText(),
+				$questionData->getScaleToText()
+			),
 			default => $question,
 		};
 		$this->entityManager->persist($question);
@@ -58,30 +61,12 @@ class QuestionService
 		$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
 		foreach ($questionData->getOptions() as $optionData) {
 			if (!$optionData->getId()) {
-				$option = Option::createContent(text: $optionData->getText(), ordering: $optionData->getOrdering());
+				$option = Option::create($optionData->getText(), $optionData->getOrdering());
 				$question->addOption($option);
 			} elseif ($option = $options[$optionData->getId()] ?? null) {
 				$option->updateContent(text: $optionData->getText());
 			}
 		}
-
-		return $question;
-	}
-
-	private function text(Question $question, QuestionDataUpdate $questionData): Question
-	{
-		$optionData = ArrayUtil::first($questionData->getOptions());
-		$option = ArrayUtil::first($question->getOptions()->toArray());
-		$option->updateContent(row: $optionData->getRow());
-
-		return $question;
-	}
-
-	private function scale(Question $question, QuestionDataUpdate $questionData): Question
-	{
-		$optionData = ArrayUtil::first($questionData->getOptions());
-		$option = $question->getOptions()->first();
-		$option->updateContentScale($optionData->getScale(), $optionData->getScaleFromText(), $optionData->getScaleToText());
 
 		return $question;
 	}

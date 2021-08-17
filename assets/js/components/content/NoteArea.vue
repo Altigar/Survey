@@ -3,7 +3,7 @@
         <div class="card-body">
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>
-                <textarea class="form-control resize-none" :rows="selected"></textarea>
+                <textarea class="form-control resize-none" :rows="data.row"></textarea>
             </div>
             <form method="post" v-else-if="edited">
                 <div class="mb-2">
@@ -12,7 +12,7 @@
                         <app-form-error v-if="error">{{ error }}</app-form-error>
                     </div>
                     <div class="mb-2">
-                        <select v-model="selected" class="form-select form-select-sm mb-2" style="width: 5rem;">
+                        <select v-model="data.row" class="form-select form-select-sm mb-2" style="width: 5rem;">
                             <option v-for="option in options">{{ option }}</option>
                         </select>
                         <app-form-error v-if="rowError">{{ rowError }}</app-form-error>
@@ -43,7 +43,6 @@ export default {
     data() {
         return {
             switch_id: null,
-            selected: null,
             options: Array.from({length: 10}, (_, i) => i + 1),
             error: null,
             rowError: null,
@@ -53,7 +52,6 @@ export default {
         async save() {
             this.error = null;
             this.rowError = null;
-            this.data.options[0].row = this.selected;
             try {
                 await axios.put(`/content/${this.data.id}`, {
                     id: this.data.id,
@@ -61,10 +59,7 @@ export default {
                     text: this.data.text,
                     ordering: this.data.ordering,
                     isRequired: this.data.isRequired,
-                    options: [{
-                        ordering: this.data.options[0].ordering,
-                        row: Number(this.selected),
-                    }]
+                    row: Number(this.data.row),
                 });
                 this.edited = false;
             } catch (error) {
@@ -74,10 +69,7 @@ export default {
             }
         }
     },
-    created() {
-        if (this.data.options[0]) {
-            this.selected = this.data.options[0].row;
-        }
+    mounted() {
         this.switch_id = `switch_${this.data.id}`;
     }
 }

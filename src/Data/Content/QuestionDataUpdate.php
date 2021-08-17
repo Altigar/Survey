@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Data\Content\Update;
+namespace App\Data\Content;
 
 use App\Entity\Question;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class QuestionData
+class QuestionDataUpdate
 {
 	#[Assert\Positive(groups: ['default'])]
 	private int $id;
@@ -26,14 +26,21 @@ class QuestionData
 	#[Assert\Positive(groups: ['default'])]
 	private int $ordering;
 
-	#[Assert\Valid(groups: [
-		Question::TYPE_RADIO,
-		Question::TYPE_CHECKBOX,
-		Question::TYPE_TEXT,
-		Question::TYPE_SCALE,
-		'default',
-	])]
+	#[Assert\Valid(groups: [Question::TYPE_RADIO, Question::TYPE_CHECKBOX, 'default'])]
 	private ?array $options;
+
+	#[Assert\Range(min: 1, max: 10, groups: [Question::TYPE_TEXT])]
+	private ?int $row;
+
+	#[Assert\Positive(groups: [Question::TYPE_SCALE])]
+	#[Assert\Range(min: 2, max: 10, groups: [Question::TYPE_SCALE])]
+	private ?int $scale;
+
+	#[Assert\Length(max: 40, groups: [Question::TYPE_SCALE])]
+	private ?string $scale_from_text;
+
+	#[Assert\Length(max: 40, groups: [Question::TYPE_SCALE])]
+	private ?string $scale_to_text;
 
 	public function __construct(
 		int $id,
@@ -41,7 +48,11 @@ class QuestionData
 		string $text,
 		string $type,
 		int $ordering,
-		?array $options = null
+		?array $options = null,
+		?int $row = null,
+		?int $scale = null,
+		?string $scale_from_text = null,
+		?string $scale_to_text = null
 	) {
 		$this->id = $id;
 		$this->is_required = $isRequired;
@@ -49,6 +60,10 @@ class QuestionData
 		$this->text = $text;
 		$this->ordering = $ordering;
 		$this->options = $options;
+		$this->row = $row;
+		$this->scale = $scale;
+		$this->scale_from_text = $scale_from_text;
+		$this->scale_to_text = $scale_to_text;
 	}
 
 	public function getId(): int
@@ -81,7 +96,27 @@ class QuestionData
 		return $this->options;
 	}
 
-	public function addOption(OptionData $optionData): self
+	public function getRow(): ?int
+	{
+		return $this->row;
+	}
+
+	public function getScale(): ?int
+	{
+		return $this->scale;
+	}
+
+	public function getScaleFromText(): ?string
+	{
+		return $this->scale_from_text;
+	}
+
+	public function getScaleToText(): ?string
+	{
+		return $this->scale_to_text;
+	}
+
+	public function addOption(OptionDataUpdate $optionData): self
 	{
 		return $this;
 	}

@@ -47,7 +47,7 @@ class Option
         $this->answers = new ArrayCollection();
     }
 
-	public static function createContent(string $text = 'First option', int $ordering = 1): self
+	public static function create(string $text = 'First option', int $ordering = 1): self
 	{
 		$option = new self;
 		$option->text = $text;
@@ -60,15 +60,6 @@ class Option
 	{
 		$this->row = $row;
 		$this->text = $text;
-
-		return $this;
-    }
-
-	public function updateContentScale(int $scale, string $scale_from_text, string $scale_to_text): self
-	{
-		$this->scale = $scale;
-		$this->scale_from_text = $scale_from_text;
-		$this->scale_to_text = $scale_to_text;
 
 		return $this;
     }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Data\Content\QuestionDataCreate;
-use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
+use App\Data\Content\QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Exception\Content\UpdateValidationException;
@@ -72,6 +72,6 @@ class ContentController extends AbstractController
 	{
 		$this->entityManager->remove($question);
 		$this->entityManager->flush();
-		return $this->json([], JsonResponse::HTTP_NO_CONTENT);
+		return $this->json([], Response::HTTP_NO_CONTENT);
 	}
 }

@@ -95,7 +95,7 @@ export default {
             this.$forceUpdate();
         }
     },
-    created() {
+    mounted() {
         this.switch_id = `switch_${this.data.id}`;
     }
 }
