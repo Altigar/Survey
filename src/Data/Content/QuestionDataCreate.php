@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Data\Content\Create;
+namespace App\Data\Content;
 
 use App\Entity\Question;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class QuestionData
+class QuestionDataCreate
 {
 	#[Assert\Choice([
 		Question::TYPE_RADIO,

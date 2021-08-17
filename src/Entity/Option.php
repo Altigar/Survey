@@ -14,9 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Option
 {
-	public const DEFAULT_ROW = 1;
-	public const DEFAULT_SCALE = 10;
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -45,37 +42,15 @@ class Option
      */
     private ArrayCollection|PersistentCollection|null $answers = null;
 
-    /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    private ?int $scale = null;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $scale_from_text = null;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private ?string $scale_to_text = null;
-
-    /**
-     * @ORM\Column(type="smallint", nullable=true)
-     */
-    private ?int $row = null;
-
     public function __construct()
     {
         $this->answers = new ArrayCollection();
     }
 
-	public static function createContent(?string $text = null, ?int $row = null, ?int $scale = null, int $ordering = 1): self
+	public static function createContent(string $text = 'First option', int $ordering = 1): self
 	{
 		$option = new self;
 		$option->text = $text;
-		$option->row = $row;
-		$option->scale = $scale;
 		$option->ordering = $ordering;
 
 		return $option;
@@ -151,24 +126,4 @@ class Option
 
         return $this;
     }
-
-    public function getScale(): ?int
-    {
-        return $this->scale;
-    }
-
-    public function getScaleFromText(): ?string
-    {
-        return $this->scale_from_text;
-    }
-
-    public function getScaleToText(): ?string
-    {
-        return $this->scale_to_text;
-    }
-
-	public function getRow(): ?int
-	{
-		return $this->row;
-	}
 }

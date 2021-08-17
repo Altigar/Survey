@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Data\Content\Create\QuestionData as QuestionDataCreate;
+use App\Data\Content\QuestionDataCreate;
 use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Option;
 use App\Entity\Question;
@@ -19,14 +19,13 @@ class QuestionService
 
 	public function create(Survey $survey, QuestionDataCreate $questionData): int
 	{
-		$question = Question::createContent($survey, $questionData->getType(), $questionData->getOrdering());
-		$option = match ($question->getType()) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => Option::createContent(text: 'First option'),
-			Question::TYPE_TEXT => Option::createContent(row: Option::DEFAULT_ROW),
-			Question::TYPE_SCALE => Option::createContent(scale: Option::DEFAULT_SCALE),
-			default => Option::createContent(),
+		$question = Question::create($survey, $questionData->getType(), $questionData->getOrdering());
+		match ($question->getType()) {
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $question->addOption(Option::createContent()),
+			Question::TYPE_TEXT => $question->text(Question::DEFAULT_ROW),
+			Question::TYPE_SCALE => $question->scale(Question::DEFAULT_SCALE),
+			default => null,
 		};
-		$question->addOption($option);
 		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 

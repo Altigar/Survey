@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Data\Content\Create\QuestionData as QuestionDataCreate;
+use App\Data\Content\QuestionDataCreate;
 use App\Data\Content\Update\QuestionData as QuestionDataUpdate;
 use App\Entity\Question;
 use App\Entity\Survey;
@@ -52,7 +52,7 @@ class ContentController extends AbstractController
 		if ($errors->count()) {
 			throw new ValidationException($errors);
 		}
-		return $this->json(['id' => $this->questionService->create($survey, $questionData)], JsonResponse::HTTP_CREATED);
+		return $this->json(['id' => $this->questionService->create($survey, $questionData)], Response::HTTP_CREATED);
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]

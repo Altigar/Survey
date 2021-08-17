@@ -54,7 +54,7 @@ class Survey
     private $passes;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default": false})
      */
     private bool $repeatable;
 

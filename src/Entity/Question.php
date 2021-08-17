@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Data\Content\Create\QuestionDataCreate;
 use App\Repository\QuestionRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +20,9 @@ class Question
 	const TYPE_STRING = 'string';
 	const TYPE_TEXT = 'text';
 	const TYPE_SCALE = 'scale';
+
+	const DEFAULT_ROW = 1;
+	const DEFAULT_SCALE = 10;
 
     /**
      * @ORM\Id
@@ -66,7 +70,27 @@ class Question
     /**
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    private bool $is_required = false;
+    private bool $is_required;
+
+	/**
+	 * @ORM\Column(type="smallint", nullable=true)
+	 */
+	private ?int $row = null;
+
+	/**
+	 * @ORM\Column(type="smallint", nullable=true)
+	 */
+	private ?int $scale = null;
+
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 */
+	private ?string $scale_from_text = null;
+
+	/**
+	 * @ORM\Column(type="string", length=40, nullable=true)
+	 */
+	private ?string $scale_to_text = null;
 
     public function __construct()
     {
@@ -74,7 +98,7 @@ class Question
         $this->answers = new ArrayCollection();
     }
 
-	public static function createContent(Survey $survey, string $type, int $ordering): self
+	public static function create(Survey $survey, string $type, int $ordering): self
 	{
 		$question = new self();
 		$question->survey = $survey;
@@ -82,9 +106,26 @@ class Question
 		$question->text = 'Question text';
 		$question->ordering = $ordering;
 		$question->created_at = new \DateTime('now');
+		$question->is_required = false;
 
 		return $question;
-    }
+	}
+
+	public function text(?int $row): self
+	{
+		$this->row = $row;
+
+		return $this;
+	}
+
+	public function scale(?int $scale = null, ?string $scale_from_text = null, ?string $scale_to_text = null): self
+	{
+		$this->scale = $scale;
+		$this->scale_from_text = $scale_from_text;
+		$this->scale_to_text = $scale_to_text;
+
+		return $this;
+	}
 
 	public function updateContent(bool $is_required, string $text): self
 	{
@@ -188,5 +229,25 @@ class Question
 	public function getIsRequired(): ?bool
 	{
 		return $this->is_required;
+	}
+
+	public function getRow(): ?int
+	{
+		return $this->row;
+	}
+
+	public function getScale(): ?int
+	{
+		return $this->scale;
+	}
+
+	public function getScaleFromText(): ?string
+	{
+		return $this->scale_from_text;
+	}
+
+	public function getScaleToText(): ?string
+	{
+		return $this->scale_to_text;
 	}
 }
