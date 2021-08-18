@@ -1,5 +1,5 @@
 <template>
-    <div class="card rounded border mb-3" @click="edited = true">
+    <div @click="edited = true" class="card">
         <div class="card-body">
             <div v-if="!edited">
                 <h3>{{ data.text }}</h3>

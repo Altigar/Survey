@@ -1,53 +1,58 @@
 <template>
-    <b-row class="min-w-100">
-        <b-col class="mb-4" tag="aside" md="3">
-            <sidebar @add="add" :data="types"></sidebar>
-        </b-col>
-        <b-col tag="section" md="9">
-            <template v-for="question in data">
-                <choice
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    :ordering="question.ordering"
-                    v-if="isSelected(question.type, ['radio', 'checkbox'])"
-                    @remove="remove"
-                    ref="question"
-                ></choice>
-                <note
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['string'])"
-                    @remove="remove"
-                    ref="question"
-                ></note>
-                <note-area
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['text'])"
-                    @remove="remove"
-                    ref="question"
-                ></note-area>
-                <scale
-                    :key="question.id"
-                    :survey-id="id"
-                    :data="question"
-                    v-if="isSelected(question.type, ['scale'])"
-                    @remove="remove"
-                    ref="question"
-                ></scale>
-            </template>
-            <div>
-                <b-alert show dismissible v-if="error">{{ error.text }}</b-alert>
+    <div>
+        <app-error v-if="error">{{ error }}</app-error>
+        <div class="row min-w-100">
+            <div class="col-md-3 mb-4">
+                <sidebar @add="add" :data="types"></sidebar>
             </div>
-        </b-col>
-    </b-row>
+            <section class="col-md-9">
+                <template v-for="question in data">
+                    <choice
+                        :key="question.id"
+                        :survey-id="id"
+                        :data="question"
+                        :ordering="question.ordering"
+                        v-if="isSelected(question.type, ['radio', 'checkbox'])"
+                        @remove="remove"
+                        ref="question"
+                        class="question-content"
+                    ></choice>
+                    <note
+                        :key="question.id"
+                        :survey-id="id"
+                        :data="question"
+                        v-if="isSelected(question.type, ['string'])"
+                        @remove="remove"
+                        ref="question"
+                        class="question-content"
+                    ></note>
+                    <note-area
+                        :key="question.id"
+                        :survey-id="id"
+                        :data="question"
+                        v-if="isSelected(question.type, ['text'])"
+                        @remove="remove"
+                        ref="question"
+                        class="question-content"
+                    ></note-area>
+                    <scale
+                        :key="question.id"
+                        :survey-id="id"
+                        :data="question"
+                        v-if="isSelected(question.type, ['scale'])"
+                        @remove="remove"
+                        ref="question"
+                        class="question-content"
+                    ></scale>
+                </template>
+            </section>
+        </div>
+    </div>
 </template>
 
 <script>
 import axios from "../../axios";
+import AppError from "../AppError";
 import Choice from "./Choice";
 import Note from "./Note";
 import Sidebar from "./Sidebar";
@@ -56,7 +61,7 @@ import NoteArea from "./NoteArea";
 
 export default {
     name: "Layout",
-    components: {NoteArea, Scale, Sidebar, Choice, Note},
+    components: {AppError, NoteArea, Scale, Sidebar, Choice, Note},
     props: {
         id: String,
         questions: String,
@@ -91,7 +96,7 @@ export default {
                     }
                 });
             } catch (error) {
-                this.error = error.response.data;
+                this.error = 'Something went wrong';
             }
         },
         async remove(id) {
@@ -114,5 +119,11 @@ export default {
 </script>
 
 <style scoped>
+    .question-content {
+        margin-bottom: 1rem;
+    }
 
+    .question-content:last-child {
+        margin-bottom: 0;
+    }
 </style>
