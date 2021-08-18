@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Answer;
+use App\Entity\Survey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,7 +21,7 @@ class AnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, Answer::class);
     }
 
-	public function findNoteStatsBySurvey(int $survey): array
+	public function findNoteStatsBySurvey(Survey $survey): array
 	{
 		$sql = <<<SQL
 			SELECT question_id, answer.text
@@ -41,7 +42,7 @@ class AnswerRepository extends ServiceEntityRepository
 		return $query->getResult();
 	}
 
-	public function findChoiceStatsBySurvey(int $survey): array
+	public function findChoiceStatsBySurvey(Survey $survey): array
 	{
 		$sql = <<<SQL
 			SELECT question_id, option_id, count(*) AS amount, sum(count(*)) OVER(partition by question_id) as total
@@ -66,7 +67,7 @@ class AnswerRepository extends ServiceEntityRepository
 		return $query->getResult();
 	}
 
-	public function findScaleStatsBySurvey(int $survey): array
+	public function findScaleStatsBySurvey(Survey $survey): array
 	{
 		$sql = <<<SQL
 			SELECT question_id, count(*) AS amount, sum(count(*)) OVER(partition by question_id) as total, scale_value

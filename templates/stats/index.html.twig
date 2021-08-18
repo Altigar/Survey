@@ -5,10 +5,10 @@
 {% block body %}
     {% include('partials/navigation.html.twig') %}
     {% for question in questions %}
-        {% if question.type in ['string', 'text'] %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h3>{{ question.text }}</h3>
+        <div class="card mb-3">
+            <div class="card-body">
+                {% if question.type in ['string', 'text'] %}
+                    <h3 class="text-primary">{{ question.text }}</h3>
                     {% for answer in noteStats %}
                         {% if answer.question_id == question.id %}
                             <div class="mb-1 bg-light p-2">{{ answer.text }}</div>
@@ -16,12 +16,8 @@
                     {% else %}
                         <div>No results</div>
                     {% endfor %}
-                </div>
-            </div>
-        {% elseif question.type in ['radio', 'checkbox'] %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h3>{{ question.text }}</h3>
+                {% elseif question.type in ['radio', 'checkbox'] %}
+                    <h3 class="text-primary">{{ question.text }}</h3>
                     <div class="stats-row">
                         {% for option in question.options %}
                             <div class="row border-bottom pb-1 m-0 mb-2">
@@ -37,12 +33,8 @@
                             </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
-        {% elseif question.type == 'scale' %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h3>{{ question.text }}</h3>
+                {% elseif question.type == 'scale' %}
+                    <h3 class="text-primary">{{ question.text }}</h3>
                     <div class="stats-row">
                         {% for stat in scaleStats %}
                             <div class="row border-bottom pb-1 m-0 mb-2">
@@ -54,9 +46,9 @@
                             <div>No results</div>
                         {% endfor %}
                     </div>
-                </div>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
     {% else %}
         <div class="card mb-3">
             <div class="card-body">

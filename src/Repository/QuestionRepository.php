@@ -35,18 +35,6 @@ class QuestionRepository extends ServiceEntityRepository
 			->getResult();
     }
 
-	public function findByIdPersonWithAnswers(int $id, int $person)
-	{
-		return $this->createQueryBuilder('q')
-			->select('q', 'o')
-			->from(Question::class, 't')
-			->join('q.options', 'o')
-			->where('q.survey = :id')
-			->setParameter('id', $id)
-			->getQuery()
-			->getResult();
-    }
-
 	public function findByPassWithOptionsAndAnswers(Pass $pass): array
 	{
 		return $this->createQueryBuilder('q')
