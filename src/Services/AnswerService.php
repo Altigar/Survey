@@ -9,7 +9,7 @@ use App\Entity\Question;
 use App\Entity\Survey;
 use App\Utils\ObjectUtil;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AnswerService
 {
@@ -17,29 +17,37 @@ class AnswerService
 		private EntityManagerInterface $entityManager,
 	) {}
 
-	public function create(array $requestData, Survey $survey, Person|UserInterface $person): void
+	public function create(array $requestQuestionData, Survey $survey, Person $person): void
 	{
 		$repository = $this->entityManager->getRepository(Question::class);
 		$questions = ObjectUtil::reindex($repository->findBy(['survey' => $survey]), 'id');
 		$pass = Pass::create($survey, $person);
 
-		foreach ($requestData as $questionData) {
-			$question = $questions[$questionData->getId()];
+		foreach ($requestQuestionData as $questionData) {
+			if (!$question = $questions[$questionData->getId()]) {
+				throw new BadRequestHttpException();
+			}
 			foreach ($questionData->getAnswers() as $answerData) {
-				$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
-				$data = [
-					'person' => $person,
-					'question' => $question,
-					'pass' => $pass,
-					'option' => $options[$answerData->getOption()->getId()]
-				];
-				$type = $question->getType();
-				if (in_array($type, [Question::TYPE_STRING, Question::TYPE_TEXT])) {
-					$data['text'] = $answerData->getText();
-				} elseif ($type == Question::TYPE_SCALE) {
-					$data['scale_value'] = $answerData->getScaleValue();
+				$answer = Answer::create($person, $question, $pass);
+				switch ($question->getType()) {
+					case Question::TYPE_RADIO:
+					case Question::TYPE_CHECKBOX:
+						$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
+						if (!$option = $options[$answerData->getOption()->getId()]) {
+							throw new BadRequestHttpException();
+						}
+						$answer->choiceType($option);
+						break;
+					case Question::TYPE_STRING:
+					case Question::TYPE_TEXT:
+						$answer->textType($answerData->getText());
+						break;
+					case Question::TYPE_SCALE:
+						$answer->scaleType($answerData->getScaleValue());
+						break;
+					default:
+						throw new BadRequestHttpException();
 				}
-				$answer = Answer::create($data);
 				$this->entityManager->persist($answer);
 			}
 		}

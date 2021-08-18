@@ -1,14 +1,22 @@
 <template>
-    <article>
-        <h3>{{ title }}</h3>
-        <b-form-checkbox v-for="option in data" :key="option.id" :name="`question[${id}][]`" :value="option.id" v-model="value">{{ option.text }}</b-form-checkbox>
-        <small v-if="error" class="text-danger">{{ error }}</small>
-    </article>
+    <div class="card">
+        <div class="card-body">
+            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <div v-for="option in data" :key="option.id" class="form-check mb-2">
+                <input v-model="value" :value="option.id" :id="`checkbox[${option.id}]`" :name="`question[${id}][]`" class="form-check-input" type="checkbox">
+                <label :for="`checkbox[${option.id}]`" class="form-check-label">{{ option.text }}</label>
+            </div>
+            <app-form-error v-if="error">{{ error }}</app-form-error>
+        </div>
+    </div>
 </template>
 
 <script>
+import AppFormError from "../AppFormError";
+
 export default {
     name: "Checkbox",
+    components: {AppFormError},
     props: {
         id: Number,
         isRequired: Boolean,

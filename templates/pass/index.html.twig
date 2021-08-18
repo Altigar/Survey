@@ -4,7 +4,7 @@
 
 {% block body %}
     {% if survey.repeatable or (survey.repeatable == false and pass is empty) %}
-        <pass id="{{ survey.id }}" questions="{{ questions }}"></pass>
+        <pass-layout id="{{ survey.id }}" questions="{{ questions }}"></pass-layout>
     {% else %}
         <div class="card">
             <div class="card-body">

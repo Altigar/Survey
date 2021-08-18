@@ -1,15 +1,21 @@
 <template>
-    <article>
-        <h3>{{ title }}</h3>
-        <b-form-textarea :key="id" :name="`question[${id}]`" v-model="value" :rows="rows"></b-form-textarea>
-        <small v-if="error" class="text-danger">{{ error }}</small>
-    </article>
+    <div class="card">
+        <div class="card-body">
+            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <textarea v-model="value" :rows="rows" class="form-control resize-none mb-2"></textarea>
+            <app-form-error v-if="error" class="text-danger">{{ error }}</app-form-error>
+        </div>
+    </div>
 </template>
 
 <script>
+import AppFormError from "../AppFormError";
+
 export default {
     name: "NoteArea",
+    components: {AppFormError},
     props: {
+        data: Object,
         id: Number,
         isRequired: Boolean,
         type: String,

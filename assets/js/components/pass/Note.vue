@@ -1,14 +1,19 @@
 <template>
-    <article>
-        <h3>{{ title }}</h3>
-        <b-form-input :key="id" :name="`question[${id}]`" v-model="value"></b-form-input>
-        <small v-if="error" class="text-danger">{{ error }}</small>
-    </article>
+    <div class="card">
+        <div class="card-body">
+            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <input :key="id" v-model="value" class="form-control mb-2" type="text">
+            <app-form-error v-if="error">{{ error }}</app-form-error>
+        </div>
+    </div>
 </template>
 
 <script>
+import AppFormError from "../AppFormError";
+
 export default {
     name: "Note",
+    components: {AppFormError},
     props: {
         id: Number,
         isRequired: Boolean,

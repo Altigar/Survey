@@ -31,7 +31,7 @@ class Answer
 
     /**
      * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="answers")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private ?Option $option;
 
@@ -51,18 +51,35 @@ class Answer
      */
     private ?int $scale_value = null;
 
-	public static function create(array $data): self
+	public static function create(Person $person, Question $question, Pass $pass): self
 	{
-		$self = new self();
-		$self->person = $data['person'];
-		$self->option = $data['option'];
-		$self->question = $data['question'];
-		$self->pass = $data['pass'];
+		$answer = new self();
+		$answer->person = $person;
+		$answer->question = $question;
+		$answer->pass = $pass;
 
-		$self->text = $data['text'] ?? null;
-		$self->scale_value = $data['scale_value'] ?? null;
+		return $answer;
+    }
 
-		return $self;
+	public function choiceType(Option $option): self
+	{
+		$this->option = $option;
+
+		return $this;
+    }
+
+	public function textType(string $text): self
+	{
+		$this->text = $text;
+
+		return $this;
+    }
+
+	public function scaleType(int $scale_value): self
+	{
+		$this->scale_value = $scale_value;
+
+		return $this;
     }
 
     public function getId(): ?int

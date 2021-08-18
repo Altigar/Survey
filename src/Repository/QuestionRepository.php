@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Pass;
 use App\Entity\Question;
+use App\Entity\Survey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,16 +21,18 @@ class QuestionRepository extends ServiceEntityRepository
         parent::__construct($registry, Question::class);
     }
 
-	public function findById(int $id): ?Question
+	public function findBySurveyWithOptions(Survey $survey): array
 	{
 		return $this->createQueryBuilder('q')
 			->select('q', 'o')
 			->from(Question::class, 't')
-			->leftJoin('q.options', 'o', null, null, 'o.id')
-			->where('q.id = :id')
-			->setParameter('id', $id)
+			->leftJoin('q.options', 'o')
+			->where('q.survey = :survey')
+			->setParameter('survey', $survey)
+			->orderBy('q.ordering', 'ASC')
+			->addOrderBy('o.ordering', 'ASC')
 			->getQuery()
-			->getOneOrNullResult();
+			->getResult();
     }
 
 	public function findByIdPersonWithAnswers(int $id, int $person)

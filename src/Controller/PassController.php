@@ -31,7 +31,7 @@ class PassController extends AbstractController
     #[Route('/pass/{survey}', name: 'pass', methods: ['GET'])]
     public function index(Survey $survey): Response
     {
-	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey]);
+	    $questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
 	    return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
         	'survey' => $survey,
@@ -60,6 +60,6 @@ class PassController extends AbstractController
 			throw new CreateValidationException($errors);
 		}
 		$this->answerService->create($data, $survey, $this->getUser());
-		return $this->json([], JsonResponse::HTTP_CREATED);
+		return $this->json([], Response::HTTP_CREATED);
 	}
 }

@@ -1,9 +1,8 @@
 <template>
     <div>
         <div v-if="error" class="alert alert-danger" role="alert">Something went wrong</div>
-        <b-form method="post" @submit.prevent="save">
-            <b-form-group v-for="question in data" :key="question.id">
-                <span style="color: red;">{{question.id}}</span>
+        <form @submit.prevent="save">
+            <template v-for="question in data">
                 <radio
                     v-if="question.type === 'radio'"
                     :id="question.id"
@@ -11,7 +10,9 @@
                     :title="question.text"
                     :type="question.type"
                     :data="question.options"
+                    :key="question.id"
                     ref="question"
+                    class="question-pass"
                 ></radio>
                 <checkbox
                     v-else-if="question.type === 'checkbox'"
@@ -20,43 +21,48 @@
                     :title="question.text"
                     :type="question.type"
                     :data="question.options"
+                    :key="question.id"
                     ref="question"
+                    class="question-pass"
                 ></checkbox>
                 <note
-                    v-else-if="question.type === 'string' && getFirstOptionAttribute(question, 'id')"
+                    v-else-if="question.type === 'string'"
                     :id="question.id"
                     :isRequired="question.isRequired"
                     :title="question.text"
                     :type="question.type"
-                    :option-id="getFirstOptionAttribute(question, 'id')"
+                    :key="question.id"
                     ref="question"
+                    class="question-pass"
                 ></note>
                 <note-area
-                    v-else-if="question.type === 'text' && getFirstOptionAttribute(question, 'id')"
+                    v-else-if="question.type === 'text'"
                     :id="question.id"
                     :isRequired="question.isRequired"
                     :title="question.text"
                     :type="question.type"
-                    :option-id="getFirstOptionAttribute(question, 'id')"
                     :rows="question.row"
+                    :key="question.id"
                     ref="question"
+                    class="question-pass"
                 ></note-area>
                 <scale
-                    v-else-if="question.type === 'scale' && getFirstOptionAttribute(question, 'scale')"
+                    v-else-if="question.type === 'scale'"
                     :id="question.id"
                     :isRequired="question.isRequired"
                     :title="question.text"
                     :type="question.type"
-                    :message-from="getFirstOptionAttribute(question, 'scaleFromText')"
-                    :message-to="getFirstOptionAttribute(question, 'scaleToText')"
-                    :option-id="getFirstOptionAttribute(question, 'id')"
-                    :amount="getFirstOptionAttribute(question, 'scale')"
+                    :amount="question.scale"
+                    :message-from="question.scaleFromText"
+                    :message-to="question.scaleToText"
+                    :key="question.id"
                     ref="question"
+                    class="question-pass"
                 ></scale>
-            </b-form-group>
+            </template>
             <hr>
-            <b-btn type="submit">submit</b-btn>
-        </b-form>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </template>
 
@@ -129,18 +135,19 @@ export default {
                 }
             }
         },
-        getFirstOptionAttribute(question, attr) {
-            if (question.options[0] && question.options[0].hasOwnProperty(attr)) {
-                return question.options[0][attr];
-            }
-        }
     },
-    created() {
+    mounted() {
         this.data = JSON.parse(this.questions);
     }
 }
 </script>
 
 <style scoped>
+    .question-pass {
+        margin-bottom: 1rem;
+    }
 
+    .question-pass:last-child {
+        margin-bottom: 0;
+    }
 </style>

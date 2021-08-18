@@ -12,10 +12,12 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
 import BootstrapVue from "bootstrap-vue";
+//Layouts
 import ContentLayout from "./components/content/Layout";
-import Pass from "./components/pass/Base";
+import PassLayout from "./components/pass/Layout";
 import SurveyLayout from "./components/survey/Layout";
 import UpdateSurveyLayout from "./components/survey/UpdateLayout";
+//Components
 import AppError from "./components/AppError";
 import AppFormError from "./components/AppFormError";
 import AppSwitch from "./components/AppSwitch";
@@ -26,10 +28,12 @@ new Vue({
 	el: '#app',
 	// template: '<App/>',
 	components: {
+		//Layouts
 		ContentLayout,
 		SurveyLayout,
 		UpdateSurveyLayout,
-		Pass,
+		PassLayout,
+		//Components
 		AppError,
 		AppFormError,
 		AppSwitch,
