@@ -40,7 +40,7 @@ class QuestionRepository extends ServiceEntityRepository
 		return $this->createQueryBuilder('q')
 			->select('q', 'o', 'a')
 			->from(Question::class, 't')
-			->join('q.options', 'o')
+			->leftJoin('q.options', 'o')
 			->join('q.answers', 'a', indexBy: 'a.option')
 			->where('a.pass = :id')
 			->orderBy('o.ordering')
