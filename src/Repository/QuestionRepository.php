@@ -43,8 +43,8 @@ class QuestionRepository extends ServiceEntityRepository
 			->leftJoin('q.options', 'o')
 			->join('q.answers', 'a', indexBy: 'a.option')
 			->where('a.pass = :id')
-			->orderBy('o.ordering')
-			->addOrderBy('q.ordering')
+			->orderBy('q.ordering', 'ASC')
+			->addOrderBy('o.ordering', 'ASC')
 			->setParameter('id', $pass)
 			->getQuery()
 			->getResult();

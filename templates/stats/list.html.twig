@@ -5,16 +5,22 @@
 {% block body %}
     {% include('partials/navigation.html.twig') %}
     {% for pass in passes %}
-        <article class="mb-3">
-            <b-link class="text-decoration-none text-body" href="{{ path('stats_person', {pass: pass.id}) }}">
-                <b-card>
+        <div class="card mb-2">
+            <div class="card-body">
+                <a class="text-decoration-none text-body" href="{{ path('stats_person', {pass: pass.id}) }}">
                     <div class="d-flex justify-content-between">
                         <div>Person: #{{ pass.person.id }}</div>
-                        <div><small><time>{{ pass.createdAt|date('d-m-Y H:i:s') }}</time></small></div>
+                        <div>
+                            <small>
+                                <time>
+                                    {{ pass.createdAt|date('d-m-Y H:i:s') }}
+                                </time>
+                            </small>
+                        </div>
                     </div>
-                </b-card>
-            </b-link>
-        </article>
+                </a>
+            </div>
+        </div>
     {% else %}
         <div class="card mb-3">
             <div class="card-body">

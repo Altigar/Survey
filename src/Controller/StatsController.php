@@ -46,11 +46,9 @@ class StatsController extends AbstractController
     #[Route('/stats/{pass}/person', name: 'stats_person', requirements: ['pass' => '\d+'], methods: ['GET'])]
     public function person(Pass $pass): Response
     {
-    	$questions = $this->entityManager->getRepository(Question::class)
-		    ->findByPassWithOptionsAndAnswers($pass);
         return $this->render('stats/person.html.twig', [
-        	'title' => 'Person statistics',
-        	'questions' => $questions,
+        	'title' => "Person #{$pass->getPerson()->getId()}",
+        	'questions' => $this->entityManager->getRepository(Question::class)->findByPassWithOptionsAndAnswers($pass),
 	        'survey' => $pass->getSurvey()->getId()
         ]);
     }
