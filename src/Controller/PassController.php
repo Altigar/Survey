@@ -31,16 +31,13 @@ class PassController extends AbstractController
     #[Route('/pass/{survey}', name: 'pass', methods: ['GET'])]
     public function index(Survey $survey): Response
     {
-	    $questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
 	    return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
         	'survey' => $survey,
+		    'questions' => $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey),
         	'pass' => $this->entityManager->getRepository(Pass::class)->findBy([
         		'survey' => $survey,
 		        'person' => $this->getUser()
-	        ]),
-        	'questions' => $this->serializer->serialize($questions, 'json', [
-        		AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 	        ]),
         ]);
     }

@@ -36,7 +36,7 @@ class Answer
     private ?Option $option;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $text = null;
 

@@ -14,7 +14,9 @@
     </head>
     <body>
         <div id="app">
-            {% include('partials/header.html.twig') %}
+            {% if app.request.attributes.get('_route') != 'pass' %}
+                {% include('partials/header.html.twig') %}
+            {% endif %}
             <main id="content">
                 <div class="container w-896">
                     {% block body %}{% endblock %}
