@@ -22,9 +22,9 @@ class Option
     private ?int $id = null;
 
 	/**
-	 * @ORM\Column(type="text", nullable=true)
+	 * @ORM\Column(type="text")
 	 */
-    private ?string $text = null;
+    private string $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="options", cascade={"persist", "remove"})
@@ -33,14 +33,14 @@ class Option
     private ?Question $question = null;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="integer")
      */
     private int $ordering = 1;
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="option")
      */
-    private ArrayCollection|PersistentCollection|null $answers = null;
+    private ?Collection $answers;
 
     public function __construct()
     {
