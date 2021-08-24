@@ -31,7 +31,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
 	#[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Assert\Length(max: 254, maxMessage: 'Email cannot be longer than {{ limit }} characters')]
-    private ?string $email = null;
+    private string $email;
 
     /**
      * @ORM\Column(type="json")
@@ -39,7 +39,6 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
     /**
-     * @var string|null The hashed password
      * @ORM\Column(type="string")
      */
     #[Assert\NotBlank]
@@ -49,7 +48,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 		minMessage: 'Your Password must be at least {{ limit }} characters long',
 		maxMessage: 'Your Password cannot be longer than {{ limit }} characters',
 	)]
-    private ?string $password = null;
+    private string $password;
 
 	#[Assert\NotBlank]
 	#[Assert\Length(
@@ -63,17 +62,17 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="person")
      */
-    private $answers;
+    private ?Collection $answers;
 
     /**
      * @ORM\OneToMany(targetEntity=Survey::class, mappedBy="person", orphanRemoval=true)
      */
-    private $surveys;
+    private ?Collection $surveys;
 
     /**
      * @ORM\OneToMany(targetEntity=Pass::class, mappedBy="person", orphanRemoval=true)
      */
-    private $passes;
+    private ?Collection $passes;
 
     public function __construct()
     {
@@ -87,12 +86,12 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email): self
+    public function setEmail(string $email): self
     {
         $this->email = $email;
 
@@ -250,10 +249,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Pass[]
-     */
-    public function getPasses(): Collection
+    public function getPasses(): ?Collection
     {
         return $this->passes;
     }
