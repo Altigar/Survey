@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Data\Content\Create\QuestionDataCreate;
 use App\Repository\QuestionRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,40 +31,40 @@ class Question
     private ?int $id = null;
 
 	/**
-	 * @ORM\Column(type="text", nullable=true)
+	 * @ORM\Column(type="text")
 	 */
-    private ?string $text = null;
+    private string $text;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $created_at = null;
+    private DateTimeInterface $created_at;
 
     /**
      * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="questions")
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private ?Survey $survey = null;
+    private Survey $survey;
 
     /**
      * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
      */
-	private ArrayCollection|PersistentCollection|null $options = null;
+	private ?Collection $options;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $type = null;
+    private string $type;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private ?int $ordering = null;
+    private int $ordering;
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="question", cascade={"persist", "remove"})
      */
-    private ArrayCollection|PersistentCollection|null $answers;
+    private ?Collection $answers;
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
@@ -140,17 +139,17 @@ class Question
         return $this->id;
     }
 
-    public function getText(): ?string
+    public function getText(): string
     {
         return $this->text;
     }
 
-    public function getCreatedAt(): ?DateTimeInterface
+    public function getCreatedAt(): DateTimeInterface
     {
         return $this->created_at;
     }
 
-    public function getSurvey(): ?Survey
+    public function getSurvey(): Survey
     {
         return $this->survey;
     }
@@ -189,12 +188,12 @@ class Question
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function getOrdering(): ?int
+    public function getOrdering(): int
     {
         return $this->ordering;
     }
@@ -226,7 +225,7 @@ class Question
         return $this;
     }
 
-	public function getIsRequired(): ?bool
+	public function getIsRequired(): bool
 	{
 		return $this->is_required;
 	}
