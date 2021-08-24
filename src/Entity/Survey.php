@@ -7,7 +7,6 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -25,33 +24,33 @@ class Survey
     /**
      * @ORM\Column(type="datetime")
      */
-    private ?DateTimeInterface $created_at = null;
+    private ?DateTimeInterface $created_at;
 
     /**
      * @ORM\OneToMany(targetEntity=Question::class, mappedBy="survey", cascade={"persist", "remove"})
      */
-	private ArrayCollection|PersistentCollection|null $questions = null;
+	private ?Collection $questions;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="surveys", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="surveys")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?UserInterface $person = null;
+    private UserInterface $person;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private ?string $name = null;
+    private string $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private ?string $description = null;
+    private ?string $description;
 
     /**
      * @ORM\OneToMany(targetEntity=Pass::class, mappedBy="survey", orphanRemoval=true)
      */
-    private $passes;
+    private ?Collection $passes;
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
@@ -69,7 +68,7 @@ class Survey
         $this->passes = new ArrayCollection();
     }
 
-	public static function create(UserInterface $person, string $name, ?string $description, bool $repeatable = false): self
+	public static function create(UserInterface $person, string $name, ?string $description = null, bool $repeatable = false): self
 	{
 		$survey = new self();
 		$survey->created_at = new \DateTime('now');
@@ -99,7 +98,7 @@ class Survey
         return $this->created_at;
     }
 
-    public function getQuestions(): Collection|PersistentCollection|null
+    public function getQuestions(): ?Collection
     {
         return $this->questions;
     }
@@ -126,19 +125,19 @@ class Survey
         return $this;
     }
 
-    public function getPerson(): ?UserInterface
+    public function getPerson(): UserInterface
     {
         return $this->person;
     }
 
-    public function setPerson(?UserInterface $person): self
+    public function setPerson(UserInterface $person): self
     {
         $this->person = $person;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -148,10 +147,7 @@ class Survey
         return $this->description;
     }
 
-    /**
-     * @return Collection|Pass[]
-     */
-    public function getPasses(): Collection
+    public function getPasses(): ?Collection
     {
         return $this->passes;
     }
@@ -178,7 +174,7 @@ class Survey
         return $this;
     }
 
-    public function getRepeatable(): ?bool
+    public function getRepeatable(): bool
     {
         return $this->repeatable;
     }
