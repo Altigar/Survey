@@ -8,12 +8,12 @@
         <div class="card-body">
             <h3 class="mb-2">Copy link</h3>
             <p class="mb-2">
-                <a class="text-decoration-none link-primary" href="{{ path('pass', {survey: survey}) }}" target="_blank">
-                    {{ url('pass', {survey: survey}) }}
+                <a class="text-decoration-none link-primary" href="{{ path('pass', {hash: survey.hash}) }}" target="_blank">
+                    {{ url('pass', {hash: survey.hash}) }}
                 </a>
             </p>
             <div class="input-group">
-                <input id="link" type="text" class="form-control me-3 rounded" value="{{ url('pass', {survey: survey}) }}" >
+                <input id="link" type="text" class="form-control me-3 rounded" value="{{ url('pass', {hash: survey.hash}) }}" >
                 <button class="btn btn-success rounded" type="button" onclick="copy()">Copy link</button>
             </div>
         </div>

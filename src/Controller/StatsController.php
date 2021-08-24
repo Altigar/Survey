@@ -25,7 +25,7 @@ class StatsController extends AbstractController
 		$answerRepository = $this->entityManager->getRepository(Answer::class);
 		return $this->render('stats/index.html.twig', [
 			'title' => 'Stats',
-			'survey' => $survey->getId(),
+			'survey' => $survey,
 			'questions' => $questions,
 			'noteStats' => $answerRepository->findNoteStatsBySurvey($survey),
 			'choiceStats' => $answerRepository->findChoiceStatsBySurvey($survey),
@@ -38,7 +38,7 @@ class StatsController extends AbstractController
 	{
 		return $this->render('stats/list.html.twig', [
 			'title' => 'Person list',
-			'survey' => $survey->getId(),
+			'survey' => $survey,
 			'passes' => $this->entityManager->getRepository(Pass::class)->findBy(['survey' => $survey]),
 		]);
 	}
@@ -49,7 +49,7 @@ class StatsController extends AbstractController
         return $this->render('stats/person.html.twig', [
         	'title' => "Person #{$pass->getPerson()->getId()}",
         	'questions' => $this->entityManager->getRepository(Question::class)->findByPassWithOptionsAndAnswers($pass),
-	        'survey' => $pass->getSurvey()->getId()
+	        'survey' => $pass->getSurvey()
         ]);
     }
 }

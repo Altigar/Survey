@@ -3,8 +3,8 @@
         <div v-if="error" class="alert alert-danger mt-3" role="alert">Something went wrong</div>
         <div class="card mb-3 mt-3">
             <div class="card-body">
-                <h1>{{ surveyData.name }}</h1>
-                <div>{{ surveyData.description }}</div>
+                <h1>{{ surveyName }}</h1>
+                <div>{{ surveyDescription }}</div>
             </div>
         </div>
         <form @submit.prevent="save">
@@ -85,12 +85,13 @@ export default {
     components: {Scale, NoteArea, Radio, Checkbox, Note},
     props: {
         id: String,
-        survey: String,
+        surveyName: String,
+        surveyDescription: String,
+        surveyHash: String,
         questions: String,
     },
     data() {
         return {
-            surveyData: null,
             data: null,
             error: false,
         };
@@ -126,7 +127,7 @@ export default {
             this.error = false;
             this.$refs.question.map(elem => elem.error = null);
             try {
-                await axios.post(`/pass/${this.surveyData.id}`, requestData);
+                await axios.post(`/pass/${this.surveyHash}`, requestData);
                 window.location.href = '/';
             } catch (error) {
                 if (error.response.status === 422) {
@@ -146,7 +147,6 @@ export default {
     },
     mounted() {
         this.data = JSON.parse(this.questions);
-        this.surveyData = JSON.parse(this.survey);
     }
 }
 </script>

@@ -37,7 +37,7 @@ class ContentController extends AbstractController
 	    }
 	    return $this->render('content/index.html.twig', [
 		    'title' => 'Content',
-		    'survey' => $survey->getId(),
+		    'survey' => $survey,
 		    'questions' => $this->serializer->serialize($questions, 'json', [
 			    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
 		    ]),

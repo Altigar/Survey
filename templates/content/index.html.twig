@@ -4,5 +4,5 @@
 
 {% block body %}
     {% include('partials/navigation.html.twig') %}
-    <content-layout id="{{ survey }}" questions="{{ questions }}"></content-layout>
+    <content-layout id="{{ survey.id }}" questions="{{ questions }}"></content-layout>
 {% endblock %}

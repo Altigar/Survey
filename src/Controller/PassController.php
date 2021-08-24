@@ -14,7 +14,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -28,7 +27,7 @@ class PassController extends AbstractController
 		private EntityManagerInterface $entityManager,
 	) {}
 
-    #[Route('/pass/{survey}', name: 'pass', methods: ['GET'])]
+    #[Route('/pass/{hash}', name: 'pass', requirements: ['hash' => '[0-9a-zA-Z]+'], methods: ['GET'])]
     public function index(Survey $survey): Response
     {
 	    return $this->render('pass/index.html.twig', [
@@ -42,7 +41,7 @@ class PassController extends AbstractController
         ]);
     }
 
-	#[Route('/pass/{survey}', name: 'pass_create', methods: ['POST'])]
+	#[Route('/pass/{hash}', name: 'pass_create', requirements: ['hash' => '[0-9a-zA-Z]+'], methods: ['POST'])]
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
 		$data = $this->serializer->deserialize($request->getContent(), QuestionData::class . '[]', 'json');

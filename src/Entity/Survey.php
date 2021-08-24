@@ -58,6 +58,11 @@ class Survey
      */
     private bool $repeatable;
 
+    /**
+     * @ORM\Column(type="string", length=16, unique=true)
+     */
+    private string $hash;
+
     public function __construct()
     {
         $this->questions = new ArrayCollection();
@@ -72,6 +77,7 @@ class Survey
 		$survey->name = $name;
 		$survey->description = $description;
 		$survey->repeatable = $repeatable;
+		$survey->hash = bin2hex(random_bytes(8));
 
 		return $survey;
     }
@@ -175,5 +181,10 @@ class Survey
     public function getRepeatable(): ?bool
     {
         return $this->repeatable;
+    }
+
+    public function getHash(): string
+    {
+        return $this->hash;
     }
 }

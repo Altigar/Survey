@@ -5,11 +5,13 @@
 {% block body %}
     {% if survey.repeatable or (survey.repeatable == false and pass is empty) %}
         <pass-layout
-            survey="{{ survey|serialize('json', ['questions', 'passes', 'person']) }}"
+            survey-name="{{ survey.name }}"
+            survey-description="{{ survey.description }}"
+            survey-hash="{{ survey.hash }}"
             questions="{{ questions|serialize('json', ['answers', 'survey']) }}"
         ></pass-layout>
     {% else %}
-        <div class="card">
+        <div class="card mt-3">
             <div class="card-body">
                 <h3 class="text-primary">{{ survey.name }}</h3>
                 <div>You have already completed this survey</div>
