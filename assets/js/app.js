@@ -15,23 +15,31 @@ import ContentLayout from "./components/content/Layout";
 import PassLayout from "./components/pass/Layout";
 import SurveyLayout from "./components/survey/Layout";
 import UpdateSurveyLayout from "./components/survey/UpdateLayout";
+import ShareLayout from "./components/share/Layout";
 //Components
 import AppError from "./components/AppError";
 import AppFormError from "./components/AppFormError";
 import AppSwitch from "./components/AppSwitch";
 
+const layouts = {
+	ContentLayout,
+	SurveyLayout,
+	UpdateSurveyLayout,
+	PassLayout,
+	ShareLayout,
+};
+
+const components = {
+	AppError,
+	AppFormError,
+	AppSwitch,
+};
+
 new Vue({
 	el: '#app',
 	// template: '<App/>',
 	components: {
-		//Layouts
-		ContentLayout,
-		SurveyLayout,
-		UpdateSurveyLayout,
-		PassLayout,
-		//Components
-		AppError,
-		AppFormError,
-		AppSwitch,
+		...layouts,
+		...components
 	},
 });
