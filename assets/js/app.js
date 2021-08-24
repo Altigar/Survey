@@ -11,7 +11,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 
 import Vue from "vue";
-import BootstrapVue from "bootstrap-vue";
 //Layouts
 import ContentLayout from "./components/content/Layout";
 import PassLayout from "./components/pass/Layout";
@@ -21,8 +20,6 @@ import UpdateSurveyLayout from "./components/survey/UpdateLayout";
 import AppError from "./components/AppError";
 import AppFormError from "./components/AppFormError";
 import AppSwitch from "./components/AppSwitch";
-
-Vue.use(BootstrapVue);
 
 new Vue({
 	el: '#app',
