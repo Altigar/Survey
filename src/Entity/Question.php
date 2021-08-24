@@ -47,7 +47,7 @@ class Question
     private Survey $survey;
 
     /**
-     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", orphanRemoval=true, cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=Option::class, mappedBy="question", orphanRemoval=true, cascade={"persist", "remove"})
      */
 	private ?Collection $options;
 

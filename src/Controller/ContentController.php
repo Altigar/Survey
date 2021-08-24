@@ -31,16 +31,14 @@ class ContentController extends AbstractController
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
     public function index(Request $request, Survey $survey): Response
     {
-	    $questions = $this->entityManager->getRepository(Question::class)->findBy(['survey' => $survey], ['ordering' => 'asc']);
+	    $questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
 	    if ($request->isXmlHttpRequest()) {
 	    	return $this->json($questions, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']]);
 	    }
 	    return $this->render('content/index.html.twig', [
 		    'title' => 'Content',
 		    'survey' => $survey,
-		    'questions' => $this->serializer->serialize($questions, 'json', [
-			    AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']
-		    ]),
+		    'questions' => $questions
 	    ]);
     }
 
