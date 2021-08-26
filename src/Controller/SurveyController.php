@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -44,7 +45,7 @@ class SurveyController extends AbstractController
 	public function store(Request $request): JsonResponse
 	{
 		if (!$this->isCsrfTokenValid('default', $request->headers->get('X-CSRF-TOKEN'))) {
-			return $this->json([], Response::HTTP_FORBIDDEN);
+			throw new AccessDeniedHttpException();
 		}
 		$surveyData = $this->serializer->deserialize($request->getContent(), SurveyData::class, 'json');
 		$errors = $this->validator->validate($surveyData);
