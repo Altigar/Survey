@@ -60,7 +60,11 @@ export default {
                     description: this.description,
                     repeatable: this.repeatable,
                 });
-                window.location.href = `/content/${response.data.id}`;
+                if (response.data.hasOwnProperty('id')) {
+                    window.location.href = `/content/${response.data.id}`;
+                } else {
+                    window.location.href = '/';
+                }
             } catch (error) {
                 switch (error.response.status) {
                     case 422:

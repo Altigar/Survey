@@ -43,6 +43,9 @@ class SurveyController extends AbstractController
 	#[Route('/survey/create', name: 'survey_store', methods: ['POST'])]
 	public function store(Request $request): JsonResponse
 	{
+		if (!$this->isCsrfTokenValid('default', $request->headers->get('X-CSRF-TOKEN'))) {
+			return $this->json([], Response::HTTP_FORBIDDEN);
+		}
 		$surveyData = $this->serializer->deserialize($request->getContent(), SurveyData::class, 'json');
 		$errors = $this->validator->validate($surveyData);
 		if ($errors->count()) {

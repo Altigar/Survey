@@ -13,7 +13,7 @@ import Vue from "vue";
 //Layouts
 import ContentLayout from "./components/content/Layout";
 import PassLayout from "./components/pass/Layout";
-import SurveyLayout from "./components/survey/Layout";
+import CreateSurveyLayout from "./components/survey/CreateLayout";
 import UpdateSurveyLayout from "./components/survey/UpdateLayout";
 import ShareLayout from "./components/share/Layout";
 //Components
@@ -23,7 +23,7 @@ import AppSwitch from "./components/AppSwitch";
 
 const layouts = {
 	ContentLayout,
-	SurveyLayout,
+	CreateSurveyLayout,
 	UpdateSurveyLayout,
 	PassLayout,
 	ShareLayout,
