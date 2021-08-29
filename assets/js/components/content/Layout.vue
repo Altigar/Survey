@@ -86,7 +86,11 @@ export default {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
             try {
-                let responseCreate = await axios.post(`/content/${this.id}`, {type: event.value, ordering: number});
+                let responseCreate = await axios.post(`/content/${this.id}`, {
+                    survey: Number(this.id),
+                    type: event.value,
+                    ordering: number
+                });
                 let response = await axios.get(`/content/${this.id}`);
                 this.data = response.data;
                 this.$nextTick(() => {
@@ -96,7 +100,11 @@ export default {
                     }
                 });
             } catch (error) {
-                this.error = 'Something went wrong';
+                if (error.response.status === 422) {
+                    this.error = error.response.data.error;
+                } else {
+                    this.error = 'Something went wrong';
+                }
             }
         },
         async remove(id) {
