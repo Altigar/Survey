@@ -37,11 +37,13 @@
                     <h3 class="text-primary">{{ question.text }}</h3>
                     <div class="stats-row">
                         {% for stat in scaleStats %}
-                            <div class="row border-bottom pb-1 m-0 mb-2">
-                                <div class="col-md-10 p-0">{{ stat.scale_value }}</div>
-                                <div class="col-md-1 p-0"> {{ stat.amount }}</div>
-                                <div class="col-md-1 p-0 text-md-end">{{ (stat.amount * 100 / stat.total)|number_format(1) + 0 }}%</div>
-                            </div>
+                            {% if stat.question_id == question.id %}
+                                <div class="row border-bottom pb-1 m-0 mb-2">
+                                    <div class="col-md-10 p-0">{{ stat.scale_value }}</div>
+                                    <div class="col-md-1 p-0"> {{ stat.amount }}</div>
+                                    <div class="col-md-1 p-0 text-md-end">{{ (stat.amount * 100 / stat.total)|number_format(1) + 0 }}%</div>
+                                </div>
+                            {% endif %}
                         {% else %}
                             <div>No results</div>
                         {% endfor %}

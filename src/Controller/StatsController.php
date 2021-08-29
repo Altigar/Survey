@@ -21,15 +21,14 @@ class StatsController extends AbstractController
 	#[Route('/stats/{survey}', name: 'stats', requirements: ['survey' => '\d+'], methods: ['GET'])]
 	public function index(Survey $survey): Response
 	{
-		$questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
 		$answerRepository = $this->entityManager->getRepository(Answer::class);
 		return $this->render('stats/index.html.twig', [
 			'title' => 'Stats',
 			'survey' => $survey,
-			'questions' => $questions,
+			'questions' => $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey),
 			'noteStats' => $answerRepository->findNoteStatsBySurvey($survey),
 			'choiceStats' => $answerRepository->findChoiceStatsBySurvey($survey),
-			'scaleStats' => $answerRepository->findScaleStatsBySurvey($survey),
+			'scaleStats' => $answerRepository->findScaleStatsBySurvey($survey)
 		]);
 	}
 
