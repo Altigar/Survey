@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Context\ExecutionContextInterface;
 /**
  * @ORM\Entity(repositoryClass=PersonRepository::class)
  */
-#[UniqueEntity('email')]
+#[UniqueEntity('email', message: 'This email is already used')]
 class Person implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
@@ -31,7 +31,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
 	#[Assert\Email(message: 'The email {{ value }} is not a valid email.')]
     #[Assert\Length(max: 254, maxMessage: 'Email cannot be longer than {{ limit }} characters')]
-    private string $email;
+    private ?string $email;
 
     /**
      * @ORM\Column(type="json")
@@ -48,7 +48,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 		minMessage: 'Your Password must be at least {{ limit }} characters long',
 		maxMessage: 'Your Password cannot be longer than {{ limit }} characters',
 	)]
-    private string $password;
+    private ?string $password;
 
 	#[Assert\NotBlank]
 	#[Assert\Length(
@@ -86,12 +86,12 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -135,7 +135,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see UserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return (string) $this->password;
     }
@@ -147,7 +147,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-	public function getPasswordConfirmation(): string
+	public function getPasswordConfirmation(): ?string
 	{
 		return (string) $this->password_confirmation;
 	}
