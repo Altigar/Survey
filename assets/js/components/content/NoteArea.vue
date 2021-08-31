@@ -42,7 +42,6 @@ export default {
     },
     data() {
         return {
-            switch_id: null,
             options: Array.from({length: 10}, (_, i) => i + 1),
             error: null,
             rowError: null,
@@ -68,8 +67,12 @@ export default {
                 });
                 this.edited = false;
             } catch (error) {
-                this.error = error.response.data.text;
-                this.rowError = error.response.data.row;
+                if (error.response.status === 422) {
+                    this.error = error.response.data.text;
+                    this.rowError = error.response.data.row;
+                } else {
+                    this.$emit('showError', 'Something went wrong');
+                }
                 this.$forceUpdate();
             }
         }

@@ -34,7 +34,6 @@ export default {
     },
     data() {
         return {
-            switch_id: null,
             selected: null,
             error: null,
             options: Array.from({length: 10}, (_, i) => i + 1),
@@ -52,7 +51,11 @@ export default {
                 await axios.put(`/content/${this.data.id}`, this.data);
                 this.edited = false;
             } catch (error) {
-                this.error = error.response.data.text;
+                if (error.response.status === 422) {
+                    this.error = error.response.data.text;
+                } else {
+                    this.$emit('showError', 'Something went wrong');
+                }
                 this.$forceUpdate();
             }
         }

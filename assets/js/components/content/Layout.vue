@@ -26,6 +26,7 @@
                         @remove="remove"
                         ref="question"
                         class="question-content"
+                        @showError="showError"
                     ></note>
                     <note-area
                         :key="question.id"
@@ -35,6 +36,7 @@
                         @remove="remove"
                         ref="question"
                         class="question-content"
+                        @showError="showError"
                     ></note-area>
                     <scale
                         :key="question.id"
@@ -44,6 +46,7 @@
                         @remove="remove"
                         ref="question"
                         class="question-content"
+                        @showError="showError"
                     ></scale>
                 </template>
             </section>

@@ -55,7 +55,6 @@ export default {
     },
     data() {
         return {
-            switch_id: null,
             options: this.range(2, 10, 1),
             textFrom: null,
             textTo: null,
@@ -87,9 +86,13 @@ export default {
                 });
                 this.edited = false;
             } catch (error) {
-                this.error = error.response.data.text;
-                this.textFromError = error.response.data.scale_from_text;
-                this.textToError = error.response.data.scale_to_text;
+                if (error.response.status === 422) {
+                    this.error = error.response.data.text;
+                    this.textFromError = error.response.data.scale_from_text;
+                    this.textToError = error.response.data.scale_to_text;
+                } else {
+                    this.$emit('showError', 'Something went wrong');
+                }
                 this.$forceUpdate();
             }
         },
