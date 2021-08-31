@@ -9,7 +9,7 @@
                 <div class="mb-2">
                     <input v-model="data.text" type="text" class="form-control mb-2" placeholder="Question text">
                     <app-form-error v-if="error">{{ error }}</app-form-error>
-                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
+                    <app-switch :id="switchId" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -40,6 +40,11 @@ export default {
             options: Array.from({length: 10}, (_, i) => i + 1),
         }
     },
+    computed: {
+        switchId() {
+            return `switch_${this.data.id}`;
+        }
+    },
     methods: {
         async save() {
             this.error = null;
@@ -52,9 +57,6 @@ export default {
             }
         }
     },
-    created() {
-        this.switch_id = `switch_${this.data.id}`;
-    }
 }
 </script>
 

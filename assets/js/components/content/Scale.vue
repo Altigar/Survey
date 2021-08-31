@@ -31,7 +31,7 @@
                         <input v-model="data.scaleToText" type="text" class="form-control mb-2" placeholder="To">
                         <app-form-error v-if="textToError">{{ textToError }}</app-form-error>
                     </div>
-                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
+                    <app-switch :id="switchId" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -64,6 +64,11 @@ export default {
             textToError: null,
         };
     },
+    computed: {
+        switchId() {
+            return `switch_${this.data.id}`;
+        }
+    },
     methods: {
         async save() {
             this.error = null;
@@ -92,9 +97,6 @@ export default {
             return Array.from({length: (stop - start) / step + 1}, (_, i) => start + (i * step));
         }
     },
-    mounted() {
-        this.switch_id = `switch_${this.data.id}`;
-    }
 }
 </script>
 

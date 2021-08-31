@@ -17,7 +17,7 @@
                         </select>
                         <app-form-error v-if="rowError">{{ rowError }}</app-form-error>
                     </div>
-                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
+                    <app-switch :id="switchId" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -48,6 +48,11 @@ export default {
             rowError: null,
         }
     },
+    computed: {
+        switchId() {
+            return `switch_${this.data.id}`;
+        }
+    },
     methods: {
         async save() {
             this.error = null;
@@ -69,9 +74,6 @@ export default {
             }
         }
     },
-    mounted() {
-        this.switch_id = `switch_${this.data.id}`;
-    }
 }
 </script>
 
