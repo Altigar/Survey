@@ -26,7 +26,7 @@
                             <span>Add new option</span>
                         </a>
                     </div>
-                    <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
+                    <app-switch :id="switchId" v-model="data.isRequired">Required</app-switch>
                 </div>
                 <v-footer @save="save" @remove="$emit('remove', data.id)" @edit.stop="edited = false"></v-footer>
             </form>
@@ -49,14 +49,12 @@ export default {
         surveyId: String,
         data: Object,
     },
-    data() {
-        return {
-            switch_id: null,
-        }
-    },
     computed: {
         sortedOptions() {
             return this.data.options.sort((a, b) => a.ordering - b.ordering);
+        },
+        switchId() {
+            return `switch_${this.data.id}`;
         }
     },
     methods: {
@@ -102,9 +100,6 @@ export default {
             this.$forceUpdate();
         }
     },
-    mounted() {
-        this.switch_id = `switch_${this.data.id}`;
-    }
 }
 </script>
 
