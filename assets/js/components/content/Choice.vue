@@ -81,15 +81,19 @@ export default {
                 await axios.put(`/content/${this.data.id}`, this.data);
                 this.edited = false;
             } catch (error) {
-                let data = error.response.data;
-                for (let key of Object.keys(data)) {
-                    if (typeof data[key] === 'object') {
-                        for (let nestedKey of Object.keys(data[key])) {
-                            this.data.options[nestedKey].error = data[key][nestedKey].text;
+                if (error.response.status === 422) {
+                    let data = error.response.data;
+                    for (let key of Object.keys(data)) {
+                        if (typeof data[key] === 'object') {
+                            for (let nestedKey of Object.keys(data[key])) {
+                                this.data.options[nestedKey].error = data[key][nestedKey].text;
+                            }
+                        } else {
+                            this.data.error = data.text;
                         }
-                    } else {
-                        this.data.error = data.text;
                     }
+                } else {
+                    this.$emit('showError', 'Something went wrong');
                 }
             }
             this.$forceUpdate();

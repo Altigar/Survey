@@ -1,6 +1,6 @@
 <template>
     <div>
-        <app-error v-if="error">{{ error }}</app-error>
+        <app-error v-if="error" @close="closeError">{{ error }}</app-error>
         <div class="row min-w-100">
             <div class="col-md-3 mb-4">
                 <sidebar @add="add" :data="types"></sidebar>
@@ -16,6 +16,7 @@
                         @remove="remove"
                         ref="question"
                         class="question-content"
+                        @showError="showError"
                     ></choice>
                     <note
                         :key="question.id"
@@ -118,6 +119,12 @@ export default {
         },
         isSelected(type, options) {
             return options.includes(type);
+        },
+        closeError() {
+            this.error = null;
+        },
+        showError(error) {
+            this.error = error;
         },
     },
     created() {
