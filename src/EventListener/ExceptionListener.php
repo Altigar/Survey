@@ -18,7 +18,10 @@ class ExceptionListener
 		$exception = $event->getThrowable();
 		if ($exception instanceof ValidationExceptionInterface) {
 			$response->setData($exception->getErrors());
-			$response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+			$response->setStatusCode($exception->getStatusCode());
+			foreach ($exception->getHeaders() as $headerKey => $headerValue) {
+				$response->headers->set($headerKey, $headerValue);
+			}
 		} elseif ($exception instanceof NotNormalizableValueException) {
 			$response->setStatusCode(Response::HTTP_BAD_REQUEST);
 		}

@@ -5,16 +5,9 @@ namespace App\Exception\Content;
 use App\Entity\Question;
 use App\Exception\ValidationException;
 use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class UpdateValidationException extends ValidationException
 {
-	public function __construct(ConstraintViolationListInterface $errors, string $message = '', $code = 0, \Throwable $previous = null)
-	{
-		parent::__construct($errors, $message, $code, $previous);
-		$this->errors = $errors;
-	}
-
 	public function getErrors(): array
 	{
 		$errors = [];
