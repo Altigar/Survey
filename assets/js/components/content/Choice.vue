@@ -12,13 +12,18 @@
             <form method="post" v-else-if="edited">
                 <div class="mb-2">
                     <input v-model="data.text" type="text" class="form-control mb-2">
-                    <app-form-error v-if="data.error" class="mb-2">{{ data.error }}</app-form-error>
+                    <app-form-error v-if="errors.text" class="mb-2">{{ errors.text }}</app-form-error>
                     <div v-for="(option, index) in sortedOptions" :key="index">
                         <div class="d-flex mb-2">
                             <input type="text" v-model="option.text" class="form-control me-3" size="sm">
                             <button @click="remove(index)" type="button" class="btn-close align-self-center" aria-label="Close"></button>
                         </div>
-                        <app-form-error v-if="option.error" class="mb-2">{{ option.error }}</app-form-error>
+                        <app-form-error
+                            v-if="errors.options &&
+                            errors.options[index] &&
+                            errors.options[index].text"
+                            class="mb-2"
+                        >{{ errors.options[index].text }}</app-form-error>
                     </div>
                     <div class="mb-2">
                         <a @click.prevent="add" class="d-flex align-items-center pointer text-decoration-none">
@@ -49,8 +54,14 @@ export default {
         surveyId: String,
         data: Object,
     },
+    data() {
+        return {
+            errors: {}
+        }
+    },
     computed: {
         sortedOptions() {
+            this.errors = {};
             return this.data.options.sort((a, b) => a.ordering - b.ordering);
         },
         switchId() {
@@ -63,7 +74,7 @@ export default {
             for (let option of this.data.options) {
                 orders.push(option.ordering);
             }
-            this.data.options.push({text: '', error: '', ordering: Math.max(...orders) + 1});
+            this.data.options.push({text: '', ordering: Math.max(...orders) + 1});
         },
         remove(number) {
             this.data.options = this.data.options.filter((elem, index) => index !== number);
@@ -74,31 +85,19 @@ export default {
             }
         },
         async save() {
-            this.data.error = '';
-            for (let option of this.data.options) {
-                option.error = '';
-            }
+            this.errors = {};
             try {
                 await axios.put(`/content/${this.data.id}`, this.data);
                 this.edited = false;
             } catch (error) {
                 if (error.response.status === 422) {
-                    let data = error.response.data;
-                    for (let key of Object.keys(data)) {
-                        if (typeof data[key] === 'object') {
-                            for (let nestedKey of Object.keys(data[key])) {
-                                this.data.options[nestedKey].error = data[key][nestedKey].text;
-                            }
-                        } else {
-                            this.data.error = data.text;
-                        }
-                    }
+                    this.errors = error.response.data;
                 } else {
                     this.$emit('showError', 'Something went wrong');
                 }
             }
             this.$forceUpdate();
-        }
+        },
     },
 }
 </script>
