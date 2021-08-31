@@ -109,6 +109,9 @@ export default {
             }
         },
         async remove(id) {
+            if (!confirm('Are you sure you want to delete this question? All answers related to this question will be deleted.')) {
+                return;
+            }
             try {
                 await axios.delete(`/content/${id}`);
                 let response = await axios.get(`/content/${this.id}`);
