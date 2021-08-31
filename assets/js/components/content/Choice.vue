@@ -11,17 +11,20 @@
             </div>
             <form method="post" v-else-if="edited">
                 <div class="mb-2">
-                    <input v-model="data.text" type="text" class="form-control mb-3">
-                    <p v-if="data.error">{{ data.error }}</p>
+                    <input v-model="data.text" type="text" class="form-control mb-2">
+                    <app-form-error v-if="data.error" class="mb-2">{{ data.error }}</app-form-error>
                     <div v-for="(option, index) in sortedOptions" :key="index">
                         <div class="d-flex mb-2">
                             <input type="text" v-model="option.text" class="form-control me-3" size="sm">
                             <button @click="remove(index)" type="button" class="btn-close align-self-center" aria-label="Close"></button>
                         </div>
-                        <app-form-error v-if="option.error">{{ option.error }}</app-form-error>
+                        <app-form-error v-if="option.error" class="mb-2">{{ option.error }}</app-form-error>
                     </div>
                     <div class="mb-2">
-                        <a @click.prevent="add" class="pointer text-decoration-none"><span style="font-weight: bold; font-size: 25px;">+</span> Add new option</a>
+                        <a @click.prevent="add" class="d-flex align-items-center pointer text-decoration-none">
+                            <span class="btn-add">+</span>
+                            <span>Add new option</span>
+                        </a>
                     </div>
                     <app-switch :id="switch_id" v-model="data.isRequired">Required</app-switch>
                 </div>
@@ -106,5 +109,9 @@ export default {
 </script>
 
 <style scoped>
-
+    .btn-add {
+        font-weight: bold;
+        font-size: 25px;
+        margin-right: 5px;
+    }
 </style>
