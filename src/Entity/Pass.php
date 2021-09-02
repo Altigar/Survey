@@ -17,29 +17,29 @@ class Pass
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=Survey::class, inversedBy="passes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $survey;
+    private ?Survey $survey;
 
     /**
      * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="passes")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $person;
+    private ?Person $person;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $created_at;
+    private ?\DateTimeInterface $created_at;
 
     /**
      * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="pass", orphanRemoval=true)
      */
-    private $answers;
+    private ?Collection $answers;
 
     public function __construct()
     {
@@ -88,13 +88,6 @@ class Pass
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->created_at;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $created_at): self
-    {
-        $this->created_at = $created_at;
-
-        return $this;
     }
 
     /**

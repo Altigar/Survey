@@ -25,13 +25,15 @@ class SurveyController extends AbstractController
 	) {}
 
     #[Route('/survey', name: 'survey', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+    	$surveys = $this->entityManager->getRepository(Survey::class)->findBy(['person' => $this->getUser()], ['created_at' => 'desc']);
+	    if ($request->isXmlHttpRequest()) {
+		    return $this->json($surveys, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['questions', 'person', 'passes']]);
+	    }
         return $this->render('survey/index.html.twig', [
             'title' => 'Surveys',
-	        'surveys' => $this->entityManager->getRepository(Survey::class)->findBy([
-	        	'person' => $this->getUser()
-	        ])
+	        'surveys' => $surveys
         ]);
     }
 
@@ -89,5 +91,14 @@ class SurveyController extends AbstractController
 		$this->entityManager->flush();
 
 		return $this->json(['id' => $survey->getId()], Response::HTTP_CREATED);
+	}
+
+	#[Route('/survey/{survey}', name: 'survey_delete', methods: ['delete'])]
+	public function delete(Survey $survey): JsonResponse
+	{
+		$this->entityManager->remove($survey);
+		$this->entityManager->flush();
+
+		return $this->json([], Response::HTTP_NO_CONTENT);
 	}
 }
