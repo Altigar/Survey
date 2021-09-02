@@ -93,7 +93,7 @@ class SurveyController extends AbstractController
 		return $this->json(['id' => $survey->getId()], Response::HTTP_CREATED);
 	}
 
-	#[Route('/survey/{survey}', name: 'survey_delete', methods: ['delete'])]
+	#[Route('/survey/{survey}', name: 'survey_delete', methods: ['DELETE'])]
 	public function delete(Survey $survey): JsonResponse
 	{
 		$this->entityManager->remove($survey);
