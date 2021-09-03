@@ -2,7 +2,7 @@
     <div @click="edited = true" class="card">
         <div class="card-body">
             <div v-if="!edited">
-                <h3>{{ data.text }}</h3>
+                <h4>{{ data.text }}</h4>
                 <textarea class="form-control resize-none" :rows="data.row"></textarea>
             </div>
             <form method="post" v-else-if="edited">
