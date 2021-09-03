@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="error" class="alert alert-danger mt-3" role="alert">Something went wrong</div>
+        <app-error v-if="error" @close="closeError" class="mt-3">{{ error }}</app-error>
         <div class="card mb-3 mt-3">
             <div class="card-body">
                 <h3>{{ surveyName }}</h3>
@@ -76,6 +76,7 @@
 
 <script>
 import axios from "../../axios";
+import AppError from "../AppError";
 import Radio from "./Radio";
 import Checkbox from "./Checkbox";
 import Note from "./Note";
@@ -84,7 +85,7 @@ import Scale from "./Scale";
 
 export default {
     name: "Base",
-    components: {Scale, NoteArea, Radio, Checkbox, Note},
+    components: {AppError, Scale, NoteArea, Radio, Checkbox, Note},
     props: {
         id: String,
         surveyName: String,
@@ -95,7 +96,7 @@ export default {
     data() {
         return {
             data: null,
-            error: false,
+            error: null,
         };
     },
     methods: {
@@ -142,9 +143,12 @@ export default {
                         }
                     }
                 } else {
-                    this.error = true;
+                    this.error = 'Something went wrong';
                 }
             }
+        },
+        closeError() {
+            this.error = null;
         },
     },
     mounted() {
