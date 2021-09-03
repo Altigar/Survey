@@ -2,19 +2,12 @@
     <div>
         <app-error v-if="error" @close="closeError">{{ error }}</app-error>
         <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2>Surveys</h2>
-                    <a :href="'/survey/create'" class="btn btn-success">Create survey</a>
-                </div>
-            </div>
             <div class="table-responsive card-body">
-                <table class="table table-striped table-hover">
+                <table class="table table-striped table-hover table-borderless">
                     <thead>
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -23,9 +16,12 @@
                         <td v-else>{{ survey.name }}</td>
                         <td>{{ formatDate(survey.createdAt) }}</td>
                         <td>
-                            <div class="d-flex">
-                                <a :href="`/content/${survey.id}`" class="btn btn-info text-light me-1">View</a>
-                                <a @click.prevent="remove(survey.id)" class="btn btn-danger text-light me-1">Delete</a>
+                            <div class="dropdown">
+                                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><a :href="`/content/${survey.id}`" class="dropdown-item">View</a></li>
+                                    <li><a @click.prevent="remove(survey.id)" class="dropdown-item">Delete</a></li>
+                                </ul>
                             </div>
                         </td>
                     </tr>
@@ -67,7 +63,7 @@ export default {
             }
         },
         formatDate(value) {
-            return moment(value).format('YYYY-MM-DD');
+            return moment(value).format('YYYY-MM-DD H:m');
         },
         closeError() {
             this.error = null;
@@ -80,7 +76,5 @@ export default {
 </script>
 
 <style scoped>
-    table tr:last-child td {
-        border-style: none !important;
-    }
+
 </style>
