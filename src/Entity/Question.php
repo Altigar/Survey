@@ -126,7 +126,7 @@ class Question
 		return $this;
 	}
 
-	public function updateContent(bool $is_required, string $text): self
+	public function update(bool $is_required, string $text): self
 	{
 		$this->is_required = $is_required;
 		$this->text = $text;

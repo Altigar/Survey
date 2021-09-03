@@ -33,7 +33,7 @@ class QuestionService
 
 	public function update(Question $question, QuestionDataUpdate $questionData): void
 	{
-		$question = $question->updateContent($questionData->getIsRequired(), $questionData->getText());
+		$question = $question->update($questionData->getIsRequired(), $questionData->getText());
 		$question = match ($question->getType()) {
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->choice($question, $questionData),
 			Question::TYPE_TEXT => $question->textType($questionData->getRow()),
@@ -64,7 +64,7 @@ class QuestionService
 				$option = Option::create($optionData->getText(), $optionData->getOrdering());
 				$question->addOption($option);
 			} elseif ($option = $options[$optionData->getId()] ?? null) {
-				$option->updateContent(text: $optionData->getText());
+				$option->update($optionData->getText());
 			}
 		}
 

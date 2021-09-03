@@ -56,9 +56,8 @@ class Option
 		return $option;
     }
 
-	public function updateContent(?int $row = null, ?string $text = null): self
+	public function update(string $text): self
 	{
-		$this->row = $row;
 		$this->text = $text;
 
 		return $this;
