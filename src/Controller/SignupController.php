@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class SignupController extends AbstractController
+class SignupController extends AbstractController implements CsrfTokenControllerInterface
 {
 	public function __construct(
 		private ValidatorInterface $validator,

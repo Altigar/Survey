@@ -10,13 +10,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class SurveyController extends AbstractController
+class SurveyController extends AbstractController implements CsrfTokenControllerInterface
 {
 	public function __construct(
 		private EntityManagerInterface $entityManager,
@@ -46,9 +45,6 @@ class SurveyController extends AbstractController
 	#[Route('/survey/create', name: 'survey_store', methods: ['POST'])]
 	public function store(Request $request): JsonResponse
 	{
-		if (!$this->isCsrfTokenValid('default', $request->headers->get('X-CSRF-TOKEN'))) {
-			throw new AccessDeniedHttpException();
-		}
 		$surveyData = $this->serializer->deserialize($request->getContent(), SurveyData::class, 'json');
 		$errors = $this->validator->validate($surveyData);
 		if ($errors->count()) {

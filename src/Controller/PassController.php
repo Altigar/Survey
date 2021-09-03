@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class PassController extends AbstractController
+class PassController extends AbstractController implements CsrfTokenControllerInterface
 {
 	public function __construct(
 		private SerializerInterface $serializer,

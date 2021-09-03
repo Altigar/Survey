@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class ContentController extends AbstractController
+class ContentController extends AbstractController implements CsrfTokenControllerInterface
 {
 	public function __construct(
 		private EntityManagerInterface $entityManager,
