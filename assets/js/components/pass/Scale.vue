@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <h4>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h4>
             <div class="d-flex justify-content-between mb-2">
                 <span>{{ messageFrom }}</span>
                 <span>{{ messageTo }}</span>

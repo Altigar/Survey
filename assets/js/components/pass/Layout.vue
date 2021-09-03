@@ -3,8 +3,10 @@
         <div v-if="error" class="alert alert-danger mt-3" role="alert">Something went wrong</div>
         <div class="card mb-3 mt-3">
             <div class="card-body">
-                <h1>{{ surveyName }}</h1>
-                <div>{{ surveyDescription }}</div>
+                <h3>{{ surveyName }}</h3>
+                <div>
+                    <small>{{ surveyDescription }}</small>
+                </div>
             </div>
         </div>
         <form @submit.prevent="save">

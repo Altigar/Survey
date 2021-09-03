@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <h4>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h4>
             <textarea v-model="value" :rows="rows" class="form-control resize-none mb-2"></textarea>
             <app-form-error v-if="error" class="text-danger">{{ error }}</app-form-error>
         </div>

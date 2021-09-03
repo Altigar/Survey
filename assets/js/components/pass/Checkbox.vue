@@ -1,7 +1,7 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <h3>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h3>
+            <h4>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h4>
             <div v-for="option in data" :key="option.id" class="form-check mb-2">
                 <input v-model="value" :value="option.id" :id="`checkbox[${option.id}]`" :name="`question[${id}][]`" class="form-check-input" type="checkbox">
                 <label :for="`checkbox[${option.id}]`" class="form-check-label">{{ option.text }}</label>
