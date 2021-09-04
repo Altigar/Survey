@@ -4,7 +4,7 @@ namespace App\Data\Survey;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class SurveyData
+final class SurveyData
 {
 	#[Assert\Length(min: 1, max: 255)]
 	private string $name;

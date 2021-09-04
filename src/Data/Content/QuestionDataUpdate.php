@@ -5,7 +5,7 @@ namespace App\Data\Content;
 use App\Entity\Question;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class QuestionDataUpdate
+final class QuestionDataUpdate
 {
 	#[Assert\Positive(groups: ['default'])]
 	private int $id;

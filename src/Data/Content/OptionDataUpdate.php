@@ -5,7 +5,7 @@ namespace App\Data\Content;
 use App\Entity\Question;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class OptionDataUpdate
+final class OptionDataUpdate
 {
 	private ?int $id;
 
