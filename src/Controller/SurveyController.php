@@ -83,7 +83,6 @@ class SurveyController extends AbstractController implements CsrfTokenController
 			throw new ValidationException($errors);
 		}
 		$survey->update($surveyData->getName(), $surveyData->getDescription(), $surveyData->getRepeatable());
-		$this->entityManager->persist($survey);
 		$this->entityManager->flush();
 
 		return $this->json(['id' => $survey->getId()], Response::HTTP_CREATED);

@@ -34,7 +34,7 @@ class QuestionService
 	public function update(Question $question, QuestionDataUpdate $questionData): void
 	{
 		$question = $question->update($questionData->getIsRequired(), $questionData->getText());
-		$question = match ($question->getType()) {
+		match ($question->getType()) {
 			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->choice($question, $questionData),
 			Question::TYPE_TEXT => $question->textType($questionData->getRow()),
 			Question::TYPE_SCALE => $question->scaleType(
@@ -44,7 +44,6 @@ class QuestionService
 			),
 			default => $question,
 		};
-		$this->entityManager->persist($question);
 		$this->entityManager->flush();
 	}
 
