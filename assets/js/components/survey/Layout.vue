@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-error v-if="error" @close="closeError">{{ error }}</app-error>
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="table-responsive card-body">
                 <table class="table table-striped table-hover table-borderless">
                     <thead>

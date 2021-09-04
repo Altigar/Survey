@@ -1,7 +1,7 @@
 <template>
-    <aside>
+    <aside class="shadow-sm">
         <ul class="list-group">
-            <li class="list-group-item list-group-item-action pointer mb-1 border rounded" v-for="item in data" @click="add(item)" :key="item.value" button>
+            <li class="list-group-item list-group-item-action pointer" v-for="item in data" @click="add(item)" :key="item.value">
                 {{ item.value }}
             </li>
         </ul>

@@ -4,7 +4,7 @@
 
 {% block body %}
     {% if questions is empty %}
-        <div class="card mt-3">
+        <div class="card mt-3 shadow-sm">
             <div class="card-body">
                 <h3 class="text-primary">{{ survey.name }}</h3>
                 <div>The survey does not contain any questions</div>
@@ -18,7 +18,7 @@
             questions="{{ questions|serialize('json', ['answers', 'survey']) }}"
         ></pass-layout>
     {% else %}
-        <div class="card mt-3">
+        <div class="card mt-3 shadow-sm">
             <div class="card-body">
                 <h3 class="text-primary">{{ survey.name }}</h3>
                 <div>You have already completed this survey</div>

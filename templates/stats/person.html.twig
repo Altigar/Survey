@@ -5,7 +5,7 @@
 {% block body %}
     {% include('partials/navigation.html.twig') %}
     {% for question in questions %}
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
             <div class="card-body">
                 <h3 class="card-title">{{ question.text }}</h3>
                 {% if question.type in ['radio', 'checkbox'] %}
@@ -31,7 +31,7 @@
             </div>
         </div>
     {% else %}
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
             <div class="card-body">
                 No results
             </div>

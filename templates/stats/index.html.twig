@@ -5,7 +5,7 @@
 {% block body %}
     {% include('partials/navigation.html.twig') %}
     {% for question in questions %}
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
             <div class="card-body">
                 {% if question.type in ['string', 'text'] %}
                     <h3 class="text-primary">{{ question.text }}</h3>
@@ -52,7 +52,7 @@
             </div>
         </div>
     {% else %}
-        <div class="card mb-3">
+        <div class="card mb-3 shadow-sm">
             <div class="card-body">
                 No results
             </div>

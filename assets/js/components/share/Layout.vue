@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <h3 class="mb-2">Copy link</h3>
             <p class="mb-2">

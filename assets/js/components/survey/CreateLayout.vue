@@ -3,7 +3,7 @@
         <div v-if="error" class="alert alert-danger" role="alert">
             <span>{{ error }}</span>
         </div>
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-body">
                 <h3>Create survey</h3>
                 <form>

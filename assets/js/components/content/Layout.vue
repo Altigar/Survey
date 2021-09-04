@@ -15,7 +15,7 @@
                         v-if="isSelected(question.type, ['radio', 'checkbox'])"
                         @remove="remove"
                         ref="question"
-                        class="question-content"
+                        class="question-content shadow-sm"
                         @showError="showError"
                     ></choice>
                     <note
@@ -25,7 +25,7 @@
                         v-if="isSelected(question.type, ['string'])"
                         @remove="remove"
                         ref="question"
-                        class="question-content"
+                        class="question-content shadow-sm"
                         @showError="showError"
                     ></note>
                     <note-area
@@ -35,7 +35,7 @@
                         v-if="isSelected(question.type, ['text'])"
                         @remove="remove"
                         ref="question"
-                        class="question-content"
+                        class="question-content shadow-sm"
                         @showError="showError"
                     ></note-area>
                     <scale
@@ -45,7 +45,7 @@
                         v-if="isSelected(question.type, ['scale'])"
                         @remove="remove"
                         ref="question"
-                        class="question-content"
+                        class="question-content shadow-sm"
                         @showError="showError"
                     ></scale>
                 </template>
