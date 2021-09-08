@@ -76,5 +76,8 @@ export default {
 </script>
 
 <style scoped>
-
+    .table-responsive {
+        overflow-y: visible;
+        overflow-x: visible;
+    }
 </style>
