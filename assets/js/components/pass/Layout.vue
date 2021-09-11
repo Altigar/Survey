@@ -1,7 +1,7 @@
 <template>
     <div>
         <app-error v-if="error" @close="closeError" class="mt-3">{{ error }}</app-error>
-        <div class="card mb-3 mt-3">
+        <div class="card shadow-sm mb-3 mt-3">
             <div class="card-body">
                 <h3>{{ surveyName }}</h3>
                 <div>

@@ -18,12 +18,6 @@ class Answer
     private ?int $id = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="answers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private Person $person;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Question::class, inversedBy="answers")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -51,10 +45,9 @@ class Answer
      */
     private ?int $scale_value = null;
 
-	public static function create(Person $person, Question $question, Pass $pass): self
+	public static function create(Question $question, Pass $pass): self
 	{
 		$answer = new self();
-		$answer->person = $person;
 		$answer->question = $question;
 		$answer->pass = $pass;
 
@@ -85,11 +78,6 @@ class Answer
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPerson(): ?Person
-    {
-        return $this->person;
     }
 
     public function getQuestion(): ?Question
@@ -124,6 +112,13 @@ class Answer
     public function getPass(): ?Pass
     {
         return $this->pass;
+    }
+
+    public function setPass(?Pass $pass): self
+    {
+    	$this->pass = $pass;
+
+    	return $this;
     }
 
 	public function getScaleValue(): ?int

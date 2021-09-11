@@ -35,6 +35,20 @@ class QuestionRepository extends ServiceEntityRepository
 			->getResult();
     }
 
+	public function findIndexedBySurveyWithIndexedOptions(Survey $survey): array
+	{
+		return $this->createQueryBuilder('q')
+			->select('q', 'o')
+			->from(Question::class, 't', indexBy: 'q.id')
+			->leftJoin('q.options', 'o', indexBy: 'o.id')
+			->where('q.survey = :survey')
+			->setParameter('survey', $survey)
+			->orderBy('q.ordering')
+			->addOrderBy('o.ordering')
+			->getQuery()
+			->getResult();
+	}
+
 	public function findByPassWithOptionsAndAnswers(Pass $pass): array
 	{
 		return $this->createQueryBuilder('q')

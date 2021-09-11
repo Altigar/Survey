@@ -60,11 +60,6 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 	private ?string $password_confirmation = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="person")
-     */
-    private ?Collection $answers;
-
-    /**
      * @ORM\OneToMany(targetEntity=Survey::class, mappedBy="person", orphanRemoval=true)
      */
     private ?Collection $surveys;
@@ -191,36 +186,6 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 				->addViolation();
 		}
 	}
-
-    /**
-     * @return Collection|Answer[]
-     */
-    public function getAnswers(): Collection
-    {
-        return $this->answers;
-    }
-
-    public function addAnswer(Answer $answer): self
-    {
-        if (!$this->answers->contains($answer)) {
-            $this->answers[] = $answer;
-            $answer->setPerson($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAnswer(Answer $answer): self
-    {
-        if ($this->answers->removeElement($answer)) {
-            // set the owning side to null (unless already changed)
-            if ($answer->getPerson() === $this) {
-                $answer->setPerson(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getSurveys(): Collection
     {

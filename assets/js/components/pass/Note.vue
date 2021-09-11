@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <h4>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h4>
             <input :key="id" v-model="value" class="form-control mb-2" type="text">

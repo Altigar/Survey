@@ -27,7 +27,6 @@ class Pass
 
     /**
      * @ORM\ManyToOne(targetEntity=Person::class, inversedBy="passes")
-     * @ORM\JoinColumn(nullable=false)
      */
     private ?Person $person;
 
@@ -41,16 +40,20 @@ class Pass
      */
     private ?Collection $answers;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=ExternalPerson::class, inversedBy="passes", cascade={"persist"})
+     */
+    private ?ExternalPerson $externalPerson;
+
     public function __construct()
     {
         $this->answers = new ArrayCollection();
     }
 
-	public static function create(Survey $survey, Person $person): self
+	public static function create(Survey $survey): self
 	{
 		$self = new self();
 		$self->survey = $survey;
-		$self->person = $person;
 		$self->created_at = new \DateTime('now');
 
 		return $self;
@@ -90,9 +93,6 @@ class Pass
         return $this->created_at;
     }
 
-    /**
-     * @return Collection|Answer[]
-     */
     public function getAnswers(): Collection
     {
         return $this->answers;
@@ -116,6 +116,18 @@ class Pass
                 $answer->setPass(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getExternalPerson(): ?ExternalPerson
+    {
+        return $this->externalPerson;
+    }
+
+    public function setExternalPerson(?ExternalPerson $externalPerson): self
+    {
+        $this->externalPerson = $externalPerson;
 
         return $this;
     }

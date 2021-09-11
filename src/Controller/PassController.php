@@ -3,12 +3,12 @@
 namespace App\Controller;
 
 use App\Data\Pass\QuestionData;
-use App\Entity\Pass;
-use App\Entity\Question;
 use App\Entity\Survey;
 use App\Exception\Pass\CreateValidationException;
+use App\Repository\PassRepository;
+use App\Repository\QuestionRepository;
 use App\Services\AnswerService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Services\PassService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,20 +24,19 @@ class PassController extends AbstractController implements CsrfTokenControllerIn
 		private SerializerInterface $serializer,
 		private ValidatorInterface $validator,
 		private AnswerService $answerService,
-		private EntityManagerInterface $entityManager,
+		private PassService $passService,
+		private QuestionRepository $questionRepository,
+		private PassRepository $passRepository,
 	) {}
 
     #[Route('/pass/{hash}', name: 'pass', requirements: ['hash' => '[0-9a-zA-Z]+'], methods: ['GET'])]
-    public function index(Survey $survey): Response
+    public function index(Request $request, Survey $survey): Response
     {
 	    return $this->render('pass/index.html.twig', [
         	'title' => 'Survey',
         	'survey' => $survey,
-		    'questions' => $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey),
-        	'pass' => $this->entityManager->getRepository(Pass::class)->findBy([
-        		'survey' => $survey,
-		        'person' => $this->getUser()
-	        ]),
+		    'questions' => $this->questionRepository->findBySurveyWithOptions($survey),
+        	'pass' => $this->passRepository->findByPersonOrIp($survey, $this->getUser(), $request->getClientIp())
         ]);
     }
 
@@ -55,7 +54,8 @@ class PassController extends AbstractController implements CsrfTokenControllerIn
 		if ($errors->count()) {
 			throw new CreateValidationException($errors);
 		}
-		$this->answerService->create($data, $survey, $this->getUser());
-		return $this->json([], Response::HTTP_CREATED);
+		$pass = $this->passService->create($survey, $this->getUser(), $request->getClientIp());
+		$this->answerService->create($data, $survey, $pass);
+		return $this->json(null, Response::HTTP_CREATED);
 	}
 }

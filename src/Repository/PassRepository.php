@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Pass;
+use App\Entity\Person;
+use App\Entity\Survey;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,19 @@ class PassRepository extends ServiceEntityRepository
         parent::__construct($registry, Pass::class);
     }
 
-    // /**
-    //  * @return Pass[] Returns an array of Pass objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+	public function findByPersonOrIp(Survey $survey, ?Person $person, string $ip)
+	{
+		return $this->createQueryBuilder('p')
+			->select('p', 'ep')
+			->from(Pass::class, 't')
+			->join('p.externalPerson', 'ep')
+			->where('p.person = :person')
+			->orWhere('ep.ip = :ip')
+			->andWhere('p.survey = :survey')
+			->setParameter('person', $person)
+			->setParameter('ip', $ip)
+			->setParameter('survey', $survey)
+			->getQuery()
+			->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Pass
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

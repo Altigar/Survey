@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card shadow-sm">
         <div class="card-body">
             <h4>{{ title }}<span v-if="isRequired" class="text-danger ms-2">*</span></h4>
             <textarea v-model="value" :rows="rows" class="form-control resize-none mb-2"></textarea>
