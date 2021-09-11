@@ -5,7 +5,7 @@ namespace App\Data\Pass;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Validator\Pass as PassAssert;
 
-#[PassAssert\Required(groups: ['required'])]
+#[PassAssert\Required('Question is required', ['required'])]
 final class QuestionData
 {
 	private int $id;
