@@ -12,7 +12,7 @@ final class OptionDataUpdate
 	#[Assert\Positive(groups: ['default'])]
 	private int $ordering;
 
-	#[Assert\Length(min: 1, max: 300, groups: [Question::TYPE_RADIO, Question::TYPE_CHECKBOX])]
+	#[Assert\Length(min: 1, max: 50, groups: [Question::TYPE_RADIO, Question::TYPE_CHECKBOX])]
 	private ?string $text;
 
 	public function __construct(?int $id, int $ordering, ?string $text)
