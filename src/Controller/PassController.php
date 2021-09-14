@@ -3,12 +3,15 @@
 namespace App\Controller;
 
 use App\Data\Pass\QuestionData;
+use App\Entity\ExternalPerson;
+use App\Entity\Pass;
 use App\Entity\Survey;
 use App\Exception\Pass\CreateValidationException;
+use App\Repository\ExternalPersonRepository;
 use App\Repository\PassRepository;
 use App\Repository\QuestionRepository;
 use App\Services\AnswerService;
-use App\Services\PassService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +24,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class PassController extends AbstractController implements CsrfTokenControllerInterface
 {
 	public function __construct(
+		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
 		private ValidatorInterface $validator,
 		private AnswerService $answerService,
-		private PassService $passService,
 		private QuestionRepository $questionRepository,
 		private PassRepository $passRepository,
+		private ExternalPersonRepository $externalPersonRepository,
 	) {}
 
     #[Route('/pass/{hash}', name: 'pass', requirements: ['hash' => '[0-9a-zA-Z]+'], methods: ['GET'])]
@@ -54,8 +58,20 @@ class PassController extends AbstractController implements CsrfTokenControllerIn
 		if ($errors->count()) {
 			throw new CreateValidationException($errors);
 		}
-		$pass = $this->passService->create($survey, $this->getUser(), $request->getClientIp());
-		$this->answerService->create($data, $survey, $pass);
+		if ($person = $this->getUser()) {
+			$externalPerson = null;
+		} else {
+			$externalPerson = $this->externalPersonRepository->findOneBy(['ip' => $request->getClientIp()]);
+		}
+		if (!$person && !$externalPerson) {
+			$externalPerson = ExternalPerson::create($request->getClientIp());
+		}
+		$questions = $this->questionRepository->findIndexedBySurveyWithIndexedOptions($survey);
+		$pass = $this->answerService->create($data, $questions, Pass::create($survey, $person, $externalPerson));
+
+		$this->entityManager->persist($pass);
+		$this->entityManager->flush();
+
 		return $this->json(null, Response::HTTP_CREATED);
 	}
 }

@@ -5,22 +5,12 @@ namespace App\Services;
 use App\Entity\Answer;
 use App\Entity\Pass;
 use App\Entity\Question;
-use App\Entity\Survey;
-use App\Repository\QuestionRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AnswerService
 {
-	public function __construct(
-		private EntityManagerInterface $entityManager,
-		private QuestionRepository $questionRepository,
-	) {}
-
-	public function create(array $requestQuestionData, Survey $survey, Pass $pass): void
+	public function create(array $requestQuestionData, array $questions, Pass $pass): Pass
 	{
-		$questions = $this->questionRepository->findIndexedBySurveyWithIndexedOptions($survey);
-
 		foreach ($requestQuestionData as $questionData) {
 			if (!$question = $questions[$questionData->getId()] ?? null) {
 				throw new BadRequestHttpException();
@@ -46,9 +36,9 @@ class AnswerService
 					default:
 						throw new BadRequestHttpException();
 				}
-				$this->entityManager->persist($answer);
+				$pass->addAnswer($answer);
 			}
 		}
-		$this->entityManager->flush();
+		return $pass;
 	}
 }

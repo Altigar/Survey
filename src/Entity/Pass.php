@@ -36,7 +36,7 @@ class Pass
     private ?\DateTimeInterface $created_at;
 
     /**
-     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="pass", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Answer::class, mappedBy="pass", orphanRemoval=true, cascade={"persist"})
      */
     private ?Collection $answers;
 
@@ -50,13 +50,15 @@ class Pass
         $this->answers = new ArrayCollection();
     }
 
-	public static function create(Survey $survey): self
+	public static function create(Survey $survey, ?Person $person = null, ?ExternalPerson $externalPerson = null): self
 	{
-		$self = new self();
-		$self->survey = $survey;
-		$self->created_at = new \DateTime('now');
+		$pass = new self();
+		$pass->survey = $survey;
+		$pass->created_at = new \DateTime('now');
+		$pass->setPerson($person);
+		$pass->setExternalPerson($externalPerson);
 
-		return $self;
+		return $pass;
     }
 
     public function getId(): ?int

@@ -50,7 +50,12 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 		if ($errors->count()) {
 			throw new ValidationException($errors);
 		}
-		return $this->json(['id' => $this->questionService->create($survey, $questionData)], Response::HTTP_CREATED);
+
+		$question = $this->questionService->create($survey, $questionData);
+		$this->entityManager->persist($question);
+		$this->entityManager->flush();
+
+		return $this->json(['id' => $question->getId()], Response::HTTP_CREATED);
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
@@ -62,6 +67,8 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 			throw new UpdateValidationException($errors);
 		}
 		$this->questionService->update($question, $questionData);
+		$this->entityManager->flush();
+
 		return $this->json([]);
 	}
 
@@ -70,6 +77,7 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 	{
 		$this->entityManager->remove($question);
 		$this->entityManager->flush();
+
 		return $this->json([], Response::HTTP_NO_CONTENT);
 	}
 }

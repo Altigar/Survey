@@ -8,15 +8,10 @@ use App\Entity\Option;
 use App\Entity\Question;
 use App\Entity\Survey;
 use App\Utils\ObjectUtil;
-use Doctrine\ORM\EntityManagerInterface;
 
 class QuestionService
 {
-	public function __construct(
-		private EntityManagerInterface $entityManager,
-	) {}
-
-	public function create(Survey $survey, QuestionDataCreate $questionData): int
+	public function create(Survey $survey, QuestionDataCreate $questionData): Question
 	{
 		$question = Question::create($survey, $questionData->getType(), $questionData->getOrdering());
 		match ($question->getType()) {
@@ -25,10 +20,7 @@ class QuestionService
 			Question::TYPE_SCALE => $question->scaleType(Question::DEFAULT_SCALE),
 			default => null,
 		};
-		$this->entityManager->persist($question);
-		$this->entityManager->flush();
-
-		return $question->getId();
+		return $question;
 	}
 
 	public function update(Question $question, QuestionDataUpdate $questionData): void
@@ -44,7 +36,6 @@ class QuestionService
 			),
 			default => $question,
 		};
-		$this->entityManager->flush();
 	}
 
 	private function choice(Question $question, QuestionDataUpdate $questionData): Question
