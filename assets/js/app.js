@@ -17,6 +17,7 @@ import SurveyLayout from "./components/survey/Layout";
 import CreateSurveyLayout from "./components/survey/CreateLayout";
 import UpdateSurveyLayout from "./components/survey/UpdateLayout";
 import ShareLayout from "./components/share/Layout";
+import ListLayout from "./components/stats/ListLayout";
 //Components
 import AppError from "./components/AppError";
 import AppFormError from "./components/AppFormError";
@@ -29,6 +30,7 @@ const layouts = {
 	UpdateSurveyLayout,
 	PassLayout,
 	ShareLayout,
+	ListLayout,
 };
 
 const components = {

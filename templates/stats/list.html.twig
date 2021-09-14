@@ -4,28 +4,8 @@
 
 {% block body %}
     {% include('partials/navigation.html.twig') %}
-    {% for pass in passes %}
-        <div class="card mb-2 shadow-sm">
-            <div class="card-body">
-                <a class="text-decoration-none text-body" href="{{ path('stats_person', {pass: pass.id}) }}">
-                    <div class="d-flex justify-content-between">
-                        <div>Pass: #{{ pass.id }}</div>
-                        <div>
-                            <small>
-                                <time>
-                                    {{ pass.createdAt|date('d-m-Y H:i:s') }}
-                                </time>
-                            </small>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    {% else %}
-        <div class="card mb-3 shadow-sm">
-            <div class="card-body">
-                No results
-            </div>
-        </div>
-    {% endfor %}
+    <list-layout
+        passes="{{ passes|serialize('json', ['answers', 'survey', 'externalPerson', 'person']) }}"
+        survey-id="{{ survey.id }}"
+    ></list-layout>
 {% endblock %}
