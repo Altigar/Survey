@@ -2,7 +2,7 @@
     <div @click="edited = true" class="card">
         <div class="card-body">
             <div v-if="!edited">
-                <h4>{{ data.text }}</h4>
+                <h4 class="text-primary">{{ data.text }}</h4>
                 <div v-for="option in sortedOptions" :key="option.id" class="form-check">
                     <input v-if="data.type === 'radio'" class="form-check-input" type="radio">
                     <input v-else-if="data.type === 'checkbox'" class="form-check-input" type="checkbox">

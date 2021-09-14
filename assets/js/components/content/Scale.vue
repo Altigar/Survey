@@ -2,7 +2,7 @@
     <div @click="edited = true" class="card">
         <div class="card-body">
             <div v-if="!edited">
-                <h4>{{ data.text }}</h4>
+                <h4 class="text-primary">{{ data.text }}</h4>
                 <div class="d-flex justify-content-between mb-2">
                     <div><span>{{ data.scaleFromText }}</span></div>
                     <div><span>{{ data.scaleToText }}</span></div>

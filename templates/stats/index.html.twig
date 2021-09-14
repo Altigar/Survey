@@ -8,7 +8,7 @@
         <div class="card mb-3 shadow-sm">
             <div class="card-body">
                 {% if question.type in ['string', 'text'] %}
-                    <h3 class="text-primary">{{ question.text }}</h3>
+                    <h4 class="text-primary">{{ question.text }}</h4>
                     {% for answer in noteStats %}
                         {% if answer.question_id == question.id %}
                             <div class="mb-1 bg-light p-2">{{ answer.text }}</div>
@@ -17,7 +17,7 @@
                         <div>No results</div>
                     {% endfor %}
                 {% elseif question.type in ['radio', 'checkbox'] %}
-                    <h3 class="text-primary">{{ question.text }}</h3>
+                    <h4 class="text-primary">{{ question.text }}</h4>
                     <div class="stats-row">
                         {% for option in question.options %}
                             <div class="row border-bottom pb-1 m-0 mb-2">
@@ -34,7 +34,7 @@
                         {% endfor %}
                     </div>
                 {% elseif question.type == 'scale' %}
-                    <h3 class="text-primary">{{ question.text }}</h3>
+                    <h4 class="text-primary">{{ question.text }}</h4>
                     <div class="stats-row">
                         {% for stat in scaleStats %}
                             {% if stat.question_id == question.id %}
