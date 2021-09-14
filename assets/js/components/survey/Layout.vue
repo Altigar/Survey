@@ -1,32 +1,39 @@
 <template>
     <div>
         <app-error v-if="error" @close="closeError">{{ error }}</app-error>
-        <div class="card shadow-sm">
-            <div class="table-responsive card-body">
-                <table class="table table-striped table-hover table-borderless">
-                    <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="survey in data">
-                        <td v-if="survey.name.length >= 70">{{ survey.name.substr(0, 70) }}...</td>
-                        <td v-else>{{ survey.name }}</td>
-                        <td>{{ formatDate(survey.createdAt) }}</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"></button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><a :href="`/content/${survey.id}`" class="dropdown-item">View</a></li>
-                                    <li><a @click.prevent="remove(survey.id)" class="dropdown-item">Delete</a></li>
-                                </ul>
+        <template v-if="data.length > 0">
+            <a v-for="survey in data" :key="survey.id" :href="`/content/${survey.id}`" class="text-decoration-none text-body">
+                <div class="card mb-2 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div>
+                                    <span v-if="survey.name.length >= 70">
+                                        <strong>{{ survey.name.substr(0, 70) }}</strong>...
+                                    </span>
+                                    <span v-else>
+                                        <strong>{{ survey.name }}</strong>
+                                    </span>
+                                </div>
+                                <div>
+                                    <small>
+                                        <time>
+                                            {{ formatDate(survey.createdAt) }}
+                                        </time>
+                                    </small>
+                                </div>
                             </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                            <div>
+                                <a @click.prevent="remove(survey.id)" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </template>
+        <div v-else class="card mb-3 shadow-sm">
+            <div class="card-body">
+                No surveys
             </div>
         </div>
     </div>
@@ -76,8 +83,5 @@ export default {
 </script>
 
 <style scoped>
-    .table-responsive {
-        overflow-y: visible;
-        overflow-x: visible;
-    }
+
 </style>
