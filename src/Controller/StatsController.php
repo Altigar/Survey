@@ -46,7 +46,7 @@ class StatsController extends AbstractController
     public function person(Pass $pass): Response
     {
         return $this->render('stats/person.html.twig', [
-        	'title' => "Person #{$pass->getPerson()->getId()}",
+        	'title' => "Pass #{$pass->getId()}",
         	'questions' => $this->entityManager->getRepository(Question::class)->findByPassWithOptionsAndAnswers($pass),
 	        'survey' => $pass->getSurvey()
         ]);
