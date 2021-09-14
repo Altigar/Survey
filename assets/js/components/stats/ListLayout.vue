@@ -2,9 +2,9 @@
     <div>
         <app-error v-if="error" @close="closeError">{{ error }}</app-error>
         <template v-if="data.length > 0">
-            <div v-for="pass in data" :key="pass.id" class="card mb-2 shadow-sm">
-                <div class="card-body">
-                    <a :href="`/stats/pass/${pass.id}`" class="text-decoration-none text-body">
+            <a v-for="pass in data" :key="pass.id" :href="`/stats/pass/${pass.id}`" class="text-decoration-none text-body">
+                <div class="card mb-2 shadow-sm">
+                    <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <div>
@@ -22,9 +22,9 @@
                                 <a @click.prevent="remove(pass.id)" class="btn btn-danger">Delete</a>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
-            </div>
+            </a>
         </template>
         <div v-else class="card mb-3 shadow-sm">
             <div class="card-body">
