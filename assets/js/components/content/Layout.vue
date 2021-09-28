@@ -95,6 +95,11 @@ export default {
                     type: event.value,
                     ordering: number
                 });
+            } catch (error) {
+                this.error = 'Failed to create question';
+                return;
+            }
+            try {
                 let response = await axios.get(`/content/${this.id}`);
                 this.data = response.data;
                 this.$nextTick(() => {
@@ -107,7 +112,7 @@ export default {
                 if (error.response.status === 422) {
                     this.error = error.response.data.error;
                 } else {
-                    this.error = 'Something went wrong';
+                    this.error = 'Failed to load data';
                 }
             }
         },
