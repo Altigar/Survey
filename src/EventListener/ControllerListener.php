@@ -25,7 +25,11 @@ class ControllerListener
 
 		$request = $event->getRequest();
 		if ($controller instanceof CsrfTokenControllerInterface && in_array($request->getMethod(), ['POST', 'PUT', 'DELETE'])) {
-			if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('default', $request->headers->get('X-CSRF-TOKEN')))) {
+			$token = $request->headers->get('X-CSRF-TOKEN') ?? $request->get('_csrf_token');
+			if (
+				!$this->csrfTokenManager->isTokenValid(new CsrfToken('default', $token)) &&
+				!$this->csrfTokenManager->isTokenValid(new CsrfToken('authenticate', $token))
+			) {
 				throw new AccessDeniedHttpException('Invalid CSRF token. Try reloading this page');
 			}
 		}
