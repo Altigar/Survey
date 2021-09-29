@@ -27,7 +27,7 @@ class QuestionService
 	{
 		$question = $question->update($questionData->getIsRequired(), $questionData->getText());
 		match ($question->getType()) {
-			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->choice($question, $questionData),
+			Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $this->replaceOptions($question, $questionData),
 			Question::TYPE_TEXT => $question->textType($questionData->getRow()),
 			Question::TYPE_SCALE => $question->scaleType(
 				$questionData->getScale(),
@@ -38,16 +38,24 @@ class QuestionService
 		};
 	}
 
-	private function choice(Question $question, QuestionDataUpdate $questionData): Question
+	private function replaceOptions(Question $question, QuestionDataUpdate $questionData): void
 	{
-		//remove
+		$this->removeOptions($question, $questionData);
+		$this->addOptions($question, $questionData);
+	}
+
+	private function removeOptions(Question $question, QuestionDataUpdate $questionData): void
+	{
 		$optionIds = ObjectUtil::getColumn($questionData->getOptions(), 'id');
 		foreach ($question->getOptions()->toArray() as $option) {
 			if (!in_array($option->getId(), $optionIds)) {
 				$question->removeOption($option);
 			}
 		}
-		//add
+	}
+
+	private function addOptions(Question $question, QuestionDataUpdate $questionData): void
+	{
 		$options = ObjectUtil::reindex($question->getOptions()->toArray(), 'id');
 		foreach ($questionData->getOptions() as $optionData) {
 			if (!$optionData->getId()) {
@@ -57,7 +65,5 @@ class QuestionService
 				$option->update($optionData->getText());
 			}
 		}
-
-		return $question;
 	}
 }
