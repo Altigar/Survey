@@ -71,7 +71,6 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->answers = new ArrayCollection();
         $this->surveys = new ArrayCollection();
         $this->passes = new ArrayCollection();
     }
