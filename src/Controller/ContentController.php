@@ -8,8 +8,10 @@ use App\Entity\Question;
 use App\Entity\Survey;
 use App\Exception\Content\UpdateValidationException;
 use App\Exception\ValidationException;
+use App\Security\ContentVoter;
 use App\Services\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +31,7 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 	) {}
 
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
+    #[IsGranted(ContentVoter::VIEW, 'survey')]
     public function index(Request $request, Survey $survey): Response
     {
 	    $questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
@@ -43,6 +46,7 @@ class ContentController extends AbstractController implements CsrfTokenControlle
     }
 
 	#[Route('/content/{survey}', name: 'content_create', requirements: ['survey' => '\d+'], methods: ['POST'])]
+	#[IsGranted(ContentVoter::CREATE, 'survey')]
 	public function create(Request $request, Survey $survey): JsonResponse
 	{
 		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataCreate::class,'json');
@@ -59,6 +63,7 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 	}
 
 	#[Route('/content/{question}', name: 'content_update', requirements: ['question' => '\d+'], methods: ['PUT'])]
+	#[IsGranted(ContentVoter::UPDATE, 'question')]
 	public function update(Request $request, Question $question): JsonResponse
 	{
 		$questionData = $this->serializer->deserialize($request->getContent(), QuestionDataUpdate::class, 'json');
@@ -73,6 +78,7 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 	}
 
 	#[Route('/content/{question}', name: 'content_remove', requirements: ['question' => '\d+'], methods: ['DELETE'])]
+	#[IsGranted(ContentVoter::DELETE, 'question')]
 	public function remove(Question $question): JsonResponse
 	{
 		$this->entityManager->remove($question);
