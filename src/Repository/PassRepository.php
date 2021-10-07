@@ -21,12 +21,12 @@ class PassRepository extends ServiceEntityRepository
         parent::__construct($registry, Pass::class);
     }
 
-	public function findByPersonOrIp(Survey $survey, ?Person $person, string $ip)
+	public function findByPersonOrIp(Survey $survey, ?Person $person, string $ip): array
 	{
 		return $this->createQueryBuilder('p')
 			->select('p', 'ep')
 			->from(Pass::class, 't')
-			->join('p.externalPerson', 'ep')
+			->leftJoin('p.externalPerson', 'ep')
 			->where('p.person = :person')
 			->orWhere('ep.ip = :ip')
 			->andWhere('p.survey = :survey')
