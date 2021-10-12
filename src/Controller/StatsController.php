@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Answer;
 use App\Entity\Pass;
-use App\Entity\Question;
 use App\Entity\Survey;
+use App\Repository\AnswerRepository;
+use App\Repository\PassRepository;
+use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,27 +18,29 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class StatsController extends AbstractController
 {
 	public function __construct(
-		private EntityManagerInterface $entityManager
+		private EntityManagerInterface $entityManager,
+		private QuestionRepository $questionRepository,
+		private AnswerRepository $answerRepository,
+		private PassRepository $passRepository,
 	) {}
 
 	#[Route('/stats/{survey}', name: 'stats', requirements: ['survey' => '\d+'], methods: ['GET'])]
 	public function index(Survey $survey): Response
 	{
-		$answerRepository = $this->entityManager->getRepository(Answer::class);
 		return $this->render('stats/index.html.twig', [
 			'title' => 'Stats',
 			'survey' => $survey,
-			'questions' => $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey),
-			'noteStats' => $answerRepository->findNoteStatsBySurvey($survey),
-			'choiceStats' => $answerRepository->findChoiceStatsBySurvey($survey),
-			'scaleStats' => $answerRepository->findScaleStatsBySurvey($survey)
+			'questions' => $this->questionRepository->findBySurveyWithOptions($survey),
+			'noteStats' => $this->answerRepository->findNoteStatsBySurvey($survey),
+			'choiceStats' => $this->answerRepository->findChoiceStatsBySurvey($survey),
+			'scaleStats' => $this->answerRepository->findScaleStatsBySurvey($survey)
 		]);
 	}
 
 	#[Route('/stats/{survey}/pass/list', name: 'stats_pass_list', requirements: ['survey' => '\d+'], methods: ['GET'])]
 	public function list(Request $request, Survey $survey): Response
 	{
-		$passes = $this->entityManager->getRepository(Pass::class)->findBy(['survey' => $survey], ['id' => 'DESC']);
+		$passes = $this->passRepository->findBy(['survey' => $survey], ['id' => 'DESC']);
 		if ($request->isXmlHttpRequest()) {
 			return $this->json($passes, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey', 'externalPerson', 'person']]);
 		}
@@ -53,7 +56,7 @@ class StatsController extends AbstractController
     {
         return $this->render('stats/person.html.twig', [
         	'title' => "Pass #{$pass->getId()}",
-        	'questions' => $this->entityManager->getRepository(Question::class)->findByPassWithOptionsAndAnswers($pass),
+        	'questions' => $this->questionRepository->findByPassWithOptionsAndAnswers($pass),
 	        'survey' => $pass->getSurvey()
         ]);
     }

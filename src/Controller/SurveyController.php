@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Data\Survey\SurveyData;
 use App\Entity\Survey;
 use App\Exception\ValidationException;
+use App\Repository\SurveyRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,12 +22,13 @@ class SurveyController extends AbstractController implements CsrfTokenController
 		private EntityManagerInterface $entityManager,
 		private SerializerInterface $serializer,
 		private ValidatorInterface $validator,
+		private SurveyRepository $surveyRepository,
 	) {}
 
     #[Route('/survey', name: 'survey', methods: ['GET'])]
     public function index(Request $request): Response
     {
-    	$surveys = $this->entityManager->getRepository(Survey::class)->findBy(['person' => $this->getUser()], ['created_at' => 'desc']);
+    	$surveys = $this->surveyRepository->findBy(['person' => $this->getUser()], ['created_at' => 'desc']);
 	    if ($request->isXmlHttpRequest()) {
 		    return $this->json($surveys, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['questions', 'person', 'passes']]);
 	    }

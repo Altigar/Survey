@@ -8,6 +8,7 @@ use App\Entity\Question;
 use App\Entity\Survey;
 use App\Exception\Content\UpdateValidationException;
 use App\Exception\ValidationException;
+use App\Repository\QuestionRepository;
 use App\Security\ContentVoter;
 use App\Services\QuestionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,13 +29,14 @@ class ContentController extends AbstractController implements CsrfTokenControlle
 		private SerializerInterface $serializer,
 		private QuestionService $questionService,
 		private ValidatorInterface $validator,
+		private QuestionRepository $questionRepository,
 	) {}
 
     #[Route('/content/{survey}', name: 'content',  requirements: ['survey' => '\d+'], methods: ['GET'])]
     #[IsGranted(ContentVoter::VIEW, 'survey')]
     public function index(Request $request, Survey $survey): Response
     {
-	    $questions = $this->entityManager->getRepository(Question::class)->findBySurveyWithOptions($survey);
+	    $questions = $this->questionRepository->findBySurveyWithOptions($survey);
 	    if ($request->isXmlHttpRequest()) {
 	    	return $this->json($questions, context: [AbstractNormalizer::IGNORED_ATTRIBUTES => ['answers', 'survey']]);
 	    }
