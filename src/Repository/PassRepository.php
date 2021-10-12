@@ -24,7 +24,8 @@ class PassRepository extends ServiceEntityRepository
 	public function findByPersonOrIp(Survey $survey, ?Person $person, string $ip): array
 	{
 		return $this->createQueryBuilder('p')
-			->select('p', 'ep')
+			->select('p.id')
+			->distinct()
 			->from(Pass::class, 't')
 			->leftJoin('p.externalPerson', 'ep')
 			->where('p.person = :person')
@@ -34,6 +35,6 @@ class PassRepository extends ServiceEntityRepository
 			->setParameter('ip', $ip)
 			->setParameter('survey', $survey)
 			->getQuery()
-			->getResult();
+			->getScalarResult();
     }
 }
