@@ -142,6 +142,8 @@ export default {
                             }
                         }
                     }
+                } else if (error.response.status === 403) {
+                    this.error = error.response.data.detail
                 } else {
                     this.error = 'Something went wrong';
                 }
