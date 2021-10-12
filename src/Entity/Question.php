@@ -14,14 +14,14 @@ use Doctrine\ORM\PersistentCollection;
  */
 class Question
 {
-	const TYPE_RADIO = 'radio';
-	const TYPE_CHECKBOX = 'checkbox';
-	const TYPE_STRING = 'string';
-	const TYPE_TEXT = 'text';
-	const TYPE_SCALE = 'scale';
+	public const TYPE_RADIO = 'radio';
+	public const TYPE_CHECKBOX = 'checkbox';
+	public const TYPE_STRING = 'string';
+	public const TYPE_TEXT = 'text';
+	public const TYPE_SCALE = 'scale';
 
-	const DEFAULT_ROW = 1;
-	const DEFAULT_SCALE = 10;
+	public const DEFAULT_ROW = 1;
+	public const DEFAULT_SCALE = 10;
 
     /**
      * @ORM\Id
