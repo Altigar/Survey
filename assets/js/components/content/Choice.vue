@@ -10,6 +10,7 @@
                 </div>
             </div>
             <form method="post" v-else-if="edited">
+                <app-form-error v-if="errors.count" class="mb-2">{{ errors.count }}</app-form-error>
                 <div class="mb-2">
                     <input v-model="data.text" type="text" class="form-control mb-2">
                     <app-form-error v-if="errors.text" class="mb-2">{{ errors.text }}</app-form-error>

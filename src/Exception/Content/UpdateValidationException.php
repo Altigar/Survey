@@ -5,6 +5,7 @@ namespace App\Exception\Content;
 use App\Entity\Question;
 use App\Exception\ValidationException;
 use Symfony\Component\PropertyAccess\PropertyPath;
+use Symfony\Component\Validator\Constraints\Count;
 
 class UpdateValidationException extends ValidationException
 {
@@ -20,6 +21,8 @@ class UpdateValidationException extends ValidationException
 						Question::TYPE_RADIO, Question::TYPE_CHECKBOX => $errors[$elements[0]][$elements[1]] = [$elements[2] => $error->getMessage()],
 						Question::TYPE_SCALE, Question::TYPE_TEXT  => $errors[$elements[2]] = $error->getMessage(),
 					};
+				} elseif ($error->getPropertyPath() === 'options' && $error->getConstraint() instanceof Count) {
+					$errors['count'] = $error->getMessage();
 				} else {
 					$errors[$error->getPropertyPath()] = $error->getMessage();
 				}

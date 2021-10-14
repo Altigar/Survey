@@ -27,6 +27,13 @@ final class QuestionDataUpdate
 	private int $ordering;
 
 	#[Assert\Valid(groups: [Question::TYPE_RADIO, Question::TYPE_CHECKBOX, 'default'])]
+	#[Assert\Count(
+		min: 1,
+		max: 25,
+		minMessage: 'You must specify at least one option',
+		maxMessage: 'You cannot specify more than {{ limit }} options',
+		groups: ['default']
+	)]
 	private ?array $options;
 
 	#[Assert\Range(min: 1, max: 10, groups: [Question::TYPE_TEXT])]
