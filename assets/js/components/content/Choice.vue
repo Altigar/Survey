@@ -72,10 +72,12 @@ export default {
     methods: {
         add() {
             let orders = [];
-            for (let option of this.data.options) {
-                orders.push(option.ordering);
+            Object.values(this.data.options).forEach(option => orders.push(option.ordering));
+            let ordering = Math.max(...orders) + 1;
+            if (!Number.isInteger(ordering)) {
+                ordering = 1;
             }
-            this.data.options.push({text: '', ordering: Math.max(...orders) + 1});
+            this.data.options.push({text: '', ordering: ordering});
         },
         remove(number) {
             this.data.options = this.data.options.filter((elem, index) => index !== number);
