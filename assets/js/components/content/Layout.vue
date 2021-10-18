@@ -89,14 +89,15 @@ export default {
             if (Array.isArray(this.$refs.question) && this.$refs.question.length > 0) {
                 number = Math.max(...this.$refs.question.map(elem => elem.$props.data.ordering)) + 1;
             }
+            let responseCreate;
             try {
-                let responseCreate = await axios.post(`/content/${this.id}`, {
+                responseCreate = await axios.post(`/content/${this.id}`, {
                     survey: Number(this.id),
                     type: event.value,
                     ordering: number
                 });
             } catch (error) {
-                this.error = 'Failed to create question';
+                this.showError('Failed to create question');
                 return;
             }
             try {
@@ -112,7 +113,7 @@ export default {
                 if (error.response.status === 422) {
                     this.error = error.response.data.error;
                 } else {
-                    this.error = 'Failed to load data';
+                    this.showError('Failed to load data');
                 }
             }
         },
