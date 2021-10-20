@@ -1,8 +1,7 @@
 <template>
     <div>
-        <div v-if="error" class="alert alert-danger" role="alert">
-            <span>{{ error }}</span>
-        </div>
+        <app-success v-if="successMessage">{{ successMessage }}</app-success>
+        <div v-if="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
         <div class="card shadow-sm">
             <div class="card-body">
                 <h3>Edit survey</h3>
@@ -35,10 +34,11 @@
 import axios from "../../axios";
 import AppSwitch from "../AppSwitch";
 import AppFormError from "../AppFormError";
+import AppSuccess from "../AppSuccess";
 
 export default {
     name: "Layout",
-    components: {AppSwitch, AppFormError},
+    components: {AppSuccess, AppSwitch, AppFormError},
     props: {
         survey: String
     },
@@ -46,28 +46,31 @@ export default {
         return {
             data: null,
             loading: false,
-            error: null,
+            successMessage: null,
+            errorMessage: null,
             errors: {},
         };
     },
     methods: {
         async save() {
             this.loading = true;
+            this.successMessage = null;
             this.errors = {};
-            this.error = null;
+            this.errorMessage = null;
             try {
                 await axios.put(`/survey/edit/${this.data.id}`, {
                     name: this.data.name,
                     description: this.data.description,
                     repeatable: this.data.repeatable,
                 });
+                this.successMessage = 'Survey updated successfully';
             } catch (error) {
                 switch (error.response.status) {
                     case 422:
                         this.errors = error.response.data;
                         break;
                     default:
-                        this.error = 'Something went wrong';
+                        this.errorMessage = 'Something went wrong';
                         break;
                 }
             }

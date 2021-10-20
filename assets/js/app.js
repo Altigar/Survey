@@ -22,6 +22,7 @@ import ListLayout from "./components/stats/ListLayout";
 import AppError from "./components/AppError";
 import AppFormError from "./components/AppFormError";
 import AppSwitch from "./components/AppSwitch";
+import AppSuccess from "./components/AppSuccess";
 
 const layouts = {
 	ContentLayout,
@@ -37,6 +38,7 @@ const components = {
 	AppError,
 	AppFormError,
 	AppSwitch,
+	AppSuccess
 };
 
 new Vue({
