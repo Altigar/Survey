@@ -87,7 +87,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(?string $email): self
     {
-        $this->email = $email;
+        $this->email = trim($email);
 
         return $this;
     }
@@ -136,7 +136,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setPassword(?string $password): self
     {
-        $this->password = $password;
+        $this->password = trim($password);
 
         return $this;
     }
@@ -148,7 +148,7 @@ class Person implements UserInterface, PasswordAuthenticatedUserInterface
 
 	public function setPasswordConfirmation(?string $password_confirmation): self
 	{
-		$this->password_confirmation = $password_confirmation;
+		$this->password_confirmation = trim($password_confirmation);
 
 		return $this;
 	}

@@ -19,7 +19,7 @@ final class OptionDataUpdate
 	{
 		$this->id = $id;
 		$this->ordering = $ordering;
-		$this->text = $text;
+		$this->text = trim($text);
 	}
 
 	public function getId(): ?int

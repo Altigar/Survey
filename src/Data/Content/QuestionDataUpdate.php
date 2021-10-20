@@ -64,13 +64,13 @@ final class QuestionDataUpdate
 		$this->id = $id;
 		$this->is_required = $isRequired;
 		$this->type = $type;
-		$this->text = $text;
+		$this->text = trim($text);
 		$this->ordering = $ordering;
 		$this->options = $options;
 		$this->row = $row;
 		$this->scale = $scale;
-		$this->scale_from_text = $scale_from_text;
-		$this->scale_to_text = $scale_to_text;
+		$this->scale_from_text = trim($scale_from_text);
+		$this->scale_to_text = trim($scale_to_text);
 	}
 
 	public function getId(): int

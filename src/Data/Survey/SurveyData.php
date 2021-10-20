@@ -15,8 +15,8 @@ final class SurveyData
 
 	public function __construct(string $name, ?string $description = null, bool $repeatable = false)
 	{
-		$this->name = $name;
-		$this->description = $description;
+		$this->name = trim($name);
+		$this->description = trim($description);
 		$this->repeatable = $repeatable;
 	}
 

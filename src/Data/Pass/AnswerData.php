@@ -22,7 +22,7 @@ final class AnswerData
 	public function __construct(OptionData $option, ?string $text, ?int $scale_value)
 	{
 		$this->option = $option;
-		$this->text = $text;
+		$this->text = trim($text);
 		$this->scale_value = $scale_value;
 	}
 
